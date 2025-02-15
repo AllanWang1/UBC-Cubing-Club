@@ -27,3 +27,26 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
+
+.info-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: start;
+}
+
+.info {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  font-size: 20px;
+}
+
+.info img {
+  width: 35px;
+  height: auto;
+}
+
+.info a {
+  text-decoration:#25579c;
+}
