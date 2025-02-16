@@ -3,6 +3,11 @@ import { createClient } from "@supabase/supabase-js";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import Home from "./pages/Home";
+import About from "./pages/About";
+import Leaderboard from "./pages/Leaderboard";
+import Tournaments from "./pages/Tournaments";
+import Feed from "./pages/Feed";
+
 import Navbar from "./components/Navbar";
 const supabase = createClient(
   "https://aprxkjdevkzpsbjumkmm.supabase.co",
@@ -42,7 +47,10 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="" element={<Home />}></Route>
-        <Route path="/leaderboard" element={<Home />}></Route>
+        <Route path="/aboutus" element={<About />}></Route>
+        <Route path="/leaderboard" element={<Leaderboard />}></Route>
+        <Route path="/tournaments" element={<Tournaments />}></Route>
+        <Route path="/feed" element={<Feed />}></Route>
       </Routes>
     </Router>
   );
