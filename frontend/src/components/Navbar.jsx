@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 
 import underline from "../assets/nav_underline.svg";
 import "../styles/Navbar.css";
+import Dashboard from "./Dashboard";
 
 const Navbar = () => {
   const [menu, setMenu] = useState("home");
@@ -42,7 +43,9 @@ const Navbar = () => {
         </li>
       </ul>
       <div className="profile">
-        <User size={24} /> {/* Profile icon */}
+        <Link to="/signin">
+          <Dashboard />
+        </Link>
       </div>
     </div>
   );

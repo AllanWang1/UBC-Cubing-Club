@@ -1,5 +1,6 @@
 import React from "react";
 import "../styles/Home.css";
+import Navbar from "../components/Navbar";
 
 import emailIcon from "../assets/email-icon.svg";
 import locationIcon from "../assets/location-icon.svg";
@@ -26,11 +27,11 @@ const Home = () => {
         </div>
         <div className="info">
           <img src={instagramIcon} alt="" />
-          <a href="https://www.instagram.com/ubccubing/">@ubccubing</a>
+          <a href="https://www.instagram.com/ubccubing/" target="_blank">@ubccubing</a>
         </div>
         <div className="info">
           <img src={discordIcon} alt="" />
-          <a href="https://discord.gg/Cbax87X2">Join our Discord!</a>
+          <a href="https://discord.gg/BErAkAF5qE" target="_blank">Join our Discord!</a>
         </div>
         <div className="info">
           <img src={emailIcon} alt="" />

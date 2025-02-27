@@ -1,58 +1,30 @@
 import { useEffect, useState } from "react";
-import { createClient } from "@supabase/supabase-js";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 import Home from "./pages/Home";
 import About from "./pages/About";
 import Leaderboard from "./pages/Leaderboard";
 import Tournaments from "./pages/Tournaments";
 import Feed from "./pages/Feed";
-
 import Navbar from "./components/Navbar";
-const supabase = createClient(
-  "https://aprxkjdevkzpsbjumkmm.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFwcnhramRldmt6cHNianVta21tIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzkzNTU0MjcsImV4cCI6MjA1NDkzMTQyN30.RDvcvsMhJCxKdynvD9SS3oFvSxp9E1Y0Ok2E6Rnpe1g"
-);
+import SignIn from "./components/SignIn";
 
 function App() {
-  // const [members, setMembers] = useState([]);
-
-  // useEffect(() => {
-  //   getMembers();
-  // }, []);
-
-  // async function getMembers() {
-  //   const { data, error } = await supabase.from("members").select();
-
-  //   if (error) {
-  //     console.error("Error fetching members:", error.message);
-  //     return;
-  //   }
-
-  //   setMembers(data || []);
-  // }
-
-  // return (
-  //   <div className="head">
-  //     <img src={ cubingLogo } alt="" />
-  //     <ul>
-  //     {members.map((member) => (
-  //       <li key={member.id}>{member.name}</li>
-  //     ))}
-  //   </ul>
-  //   </div>
-  // );
+  const location = useLocation();
+  const hiddenRoutes = ["/login", "/signin"];
   return (
-    <Router>
-      <Navbar />
+    <div>
+      {!hiddenRoutes.includes(location.pathname) && <Navbar />}
       <Routes>
         <Route path="" element={<Home />}></Route>
         <Route path="/aboutus" element={<About />}></Route>
         <Route path="/leaderboard" element={<Leaderboard />}></Route>
         <Route path="/tournaments" element={<Tournaments />}></Route>
         <Route path="/feed" element={<Feed />}></Route>
+        <Route path="/signin" element={<SignIn />}></Route>
       </Routes>
-    </Router>
+    </div>
   );
 }
 
