@@ -8,7 +8,7 @@ import Leaderboard from "./pages/Leaderboard";
 import Tournaments from "./pages/Tournaments";
 import Feed from "./pages/Feed";
 import Navbar from "./components/Navbar";
-import SignIn from "./components/SignIn";
+import SignIn from "./pages/SignIn";
 
 function App() {
   const location = useLocation();

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { supabase } from "../SupabaseClient"
+import LogoutButton from './LogoutButton';
 
 const Dashboard = () => {
     const [user, setUser] = useState(null);
@@ -15,6 +16,7 @@ const Dashboard = () => {
       {user ? (
         <div className="dashboard-message">
             <h2>Welcome, {user.email}</h2>
+            <LogoutButton /> 
         </div>
       ) : (
         <p>Sign In</p>
