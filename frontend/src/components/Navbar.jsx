@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import { User } from "lucide-react";
+import { useLocation } from "react-router-dom"
 import { Link } from "react-router-dom";
 
 import underline from "../assets/nav_underline.svg";
@@ -7,39 +7,41 @@ import "../styles/Navbar.css";
 import Dashboard from "./Dashboard";
 
 const Navbar = () => {
-  const [menu, setMenu] = useState("home");
+  const location = useLocation();
+  console.log(location.pathname);
+  const [menu, setMenu] = useState(location.pathname);
   return (
     <div className="navbar">
       <ul className="navlinks">
         <li>
-          <Link to="">
-            <p onClick={() => setMenu("home")}>Home</p>
+          <Link to="/">
+            <p onClick={() => setMenu("/")}>Home</p>
           </Link>
-          {menu === "home" ? <img src={underline} alt="" /> : <></>}
+          {menu === "/" ? <img src={underline} alt="" /> : <></>}
         </li>
         <li>
           <Link to="/aboutus">
-            <p onClick={() => setMenu("about")}>About Us</p>
+            <p onClick={() => setMenu("/aboutus")}>About Us</p>
           </Link>
-          {menu === "about" ? <img src={underline} alt="" /> : <></>}
+          {menu === "/aboutus" ? <img src={underline} alt="" /> : <></>}
         </li>
         <li>
           <Link to="/leaderboard">
-            <p onClick={() => setMenu("leaderboard")}>Leaderboard</p>
+            <p onClick={() => setMenu("/leaderboard")}>Leaderboard</p>
           </Link>
-          {menu === "leaderboard" ? <img src={underline} alt="" /> : <></>}
+          {menu === "/leaderboard" ? <img src={underline} alt="" /> : <></>}
         </li>
         <li>
           <Link to="/tournaments">
-            <p onClick={() => setMenu("tournaments")}>Tournaments</p>
+            <p onClick={() => setMenu("/tournaments")}>Tournaments</p>
           </Link>
-          {menu === "tournaments" ? <img src={underline} alt="" /> : <></>}
+          {menu === "/tournaments" ? <img src={underline} alt="" /> : <></>}
         </li>
         <li>
           <Link to="/feed">
-            <p onClick={() => setMenu("feed")}>Feed</p>
+            <p onClick={() => setMenu("/feed")}>Feed</p>
           </Link>
-          {menu === "feed" ? <img src={underline} alt="" /> : <></>}
+          {menu === "/feed" ? <img src={underline} alt="" /> : <></>}
         </li>
       </ul>
       <div className="profile">

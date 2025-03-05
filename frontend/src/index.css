@@ -4,8 +4,13 @@
 }
 
 body {
+
+  background: linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), 
+  url("../src/assets/cube-logo-wallpaper.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: repeat-y;
   height: 100vh;
-  background: #f8f9fa;
   color: #333333;
   font-family: "outfit";
 }
