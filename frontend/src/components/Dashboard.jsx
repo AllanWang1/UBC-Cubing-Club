@@ -1,12 +1,16 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../SupabaseClient";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 import "../styles/dashboard.css"
 
 const Dashboard = () => {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
+
+  const reloadPage = () => {
+    window.location.reload();
+  };
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -22,17 +26,20 @@ const Dashboard = () => {
     await supabase.auth.signOut();
     alert("Logged out!");
     navigate("/");
+    reloadPage();
   };
 
   return (
     <div className="dashboard">
       {user ? (
-        <div className="dashboard-message">
+        <div className="dashboard-signed-in">
           <h2>Welcome, {user.email}</h2>
           <button onClick={handleLogout}>Logout</button>
         </div>
       ) : (
-        <p>Sign In</p>
+        <Link to='/signin'>
+            <p>Sign In</p>
+        </Link>
       )}
     </div>
   );

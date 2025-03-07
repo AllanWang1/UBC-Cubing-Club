@@ -1,18 +1,17 @@
 .dashboard {
     display: flex;
     flex-direction: column;
+}
+
+.dahsboard-signed-in {
     align-items: center;
 }
 
-.dahsboard-message {
-    align-items: center;
-}
-
-.dashboard-message h2 {
+.dashboard-signed-in h2 {
     font-size: 16px;
     text-decoration: none;
 }
 
-.dashboard-message button {
-    width: 50%;
+.dashboard-signed-in button {
+    width: 100%;
 }

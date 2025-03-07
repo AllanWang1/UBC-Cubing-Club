@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import { useLocation } from "react-router-dom"
+import { useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
 
 import underline from "../assets/nav_underline.svg";
@@ -45,9 +45,7 @@ const Navbar = () => {
         </li>
       </ul>
       <div className="profile">
-        <Link to="/signin">
-          <Dashboard />
-        </Link>
+        <Dashboard />
       </div>
     </div>
   );
