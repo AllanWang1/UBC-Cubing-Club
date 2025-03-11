@@ -23,6 +23,11 @@ const SignIn = () => {
   };
   return (
     <div className="sign-in">
+      <div className="back-home">
+        <Link to="/">
+          <p>🏠 Back to Home</p>
+        </Link>
+      </div>
       <h2>Sign In</h2>
       {error && <p>Login Error</p>}
       <form onSubmit={handleLogin}>

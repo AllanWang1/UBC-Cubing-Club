@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { supabase } from "../SupabaseClient";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import "../styles/SignUp.css";
 
 const SignUp = () => {
@@ -20,14 +20,19 @@ const SignUp = () => {
       },
     });
     if (error) {
-        setError(error);
+      setError(error);
     } else {
-        navigate("/signin")
+      navigate("/signin");
     }
   };
 
   return (
     <div className="sign-up">
+      <div className="back">
+        <Link to="/signin">
+          <p>📝 Back to Sign In</p>
+        </Link>
+      </div>
       <h2>Sign Up</h2>
       {error && <p>Sign Up Error</p>}
       <form onSubmit={handleSignUp}>
