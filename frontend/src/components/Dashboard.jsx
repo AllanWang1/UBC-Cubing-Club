@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "../SupabaseClient";
 import { useNavigate, Link } from "react-router-dom";
 
-import "../styles/dashboard.css"
+import "../styles/Dashboard.css"
 
 const Dashboard = () => {
   const getPublicURL = (path) => {
