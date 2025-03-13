@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { supabase } from "../SupabaseClient";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import "../styles/SignIn.css";
 
 const SignIn = () => {
@@ -23,6 +23,11 @@ const SignIn = () => {
   };
   return (
     <div className="sign-in">
+      <div className="back-home">
+        <Link to="/">
+          <p>🏠 Back to Home</p>
+        </Link>
+      </div>
       <h2>Sign In</h2>
       {error && <p>Login Error</p>}
       <form onSubmit={handleLogin}>
@@ -40,6 +45,9 @@ const SignIn = () => {
           <button type="submit">Sign In</button>
         </div>
       </form>
+      <Link to="/signup">
+        <p>Don't have an account yet? Sign up!</p>
+      </Link>
     </div>
   );
 };

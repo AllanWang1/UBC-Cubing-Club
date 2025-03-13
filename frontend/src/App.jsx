@@ -9,10 +9,11 @@ import Tournaments from "./pages/Tournaments";
 import Feed from "./pages/Feed";
 import Navbar from "./components/Navbar";
 import SignIn from "./pages/SignIn";
+import SignUp from "./pages/SignUp";
 
 function App() {
   const location = useLocation();
-  const hiddenRoutes = ["/login", "/signin"];
+  const hiddenRoutes = ["/signup", "/signin"];
   return (
     <div>
       {!hiddenRoutes.includes(location.pathname) && <Navbar />}
@@ -23,6 +24,7 @@ function App() {
         <Route path="/tournaments" element={<Tournaments />}></Route>
         <Route path="/feed" element={<Feed />}></Route>
         <Route path="/signin" element={<SignIn />}></Route>
+        <Route path="/signup" element={<SignUp />}></Route>
       </Routes>
     </div>
   );
