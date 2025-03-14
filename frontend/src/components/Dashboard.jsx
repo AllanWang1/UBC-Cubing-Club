@@ -29,7 +29,7 @@ const Dashboard = () => {
         data: { user },
       } = await supabase.auth.getUser();
       setUser(user);
-      if (user.user_metadata?.profilePicURL) {
+      if (user?.user_metadata?.profilePicURL) {
         setAvatarURL(user.user_metadata.profilePicURL);
       }
     };
