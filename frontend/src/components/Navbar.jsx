@@ -2,7 +2,7 @@ import React, { useState, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
 
-import underline from "../assets/nav_underline.svg";
+import underline from "../assets/nav_underline.png";
 import "../styles/Navbar.css";
 import Dashboard from "./Dashboard";
 

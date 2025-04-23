@@ -26,6 +26,7 @@
 .navlinks li {
   display: flex;
   flex-direction: column;
+  align-items: center;
 }
 
 .navlinks a {
@@ -37,7 +38,7 @@
 
 .navlinks img {
   height: 20px;
-  width: auto;
+  width: 20px;
 }
 .navlinks a:hover {
   transform: scale(1.05);
