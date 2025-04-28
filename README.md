@@ -4,10 +4,10 @@
 - Members (*ID*, email, name)
 - Meetings (*MeetingID*, date, passcode)
 - Tournaments (***MeetingID***, Name)
-- Results (*RID*, time, CubeName, ***ID***, **MeetingID**, TimeStamp)
+- Results (*RID*, time, CubeName, ***ID***, **MeetingID**)
 - Posts (*PID*, Likes, Description, Image)
 
 - Attends (***ID***, ***MeetingID***)
-- Competes (***ID***, ***MeetingID***)
-- Posts (***PID***, ***ID***, TimeStamp)
+- Competes (***ID***, ***MeetingID***, rank)
+- Publishes (***PID***, ***ID***, TimeStamp)
 - Likes (***PID***, ***ID***, TimeStamp)
