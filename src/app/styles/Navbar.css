@@ -36,10 +36,6 @@
   transition: 0.3s;
 }
 
-.navlinks img {
-  height: 20px;
-  width: 20px;
-}
 .navlinks a:hover {
   transform: scale(1.05);
 }

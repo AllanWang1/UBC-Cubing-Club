@@ -1,36 +1,51 @@
-import { useEffect, useState } from "react";
-import { supabase } from "../SupabaseClient";
-import { useNavigate, Link } from "react-router-dom";
+"use client";
 
-import "../styles/Dashboard.css"
+import { useEffect, useState } from "react";
+import { supabase } from "../lib/SupabaseClient";
+import type { User } from "@supabase/auth-js";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import Image from "next/image";
+
+import "../styles/Dashboard.css";
+
+
 
 const Dashboard = () => {
-  const getPublicURL = (path) => {
-    if (!path) return null;
-    const { data } = supabase.storage
-      .from("ProfilePictures")
-      .getPublicUrl(path);
-    return data.publicUrl;
-  };
-
-  const [user, setUser] = useState(null);
-  const [avatarURL, setAvatarURL] = useState(getPublicURL("default1.png"));
+  // Type the user, can either be User or null
+  const [user, setUser] = useState<User | null>(null);
+  const [avatarURL, setAvatarURL] = useState<string>("/default1.png");
   const [isOpen, setIsOpen] = useState(false);
-
-  const navigate = useNavigate();
+  // const pathname = usePathname();
+  const router = useRouter();
 
   const reloadPage = () => {
     window.location.reload();
   };
 
+  const getPublicURLWithPath = (path: string | null): string | null => {
+    if (!path) return null;
+    const { data } = supabase.storage
+      .from("ProfilePictures")
+      .getPublicUrl(path);
+    // Get publicUrl from data if not null; if null, return null
+    return data?.publicUrl ?? null;
+  };
+
   useEffect(() => {
     const fetchUser = async () => {
       const {
-        data: { user },
+        data: { user: fetchedUser },
       } = await supabase.auth.getUser();
-      setUser(user);
-      if (user?.user_metadata?.profilePicURL) {
-        setAvatarURL(user.user_metadata.profilePicURL);
+      setUser(fetchedUser);
+      if (fetchedUser) {
+        const profilePicPath = fetchedUser.user_metadata?.profilePicURL;
+        if (profilePicPath) {
+          const publicURL = getPublicURLWithPath(profilePicPath);
+          if (publicURL) {
+            setAvatarURL(publicURL);
+          }
+        }
       }
     };
     fetchUser();
@@ -39,7 +54,7 @@ const Dashboard = () => {
   const handleLogout = async () => {
     await supabase.auth.signOut();
     alert("Logged out!");
-    navigate("/");
+    router.push("/");
     reloadPage();
   };
 
@@ -57,20 +72,22 @@ const Dashboard = () => {
             <h2>{user.email}</h2>
           )}
           <div className="dashboard-profile-menu">
-            <img src={avatarURL} alt="Profile Picture" onClick={toggleIsOpen} />
+            <Image className="avatar" src={avatarURL} alt="Profile Picture" width={50} height={50} onClick={toggleIsOpen} />
             {isOpen && (
               <div className="dashboard-drop-down-menu">
                 <ul>
                   <li>Profile Page</li>
                   <li>Edit Profile</li>
-                  <li><button onClick={handleLogout}>Log Out</button></li>
+                  <li>
+                    <button onClick={handleLogout}>Log Out</button>
+                  </li>
                 </ul>
               </div>
             )}
           </div>
         </div>
       ) : (
-        <Link to="/signin">
+        <Link href="/signin">
           <p>Sign In</p>
         </Link>
       )}

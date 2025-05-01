@@ -34,9 +34,7 @@
   gap: 10px;
 }
 
-img {
-  width: 50px;
-  height: auto;
+.avatar {
   border-radius: 50%;
   cursor: pointer;
 }
