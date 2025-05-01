@@ -1,0 +1,21 @@
+.sign-up {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 60px;
+    margin: 20px 70px;
+}
+
+.back {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 20px;
+    left: 20px;
+}
+
+.back a {
+    text-decoration: none;
+    color: #0055a4;
+    font-size: 16px;
+}
