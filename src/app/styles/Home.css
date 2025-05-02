@@ -43,6 +43,12 @@
   height: auto;
 }
 
-.info a {
-  text-decoration:#25579c;
+a {
+  color: #25579c; 
+  text-decoration: none; 
+  transition: color 0.3s ease;
+}
+
+a:hover {
+  color: #002145;
 }
