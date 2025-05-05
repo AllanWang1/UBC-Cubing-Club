@@ -24,37 +24,3 @@
   flex-direction: column;
 }
 
-input {
-  width: 100%;
-  margin: 8px 0;
-  padding: 10px;
-  border-radius: 5px;
-  border: 2px solid #007086;
-  background: #f9fafb;
-}
-
-form {
-  background: #f8f9fa;
-  width: 300px;
-  padding: 30px;
-  margin: 0 auto;
-  border-radius: 10px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-}
-
-button {
-  width: 100%;
-  padding: 10px;
-  background-color: #0055a4;
-  color: white;
-  font-size: 16px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background 0.3s ease-in-out;
-  box-sizing: border-box;
-}
-
-button:hover {
-  background-color: #00274d;
-}

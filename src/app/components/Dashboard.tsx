@@ -25,7 +25,6 @@ const Dashboard = () => {
   const [user, setUser] = useState<User | null>(null);
   const [avatarURL, setAvatarURL] = useState<string>(getPublicURLWithPath("default1.png"));
   const [isOpen, setIsOpen] = useState(false);
-  // const pathname = usePathname();
   const router = useRouter();
 
   const reloadPage = () => {
@@ -49,6 +48,16 @@ const Dashboard = () => {
       }
     };
     fetchUser();
+
+    // Refetch whenever the Auth state changes
+    const { data: listener } = supabase.auth.onAuthStateChange(() => {
+      fetchUser(); 
+    });
+  
+    // Cleanup subscription on unmount
+    return () => {
+      listener.subscription.unsubscribe();
+    };
   }, []);
 
   const handleLogout = async () => {
