@@ -1,8 +1,8 @@
-// app/layout.tsx
 import type { Metadata } from "next";
 import "./globals.css"; // Make sure this exists and includes your CSS
 import { Outfit } from "next/font/google";
-import Navbar from "./components/Navbar";
+import ClientLayout from "./clientlayout";
+
 
 const outfit = Outfit({
   weight: '400',
@@ -22,8 +22,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className={outfit.className}>
-        <Navbar />
-        {children}
+        <ClientLayout>{ children }</ClientLayout>
       </body>
     </html>
   );
