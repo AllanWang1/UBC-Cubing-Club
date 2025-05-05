@@ -6,20 +6,29 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import "./SignUp.css";
 
+type SignUpData = {
+  name: string;
+  email: string;
+  password: string;
+};
+
 const SignUp = () => {
-  const [name, setName] = useState<string>("UBC Cuber");
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
+  const [formData, setFormData] = useState<SignUpData> ({
+    name: "UBC Cuber",
+    email: "",
+    password: "",
+  });
+
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
   const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const { error } = await supabase.auth.signUp({
-      email,
-      password,
+      email: formData.email,
+      password: formData.password,
       options: {
-        data: { full_name: name },
+        data: { full_name: formData.name },
       },
     });
     if (error) {
@@ -27,6 +36,14 @@ const SignUp = () => {
     } else {
       router.push("/signin");
     }
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev, 
+      [name]: value
+    }));
   };
 
   return (
@@ -42,17 +59,23 @@ const SignUp = () => {
         <input
           type="name"
           placeholder="Name"
-          onChange={(e) => setName(e.target.value)}
+          name="name"
+          value={formData.name}
+          onChange={handleChange}
         />
         <input
           type="email"
           placeholder="Email"
-          onChange={(e) => setEmail(e.target.value)}
+          name="email"
+          value={formData.email}
+          onChange={handleChange}
         />
         <input
           type="password"
           placeholder="Password"
-          onChange={(e) => setPassword(e.target.value)}
+          name="password"
+          value={formData.password}
+          onChange={handleChange}
         />
         <button type="submit">Sign Up</button>
       </form>

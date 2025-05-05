@@ -6,17 +6,24 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import "./SignIn.css";
 
+type SignInData = {
+  email: string;
+  password: string;
+}
+
 const SignIn = () => {
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
+  const [formData, setFormData] = useState<SignInData>({
+    email: "",
+    password: "",
+  });
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
+      email: formData.email,
+      password: formData.password,
     });
     if (error) {
       setError(error.message);
@@ -25,9 +32,13 @@ const SignIn = () => {
     }
   };
 
-  // const reloadPage = () => {
-  //   window.location.reload();
-  // };
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
 
   return (
     <div className="sign-in">
@@ -43,12 +54,16 @@ const SignIn = () => {
           <input
             type="email"
             placeholder="Email"
-            onChange={(e) => setEmail(e.target.value)}
+            name="email"
+            value={formData.email} 
+            onChange={handleChange}
           />
           <input
             type="password"
             placeholder="Password"
-            onChange={(e) => setPassword(e.target.value)}
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
           />
           <button type="submit">Sign In</button>
         </div>
