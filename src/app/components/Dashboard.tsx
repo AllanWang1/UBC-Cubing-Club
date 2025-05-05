@@ -12,24 +12,24 @@ import "../styles/Dashboard.css";
 
 
 const Dashboard = () => {
+  const getPublicURLWithPath = (path: string): string => {
+    if (!path) return "";
+    const { data } = supabase.storage
+      .from("ProfilePictures")
+      .getPublicUrl(path);
+    // Get publicUrl from data if not null; if null, return null
+    return data?.publicUrl ?? "";
+  };
+
   // Type the user, can either be User or null
   const [user, setUser] = useState<User | null>(null);
-  const [avatarURL, setAvatarURL] = useState<string>("/default1.png");
+  const [avatarURL, setAvatarURL] = useState<string>(getPublicURLWithPath("default1.png"));
   const [isOpen, setIsOpen] = useState(false);
   // const pathname = usePathname();
   const router = useRouter();
 
   const reloadPage = () => {
     window.location.reload();
-  };
-
-  const getPublicURLWithPath = (path: string | null): string | null => {
-    if (!path) return null;
-    const { data } = supabase.storage
-      .from("ProfilePictures")
-      .getPublicUrl(path);
-    // Get publicUrl from data if not null; if null, return null
-    return data?.publicUrl ?? null;
   };
 
   useEffect(() => {
