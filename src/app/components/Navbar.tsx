@@ -35,7 +35,7 @@ const Navbar = () => {
         </li>
         <li>
           <Link href="/tournaments">
-            <p onClick={() => setMenu("/tournaments")}>Tournaments</p>
+            <p onClick={() => setMenu("/tournaments")}>Meetings & Tournaments</p>
           </Link>
           {menu === "/tournaments" && <Image src="/nav_underline.png" width={20} height={20} alt="" />}
         </li>
