@@ -7,8 +7,8 @@ import Link from "next/link";
 import Image from "next/image";
 
 interface Tournament {
-  MeetingID: number;
-  Name: string;
+  meeting_id: number;
+  name: string;
 }
 
 interface HeldEvent {
@@ -34,8 +34,8 @@ export default function Tournament({
 }) {
   const { id } = React.use(params);
   const [tournament, setTournament] = useState<Tournament>({
-    MeetingID: 0,
-    Name: "Loading...",
+    meeting_id: 0,
+    name: "Loading...",
   });
   const [heldEvents, setHeldEvents] = useState<HeldEvent[]>([]);
 
@@ -69,7 +69,7 @@ export default function Tournament({
       <Link href="/tournaments">
         <p>Back to Tournaments</p>
       </Link>
-      <h2>{tournament.Name}</h2>
+      <h2>{tournament.name}</h2>
       <ul>
         {heldEvents.map((event) => (
           <li key={event.cube_name}>

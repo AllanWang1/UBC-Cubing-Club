@@ -5,8 +5,8 @@ import Link from "next/link";
 
 
 interface Tournament {
-  MeetingID: number;
-  Name: string;
+  meeting_id: number;
+  name: string;
 }
 
 const Tournaments = () => {
@@ -32,10 +32,10 @@ const Tournaments = () => {
       <h2>Tournaments</h2>
       <ul>
         {tournaments.map((tournament) => (
-          <li key={tournament.MeetingID}>
+          <li key={tournament.meeting_id}>
             <div className="tournament-container">
-              <h3>{tournament.MeetingID}</h3>
-              <Link href={`/tournaments/${tournament.MeetingID}`}>{tournament.Name}</Link>
+              <h3>{tournament.meeting_id}</h3>
+              <Link href={`/tournaments/${tournament.meeting_id}`}>{tournament.name}</Link>
             </div>
           </li>
         ))}

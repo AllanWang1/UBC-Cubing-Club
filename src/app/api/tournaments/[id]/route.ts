@@ -7,7 +7,7 @@ export async function GET(request: NextRequest) {
     const { data, error } = await supabase
         .from("Tournaments")
         .select("*")
-        .eq("MeetingID", id);
+        .eq("meeting_id", id);
 
     if (error) {
         return NextResponse.json({ error: error.message }, { status: 500 });

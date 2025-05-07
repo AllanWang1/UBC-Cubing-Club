@@ -40,10 +40,10 @@ const Navbar = () => {
           {menu === "/tournaments" && <Image src="/nav_underline.png" width={20} height={20} alt="" />}
         </li>
         <li>
-          <Link href="/feed">
-            <p onClick={() => setMenu("/feed")}>Feed</p>
+          <Link href="/members">
+            <p onClick={() => setMenu("/members")}>Members</p>
           </Link>
-          {menu === "/feed" && <Image src="/nav_underline.png" width={20} height={20} alt="" />}
+          {menu === "/members" && <Image src="/nav_underline.png" width={20} height={20} alt="" />}
         </li>
       </ul>
       <div className="profile">
