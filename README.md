@@ -2,10 +2,11 @@
 
 # Database schema:
 - Members (*ID*, email, name)
-- Meetings (*MeetingID*, date, passcode)
+- Meetings (*MeetingID*, date, passcode, description)
 - Tournaments (***MeetingID***, Name)
 - Results (*RID*, time, CubeName, ***ID***, **MeetingID**)
 - Posts (*PID*, Likes, Description, Image)
+- Events (*EventName*)
 
 - Attends (***ID***, ***MeetingID***)
 - Competes (***ID***, ***MeetingID***, rank)
