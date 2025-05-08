@@ -8,6 +8,7 @@ interface Member {
   email: string | null;
   student_id: string | null;
   membership: boolean;
+  major: string;
 }
 
 const Members = () => {
@@ -32,7 +33,10 @@ const Members = () => {
         {members.map((member) => (
           <li key={member.id}>
             <div className="member-container">
-              <h3>{member.name}</h3>
+              <h3>{member.id}</h3>
+              {(member.name !== null && member.name !== undefined) &&
+                  <h3>{member.name}</h3>}
+              <h3>{member.major}</h3>
             </div>
           </li>
         ))}

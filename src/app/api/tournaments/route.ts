@@ -4,7 +4,7 @@ import { supabase } from "../../lib/SupabaseClient";
 export async function GET() {
     const {data: Tournaments, error} = await supabase
         .from("Tournaments")
-        .select("*")
+        .select("meeting_id, name")
        
     if (error) {
         return NextResponse.json({error: error.message}, {status: 500});
