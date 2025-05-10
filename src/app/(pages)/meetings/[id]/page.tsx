@@ -6,9 +6,13 @@ import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 
-interface Tournament {
+interface Meeting {
   meeting_id: number;
-  name: string;
+  date: string;
+  passcode: string;
+  description: string;
+  meeting_name: string;
+  tournament: boolean;
 }
 
 interface HeldEvent {
@@ -68,16 +72,20 @@ const groupResults = (results: Result[]): GroupedResults => {
 }
 
 
-export default function Tournament({
+export default function Meeting({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
 
   const { id } = React.use(params);
-  const [tournament, setTournament] = useState<Tournament>({
+  const [meeting, setMeeting] = useState<Meeting>({
     meeting_id: 0,
-    name: "Loading...",
+    date: "",
+    passcode: "",
+    description: "",
+    meeting_name: "Loading...",
+    tournament: false,
   });
   const [heldEvents, setHeldEvents] = useState<HeldEvent[]>([]);
   const [results, setResults] = useState<Result[]>([]);
@@ -86,11 +94,11 @@ export default function Tournament({
 
   useEffect(() => {
     const fetchTournament = async () => {
-      const response = await fetch(`/api/tournaments/${id}`);
+      const response = await fetch(`/api/meetings/${id}`);
       const res_json = await response.json();
       if (response.ok) {
         // The API returns an array, so access the first (only) element.
-        setTournament(res_json[0]);
+        setMeeting(res_json[0]);
       } else {
         console.error("Error fetching tournament: ", res_json.error);
       }
@@ -122,15 +130,15 @@ export default function Tournament({
   }, [id]);
 
   return (
-    <div className="tournament">
-      <Link href="/tournaments">
-        <p>Back to Tournaments</p>
+    <div className="meetings">
+      <Link href="/meetings">
+        <p>Back to all meetings</p>
       </Link>
-      <h2>{tournament.name}</h2>
+      <h2>{meeting.meeting_name}</h2>
       <ul>
         {heldEvents.map((event) => (
           <li key={event.cube_name}>
-            <div className="tournament-event-container">
+            <div className="meeting-event-container">
               <h3>{event.cube_name}</h3>
               <Image
                 className="cube-icon"
