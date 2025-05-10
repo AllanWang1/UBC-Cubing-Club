@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "../../../lib/SupabaseClient";
 import React from "react";
 import Link from "next/link";
@@ -18,10 +18,10 @@ interface Meeting {
 interface HeldEvent {
   meeting_id: number;
   cube_name: string;
-  Cubes : {
+  Cubes: {
     cube_name: string;
     icon_link: string;
-  }
+  };
 }
 
 interface Result {
@@ -31,15 +31,19 @@ interface Result {
   cube_name: string;
   meeting_id: number;
   time_ms: number;
+  Members: {
+    id: number;
+    name: string;
+  };
 }
 
 interface GroupedResults {
   [cube_name: string]: {
     [round: number]: {
-      [id: number]: Result[];
+      [id: number]: { name: string; results: Result[] };
     };
   };
-};
+}
 
 const getPublicURLWithPath = (path: string): string => {
   if (!path) return "";
@@ -54,6 +58,7 @@ const groupResults = (results: Result[]): GroupedResults => {
     const cube_name = result.cube_name;
     const round = result.round;
     const id = result.id;
+    const name = result.Members.name;
 
     if (!grouped[cube_name]) {
       // Create the cube_name object if it doesn't exist
@@ -63,21 +68,34 @@ const groupResults = (results: Result[]): GroupedResults => {
       grouped[cube_name][round] = {};
     }
     if (!grouped[cube_name][round][id]) {
-      grouped[cube_name][round][id] = [];
+      grouped[cube_name][round][id] = {
+        name: name,
+        results: [],
+      };
     }
-
-    grouped[cube_name][round][id].push(result);
+    grouped[cube_name][round][id].results.push(result);
   }
+  console.log("Grouped results: ", grouped);
   return grouped;
-}
+};
 
+const formatTime = (ms: number): string => {
+  const minutes = Math.floor(ms / 60000);
+  const seconds = Math.floor((ms % 60000) / 1000);
+  const centiseconds = Math.floor((ms % 1000) / 10);
+  if (minutes === 0) {
+    return `${seconds.toString()}.${centiseconds.toString().padStart(2, "0")}`;
+  }
+  return `${minutes}:${seconds.toString().padStart(2, "0")}.${centiseconds
+    .toString()
+    .padStart(2, "0")}`;
+};
 
 export default function Meeting({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
-
   const { id } = React.use(params);
   const [meeting, setMeeting] = useState<Meeting>({
     meeting_id: 0,
@@ -89,8 +107,6 @@ export default function Meeting({
   });
   const [heldEvents, setHeldEvents] = useState<HeldEvent[]>([]);
   const [results, setResults] = useState<Result[]>([]);
-  // useMemo to memoize the grouped results, avoiding recomputation on every render
-  const groupedResults = useMemo(() => groupResults(results), [results]);
 
   useEffect(() => {
     const fetchTournament = async () => {
@@ -114,7 +130,7 @@ export default function Meeting({
       }
     };
 
-    const fetchResults = async() => {
+    const fetchResults = async () => {
       const response = await fetch(`/api/results/${id}`);
       const res_json = await response.json();
       if (response.ok) {
@@ -122,7 +138,7 @@ export default function Meeting({
       } else {
         console.error("Error fetching results: ", res_json.error);
       }
-    }
+    };
 
     fetchTournament();
     fetchHeldEvents();
@@ -150,18 +166,24 @@ export default function Meeting({
               <div className="event-results">
                 <h4>Results</h4>
                 <ul>
-                 {
-                  Object.entries(groupedResults[event.cube_name] || {}).map(([round, people]) => (
+                  {Object.entries(
+                    groupResults(results)[event.cube_name] || {}
+                  ).map(([round, people]) => (
                     <li key={round}>
                       <h5>Round {round}</h5>
                       <ul>
-                        {Object.entries(people).map(([id, results]) => (
+                        {Object.entries(people).map(([id, entry]) => (
                           <li key={id}>
-                            <h6>Member {id}</h6>
+                            <h6>
+                              Member {id}: {entry.name}
+                            </h6>
                             <ul>
-                              {results.map((result) => (
+                              {entry.results.map((result) => (
                                 <li key={result.attempt}>
-                                  <p>{result.attempt}: {result.time_ms} ms</p>
+                                  <p>
+                                    {result.attempt}:{" "}
+                                    {formatTime(result.time_ms)}
+                                  </p>
                                 </li>
                               ))}
                             </ul>
@@ -169,8 +191,7 @@ export default function Meeting({
                         ))}
                       </ul>
                     </li>
-                  ))
-                 }
+                  ))}
                 </ul>
               </div>
             </div>
