@@ -131,7 +131,7 @@ export default function Meeting({
     };
 
     const fetchResults = async () => {
-      const response = await fetch(`/api/results/${id}`);
+      const response = await fetch(`/api/results/meeting-results/${id}`);
       const res_json = await response.json();
       if (response.ok) {
         setResults(res_json);
