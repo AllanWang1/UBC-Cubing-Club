@@ -8,14 +8,7 @@ export async function GET() {
      * - The rank of the result
      * - Name of the member
      * - Resulting time
-     * - Competition name 
-     * 
-     * SELECT M.name, MIN(R.time_ms), Mt.meeting_name, C.cube_name, C.icon_link
-     * FROM Results R, Members M, Meetings Mt, Cubes C
-     * WHERE R.member_id = M.id AND R.meeting_id = Mt.meeting_id AND R.cube_name = C.cube_name
-     * GROUP BY M.id, C.cube_name
-     * 
-     * 
+     * - Meeting name 
      */
     const { data, error } = await supabase.rpc("get_single_results");
     if (error) {

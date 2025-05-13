@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { supabase } from "../../../lib/SupabaseClient";
+import { formatTime } from "../../../lib/utils";
+
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
@@ -79,17 +81,6 @@ const groupResults = (results: Result[]): GroupedResults => {
   return grouped;
 };
 
-const formatTime = (ms: number): string => {
-  const minutes = Math.floor(ms / 60000);
-  const seconds = Math.floor((ms % 60000) / 1000);
-  const centiseconds = Math.floor((ms % 1000) / 10);
-  if (minutes === 0) {
-    return `${seconds.toString()}.${centiseconds.toString().padStart(2, "0")}`;
-  }
-  return `${minutes}:${seconds.toString().padStart(2, "0")}.${centiseconds
-    .toString()
-    .padStart(2, "0")}`;
-};
 
 export default function Meeting({
   params,
