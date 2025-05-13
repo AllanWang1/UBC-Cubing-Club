@@ -13,4 +13,12 @@
     font-size: 16px;
     width: 50px;
     height: 50px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.cube-selector button:hover {
+    background-color: #e0e0e0;
+}
+.cube-selector button.selected {
+    background-color: #25579c;
 }

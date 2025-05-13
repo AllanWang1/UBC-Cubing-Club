@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Cube } from "../../types/Cube";
 import { formatTime, getPublicURLWithPath } from "../../lib/utils";
 import Image from "next/image";
+import Link from "next/link";
 
 import "./Leaderboard.css";
 
@@ -12,6 +13,7 @@ interface Result {
   name: string;
   time_ms: number;
   meeting_name: string;
+  meeting_id: number;
   cube_name: string;
   icon_link: string;
 }
@@ -53,6 +55,9 @@ const Leaderboard = () => {
         <div className="cube-selector">
           {cubes.map((cube) => (
             <button
+              className={`cube-button ${
+                cube.cube_name === selectedCube ? "selected" : ""
+              }`}
               key={cube.cube_name}
               onClick={() => setSelectedCube(cube.cube_name)}
             >
@@ -75,6 +80,19 @@ const Leaderboard = () => {
               <th>Meeting</th>
             </tr>
           </thead>
+          <tbody>
+            {singleResults
+              .filter((r) => r.cube_name === selectedCube)
+              .map((result, index) => (
+                <tr key={result.id}>
+                  <td>{index + 1}</td>
+                  <td>{result.name}</td>
+                  <td>{formatTime(result.time_ms)}</td>
+                  <td><Link href={`/meetings/${result.meeting_id}`}>{result.meeting_name}</Link></td>
+                </tr>
+              ))
+              }
+          </tbody>
         </table>
       </div>
     </div>
