@@ -1,4 +1,27 @@
 
+.result-type-selector {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    gap: 20px;
+}
+.result-type-selector button {
+    background-color: #f0f0f0;
+    color: #333333;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 10px 20px;
+    transition: 0.2s;
+    width: 100px;
+}
+.result-type-selector button:hover {
+    background-color: #e0e0e0;
+}
+.result-type-selector button.selected {
+    background-color: #25579c;
+}
 .cube-selector {
     display: flex;
     flex-wrap: wrap;
@@ -8,7 +31,7 @@
 .cube-selector button {
     background-color: #f0f0f0;
     border: none;
-    border-radius: 5px;
+    border-radius: 10px;
     cursor: pointer;
     font-size: 16px;
     width: 50px;

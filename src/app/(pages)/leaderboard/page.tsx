@@ -22,6 +22,7 @@ const Leaderboard = () => {
   const [singleResults, setSingleResults] = useState<Result[]>([]);
   const [cubes, setCubes] = useState<Cube[]>([]);
   const [selectedCube, setSelectedCube] = useState<string>("3x3");
+  const [resultType, setResultType] = useState<string>("single");
 
   useEffect(() => {
     const fetchSingleResults = async () => {
@@ -51,7 +52,6 @@ const Leaderboard = () => {
   return (
     <div className="leaderboard">
       <div className="single-leaderboard">
-        <h2>Single Results</h2>
         <div className="cube-selector">
           {cubes.map((cube) => (
             <button
@@ -71,6 +71,24 @@ const Leaderboard = () => {
             </button>
           ))}
         </div>
+        <div className="result-type-selector">
+          <button
+            className={`result-type-button ${
+              resultType === "single" ? "selected" : ""
+            }`}
+            onClick={() => setResultType("single")}
+          >
+            <h3>Single</h3>
+          </button>
+          <button
+            className={`result-type-button ${
+              resultType === "average" ? "selected" : ""
+            }`}
+            onClick={() => setResultType("average")}
+          >
+            <h3>Average</h3>
+          </button>
+        </div>
         <table>
           <thead>
             <tr>
@@ -80,19 +98,26 @@ const Leaderboard = () => {
               <th>Meeting</th>
             </tr>
           </thead>
-          <tbody>
-            {singleResults
-              .filter((r) => r.cube_name === selectedCube)
-              .map((result, index) => (
-                <tr key={result.id}>
-                  <td>{index + 1}</td>
-                  <td>{result.name}</td>
-                  <td>{formatTime(result.time_ms)}</td>
-                  <td><Link href={`/meetings/${result.meeting_id}`}>{result.meeting_name}</Link></td>
-                </tr>
-              ))
-              }
-          </tbody>
+          {resultType === "single" ? (
+            <tbody>
+              {singleResults
+                .filter((r) => r.cube_name === selectedCube)
+                .map((result, index) => (
+                  <tr key={result.id}>
+                    <td>{index + 1}</td>
+                    <td>{result.name}</td>
+                    <td>{formatTime(result.time_ms)}</td>
+                    <td>
+                      <Link href={`/meetings/${result.meeting_id}`}>
+                        {result.meeting_name}
+                      </Link>
+                    </td>
+                  </tr>
+                ))}
+            </tbody>
+          ) : (
+            <tbody></tbody>
+          )}
         </table>
       </div>
     </div>
