@@ -152,6 +152,7 @@ export default function MeetingView({
                   {[...Array(event.rounds)].map((_, index) => (
                     <div className="rounds" key={index}>
                       <h4>Round {index + 1}</h4>
+                      {/* AO5 */}
                       {event.format === "AO5" && (
                         <div className="round-submissions">
                           {[1, 2, 3, 4, 5].map((attempt) => (
@@ -170,9 +171,52 @@ export default function MeetingView({
                                 )
                               }
                             >
-                              <p>Attempt {attempt}:</p>
+                              <p>Attempt {attempt}</p>
                             </button>
                           ))}
+                        </div>
+                      )}
+                      {/* MO3 */}
+                      {event.format === "MO3" && (
+                        <div className="round-submissions">
+                          {[1, 2, 3].map((attempt) => (
+                            <button
+                              key={attempt}
+                              onClick={() =>
+                                // pass in everything except for the ID of the member
+                                router.push(
+                                  `/timer?meeting_id=${
+                                    meeting.meeting_id
+                                  }&round=${
+                                    index + 1
+                                  }&attempt=${attempt}&cube_name=${
+                                    event.cube_name
+                                  }`
+                                )
+                              }
+                            >
+                              <p>Attempt {attempt}</p>
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                      {/* BO1 */}
+                      {event.format === "BO1" && (
+                        <div className="round-submissions">
+                          <button
+                            onClick={() =>
+                              // pass in everything except for the ID of the member
+                              router.push(
+                                `/timer?meeting_id=${
+                                  meeting.meeting_id
+                                }&round=${index + 1}&attempt=1&cube_name=${
+                                  event.cube_name
+                                }`
+                              )
+                            }
+                          >
+                            <p>Attempt</p>
+                          </button>
                         </div>
                       )}
                     </div>
