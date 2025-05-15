@@ -87,7 +87,7 @@ const Timer = () => {
   }, READY_TIME);
 
   return () => clearTimeout(timeout);
-}, [holding]);
+}, [holding, time]);
 
 
   return (
