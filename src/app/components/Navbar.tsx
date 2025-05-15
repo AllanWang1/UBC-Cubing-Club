@@ -1,50 +1,40 @@
 "use client";
 
-import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 
 import "../styles/Navbar.css";
 import Dashboard from "./Dashboard";
-
 const Navbar = () => {
   const pathname = usePathname();
-  console.log(pathname);
-  const [menu, setMenu] = useState(pathname);
+
+  const links = [
+    { href: "/", label: "Home" },
+    { href: "/aboutus", label: "About Us" },
+    { href: "/leaderboard", label: "Leaderboard" },
+    { href: "/meetings", label: "Meetings & Tournaments" },
+    { href: "/members", label: "Members" },
+  ];
+
+  const isActive = (href: string) => {
+    if (href === "/") return pathname === "/";
+    return pathname.startsWith(href + "/") || pathname === href;
+  };
+
   return (
     <div className="navbar">
       <ul className="navlinks">
-        <li>
-          <Link href="/">
-            <p onClick={() => setMenu("/")}>Home</p>
-          </Link>
-          {menu === "/" && <Image src="/nav_underline.png" width={20} height={20} alt="underline" />}
-        </li>
-        <li>
-          <Link href="/aboutus">
-            <p onClick={() => setMenu("/aboutus")}>About Us</p>
-          </Link>
-          {menu === "/aboutus" && <Image src="/nav_underline.png" width={20} height={20} alt="" />}
-        </li>
-        <li>
-          <Link href="/leaderboard">
-            <p onClick={() => setMenu("/leaderboard")}>Leaderboard</p>
-          </Link>
-          {menu === "/leaderboard" && <Image src="/nav_underline.png" width={20} height={20} alt="" />}
-        </li>
-        <li>
-          <Link href="/meetings">
-            <p onClick={() => setMenu("/meetings")}>Meetings & Tournaments</p>
-          </Link>
-          {menu === "/meetings" && <Image src="/nav_underline.png" width={20} height={20} alt="" />}
-        </li>
-        <li>
-          <Link href="/members">
-            <p onClick={() => setMenu("/members")}>Members</p>
-          </Link>
-          {menu === "/members" && <Image src="/nav_underline.png" width={20} height={20} alt="" />}
-        </li>
+        {links.map((link) => (
+          <li key={link.href}>
+            <Link href={link.href}>
+              <p>{link.label}</p>
+            </Link>
+            {isActive(link.href) && (
+              <Image src="/nav_underline.png" width={20} height={20} alt="underline" />
+            )}
+          </li>
+        ))}
       </ul>
       <div className="profile">
         <Dashboard />
@@ -52,5 +42,5 @@ const Navbar = () => {
     </div>
   );
 };
-
 export default Navbar;
+
