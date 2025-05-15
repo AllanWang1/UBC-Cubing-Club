@@ -5,12 +5,15 @@ import { useRouter, useSearchParams } from "next/navigation";
 
 import "./Timer.css";
 
+const READY_TIME = 750; 
+
 const Timer = () => {
   const router = useRouter();
   const [running, setRunning] = useState<boolean>(false);
   const [startTime, setStartTime] = useState<number>(0); //ms
   const [endTime, setEndTime] = useState<number>(0); //ms
   const [time, setTime] = useState<number>(0);
+  const [ready, setReady] = useState<boolean>(false);
 
   const [holding, setHolding] = useState<boolean>(false);
   const [holdStartTime, setHoldStartTime] = useState<number>(0); //ms
@@ -44,7 +47,7 @@ const Timer = () => {
           const holdEndTimeLocal = Date.now();
           setHoldEndTime(holdEndTimeLocal);
           const holdDuration = holdEndTimeLocal - holdStartTime;
-          if (holdDuration > 1000 && !running && time === 0) {
+          if (holdDuration > READY_TIME && !running && time === 0) {
             // Good enough time for the release to activate the timer
             setRunning(true);
             console.log("setting time");
@@ -56,7 +59,7 @@ const Timer = () => {
 
     window.addEventListener("keydown", handleKeyDown);
     window.addEventListener("keyup", handleKeyUp);
-    
+
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
@@ -65,31 +68,42 @@ const Timer = () => {
 
   useEffect(() => {
     if (!running) return;
-  
+
     const interval = setInterval(() => {
       setTime(Date.now() - startTime);
     }, 80);
-  
+
     return () => clearInterval(interval);
   }, [running, startTime]);
-  
+
+  useEffect(() => {
+  if (!holding || time !== 0) {
+    setReady(false);
+    return;
+  }
+
+  const timeout = setTimeout(() => {
+    setReady(true);
+  }, READY_TIME);
+
+  return () => clearTimeout(timeout);
+}, [holding]);
+
 
   return (
     <div className="timer">
-        {running && 
-        <h2>Running...</h2>
-    }
-      {((holding && Date.now() - holdStartTime < 1000 && time === 0) ||
+      {ready && (
+        <div className="holding-ready-timer">
+          <h2>{time}</h2>
+        </div>
+      )}
+      {((holding && !ready) ||
         (holding && time !== 0)) && (
         <div className="holding-unready-timer">
           <h2>{time}</h2>
         </div>
       )}
-      {holding && Date.now() - holdStartTime >= 1000 && time === 0 && (
-        <div className="holding-ready-timer">
-          <h2>{time}</h2>
-        </div>
-      )}
+
       {running && (
         <div className="timing-timer">
           <h2>{time}</h2>
