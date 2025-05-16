@@ -5,26 +5,13 @@ import { useRouter } from "next/navigation";
 import { formatTime } from "../../../lib/utils";
 import { getPublicURLWithPath } from "../../../lib/utils";
 import { Meeting } from "../../../types/Meeting";
+import { HeldEvent } from "../../../types/HeldEvent";
 
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import "./TournamentID.css";
 
-interface HeldEvent {
-  meeting_id: number;
-  cube_name: string;
-  format: string;
-  rounds: number;
-  Cubes: {
-    cube_name: string;
-    icon_link: string;
-  };
-  FormatAttempts: {
-    format: string;
-    max_attempts: number;
-  };
-}
 
 interface Result {
   attempt: number;

@@ -4,12 +4,32 @@ import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { formatTime } from "../../lib/utils";
 import { Result } from "../../types/Result";
+
 import { User } from "@supabase/auth-js";
 import { supabase } from "../../lib/SupabaseClient";
 
 import "./Timer.css";
 
-const READY_TIME = 750;
+interface Event {
+  meeting_id: number;
+  cube_name: string;
+  format: string;
+  rounds: number;
+  Cubes: {
+    cube_name: string;
+    icon_link: string;
+  };
+  FormatAttempts: {
+    format: string;
+    max_attempts: number;
+  };
+  Meetings: {
+    meeting_name: string;
+    status: string;
+  };
+}
+
+const READY_TIME = 500;
 
 const Timer = () => {
   const router = useRouter();
@@ -25,6 +45,7 @@ const Timer = () => {
   const [holdStartTime, setHoldStartTime] = useState<number>(0); //ms
   const [holdEndTime, setHoldEndTime] = useState<number>(0);
 
+  const [event, setEvent] = useState<Event | null>(null);
   const [result, setResult] = useState<Result>({
     attempt: 0,
     round: 0,
@@ -37,40 +58,71 @@ const Timer = () => {
   });
   const [user, setUser] = useState<User | null>(null);
 
-  // Get the user from the session.
   useEffect(() => {
-    const fetchUserAndSetResult = async () => {
+    // check if there are any missing parameters.
+    const attempt = searchParams.get("attempt");
+    const round = searchParams.get("round");
+    const cube_name = searchParams.get("cube_name");
+    const meeting_id = searchParams.get("meeting_id");
+    if (!attempt || !round || !cube_name || !meeting_id) {
+      router.push("/404");
+      return;
+    }
+
+    const validateAll = async () => {
+      // 1. Check if meeting_id and cube_name are valid.
+      const response = await fetch(
+        `/api/event-info?meeting_id=${meeting_id}&cube_name=${cube_name}`
+      );
+      const res_json = await response.json();
+      if (response.ok) {
+        setEvent(res_json);
+      } else {
+        router.push("/404");
+        return;
+      }
+
+      // 2. Check if attempt and round are valid.
+      console.log("res_json: ", res_json[0]);
+      if (
+        Number(attempt) > Number(res_json[0].FormatAttempts.max_attempts) ||
+        Number(round) > res_json[0].rounds ||
+        Number(attempt) < 1 ||
+        Number(round) < 1
+      ) {
+        alert("Invalid link: attempt or round out of scope.");
+        router.push("/404");
+        return;
+      }
+
+      // 3. Check if the user is valid: logged in and has a member_id.
       const {
         data: { user: fetchedUser },
       } = await supabase.auth.getUser();
-      setUser(fetchedUser);
-      if (fetchedUser) {
-        const member_id = fetchedUser.user_metadata?.member_id;
-        if (!member_id) {
-          alert(
-            "There is no member ID associated with your account. Please contact an admin."
-          );
-          router.push("/meetings");
-          return;
-        }
-      } else {
+      if (!fetchedUser) {
         alert("Please log in to use the timer.");
         router.push("/signin");
         return;
       }
-      // If the user has still not been redirected, we know this is a valid user.
-      const attempt = searchParams.get("attempt");
-      const round = searchParams.get("round");
-      const cube_name = searchParams.get("cube_name");
-      const meeting_id = searchParams.get("meeting_id");
-      if (!attempt || !round || !cube_name || !meeting_id) {
-        router.push("/404");
+
+      // user is logged in, check if they have an associated member_id.
+      const member_id = fetchedUser.user_metadata?.member_id;
+      if (!member_id) {
+        alert(
+          "There is no member ID associated with your account. Please contact an admin."
+        );
+        router.push("/meetings");
         return;
       }
-      // Then we must verify that the meeting does exist
+
+      // If the user has still not been redirected, we know this is a valid user.
+      setUser(fetchedUser);
+     
+      // 4. Check if the user has already submitted a result for this event.
 
     };
-    fetchUserAndSetResult();
+
+    validateAll();
   }, [router, searchParams]);
 
   // Calculating final time, hold time, etc.
