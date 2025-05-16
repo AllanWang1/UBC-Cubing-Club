@@ -1,14 +1,20 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { formatTime } from "../../lib/utils";
+import { Result } from "../../types/Result";
+import { User } from "@supabase/auth-js";
+import { supabase } from "../../lib/SupabaseClient";
 
 import "./Timer.css";
 
-const READY_TIME = 750; 
+const READY_TIME = 750;
 
 const Timer = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
+
   const [running, setRunning] = useState<boolean>(false);
   const [startTime, setStartTime] = useState<number>(0); //ms
   const [endTime, setEndTime] = useState<number>(0); //ms
@@ -19,6 +25,45 @@ const Timer = () => {
   const [holdStartTime, setHoldStartTime] = useState<number>(0); //ms
   const [holdEndTime, setHoldEndTime] = useState<number>(0);
 
+  const [result, setResult] = useState<Result>({
+    attempt: 0,
+    round: 0,
+    id: 0,
+    cube_name: "",
+    meeting_id: 0,
+    time_ms: 0,
+    record: false,
+    average_record: false,
+  });
+  const [user, setUser] = useState<User | null>(null);
+
+  // Get the user from the session.
+  useEffect(() => {
+    const fetchUser = async () => {
+      const {
+        data: { user: fetchedUser },
+      } = await supabase.auth.getUser();
+      setUser(fetchedUser);
+      if (fetchedUser) {
+        const member_id = fetchedUser.user_metadata?.member_id;
+        if (!member_id) {
+          alert(
+            "There is no member ID associated with your account. Please contact an admin."
+          );
+          router.push("/meetings");
+          return;
+        }
+      } else {
+        alert("Please log in to use the timer.");
+        router.push("/signin");
+        return;
+      }
+      // If the user has still not been redirected, we know this is a valid user.
+    };
+    fetchUser();
+  }, [router]);
+
+  // Calculating final time, hold time, etc.
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.code === "Space") {
@@ -66,6 +111,7 @@ const Timer = () => {
     };
   }, [holding, time, holdStartTime, holdEndTime, endTime, running, startTime]);
 
+  // Update the timer in real time
   useEffect(() => {
     if (!running) return;
 
@@ -76,46 +122,52 @@ const Timer = () => {
     return () => clearInterval(interval);
   }, [running, startTime]);
 
+  // Check for the readiness of the timer
   useEffect(() => {
-  if (!holding || time !== 0) {
-    setReady(false);
-    return;
-  }
+    if (!holding || time !== 0) {
+      setReady(false);
+      return;
+    }
 
-  const timeout = setTimeout(() => {
-    setReady(true);
-  }, READY_TIME);
+    const timeout = setTimeout(() => {
+      setReady(true);
+    }, READY_TIME);
 
-  return () => clearTimeout(timeout);
-}, [holding, time]);
-
+    return () => clearTimeout(timeout);
+  }, [holding, time]);
 
   return (
     <div className="timer">
       {ready && (
         <div className="holding-ready-timer">
-          <h2>{time}</h2>
+          <h2>{formatTime(time)}</h2>
         </div>
       )}
-      {((holding && !ready) ||
-        (holding && time !== 0)) && (
+      {((holding && !ready) || (holding && time !== 0)) && (
         <div className="holding-unready-timer">
-          <h2>{time}</h2>
+          <h2>{formatTime(time)}</h2>
         </div>
       )}
 
       {running && (
         <div className="timing-timer">
-          <h2>{time}</h2>
+          <h2>{formatTime(time)}</h2>
         </div>
       )}
       {!holding && !running && (
         <div className="stale-timer">
-          <h2>{time}</h2>
+          <h2>{formatTime(time)}</h2>
         </div>
       )}
     </div>
   );
 };
 
-export default Timer;
+// Export the wrapped version
+export default function TimerPage() {
+  return (
+    <Suspense fallback={<div>Loading timer...</div>}>
+      <Timer />
+    </Suspense>
+  );
+}
