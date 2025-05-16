@@ -140,9 +140,9 @@ export default function MeetingView({
               <h4>Format: {event.format}</h4>
               {meeting.status === "open" ? (
                 <>
-                  {[...Array(event.rounds)].map((_, index) => (
-                    <div className="rounds" key={index}>
-                      <h4>Round {index + 1}</h4>
+                  {[...Array(event.rounds)].map((_, round_index) => (
+                    <div className="rounds" key={round_index}>
+                      <h4>Round {round_index + 1}</h4>
                       <div className="round-submissions">
                         {[...Array(event.FormatAttempts.max_attempts)].map(
                           (_, index) => (
@@ -153,7 +153,7 @@ export default function MeetingView({
                                 router.push(
                                   `/timer?meeting_id=${
                                     meeting.meeting_id
-                                  }&round=${index + 1}&attempt=${
+                                  }&round=${round_index + 1}&attempt=${
                                     index + 1
                                   }&cube_name=${event.cube_name}`
                                 )

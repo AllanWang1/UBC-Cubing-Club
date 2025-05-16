@@ -13,12 +13,13 @@ export async function GET(request: NextRequest) {
         )
         .eq("meeting_id", meeting_id)
         .eq("cube_name", cube_name)
-        .eq("Meetings.status", "open");
+        .eq("Meetings.status", "open")
+        .single();
         if (error) {
             return NextResponse.json({ error: error.message }, { status: 500 });
-        } else if (data.length === 0) {
+        } else if (data === null) {
             return NextResponse.json({ error: "No event found at meeting "}, { status: 404 });
-        } else if (data[0].Meetings === null) {
+        } else if (data.Meetings === null) {
             return NextResponse.json({ error: "Meeting not open" }, { status: 404 });
         }
         console.log("Holds event: ", data);

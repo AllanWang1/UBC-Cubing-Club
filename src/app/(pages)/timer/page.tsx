@@ -83,10 +83,10 @@ const Timer = () => {
       }
 
       // 2. Check if attempt and round are valid.
-      console.log("res_json: ", res_json[0]);
+      console.log("res_json: ", res_json);
       if (
-        Number(attempt) > Number(res_json[0].FormatAttempts.max_attempts) ||
-        Number(round) > res_json[0].rounds ||
+        Number(attempt) > Number(res_json.FormatAttempts.max_attempts) ||
+        Number(round) > res_json.rounds ||
         Number(attempt) < 1 ||
         Number(round) < 1
       ) {
