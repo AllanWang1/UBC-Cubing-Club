@@ -39,7 +39,7 @@ const Timer = () => {
 
   // Get the user from the session.
   useEffect(() => {
-    const fetchUser = async () => {
+    const fetchUserAndSetResult = async () => {
       const {
         data: { user: fetchedUser },
       } = await supabase.auth.getUser();
@@ -59,9 +59,19 @@ const Timer = () => {
         return;
       }
       // If the user has still not been redirected, we know this is a valid user.
+      const attempt = searchParams.get("attempt");
+      const round = searchParams.get("round");
+      const cube_name = searchParams.get("cube_name");
+      const meeting_id = searchParams.get("meeting_id");
+      if (!attempt || !round || !cube_name || !meeting_id) {
+        router.push("/404");
+        return;
+      }
+      // Then we must verify that the meeting does exist
+
     };
-    fetchUser();
-  }, [router]);
+    fetchUserAndSetResult();
+  }, [router, searchParams]);
 
   // Calculating final time, hold time, etc.
   useEffect(() => {
