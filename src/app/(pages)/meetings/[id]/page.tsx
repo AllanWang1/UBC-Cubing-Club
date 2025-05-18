@@ -12,7 +12,6 @@ import Link from "next/link";
 import Image from "next/image";
 import "./TournamentID.css";
 
-
 interface Result {
   attempt: number;
   round: number;
