@@ -47,17 +47,28 @@ const Timer = () => {
   const [holdStartTime, setHoldStartTime] = useState<number>(0); //ms
   const [holdEndTime, setHoldEndTime] = useState<number>(0);
 
-  const [result, setResult] = useState<Result>({
-    attempt: 0,
-    cube_name: "",
-    id: 0,
-    meeting_id: 0,
-    round: 0,
-    time_ms: 0,
-    record: false,
-    average_record: false,
-  });
   const [user, setUser] = useState<User | null>(null);
+
+
+  async function submitResult(result: Result) {
+    try {
+      const response = await fetch(`/api/pending/post`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(result),
+      });
+      const res_json = await response.json();
+      if (response.ok) {
+        alert("Result successfully submitted for review!");
+      } else {
+        alert("Error submitting result: " + res_json.error);
+      }
+    } catch (err) {
+      alert("Error submitting result: " + err);
+    }
+  }
 
   useEffect(() => {
     // check if there are any missing parameters.
@@ -155,7 +166,7 @@ const Timer = () => {
             setTime(endTimeLocal - startTime);
             setSubmitted(true);
 
-            setResult({
+            const localResult = {
               attempt: Number(searchParams.get("attempt")),
               cube_name: searchParams.get("cube_name") as string,
               id: Number(user?.user_metadata?.member_id),
@@ -164,7 +175,9 @@ const Timer = () => {
               time_ms: endTimeLocal - startTime,
               record: false,
               average_record: false,
-            })
+            }
+
+            submitResult(localResult);
           }
         }
       }
