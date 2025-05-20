@@ -1,9 +1,13 @@
 import { supabase } from "../lib/SupabaseClient";
 
 export function formatTime(ms: number): string {
+  if (ms === -1) return "DNF";
+  if (ms === -2) return "DNS";
+  
   const minutes = Math.floor(ms / 60000);
   const seconds = Math.floor((ms % 60000) / 1000);
   const centiseconds = Math.floor((ms % 1000) / 10);
+
   if (seconds === 0 && minutes === 0) {
     return `0.${centiseconds.toString().padStart(2, "0")}`;
   }

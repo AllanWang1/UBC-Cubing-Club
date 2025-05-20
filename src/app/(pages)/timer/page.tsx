@@ -49,6 +49,10 @@ const Timer = () => {
 
   const [user, setUser] = useState<User | null>(null);
 
+  const attempt_read = Number(searchParams.get("attempt"));
+  const cube_name_read = searchParams.get("cube_name") as string;
+  const meeting_id_read = Number(searchParams.get("meeting_id"));
+  const round_read = Number(searchParams.get("round"));
 
   async function submitResult(result: Result) {
     try {
@@ -71,12 +75,8 @@ const Timer = () => {
   }
 
   useEffect(() => {
-    // check if there are any missing parameters.
-    const attempt = searchParams.get("attempt");
-    const round = searchParams.get("round");
-    const cube_name = searchParams.get("cube_name");
-    const meeting_id = searchParams.get("meeting_id");
-    if (!attempt || !round || !cube_name || !meeting_id) {
+  
+    if (!attempt_read || !round_read || !cube_name_read || !meeting_id_read) {
       router.push("/404");
       return;
     }
@@ -84,23 +84,23 @@ const Timer = () => {
     const validateAll = async () => {
       // 1. Check if meeting_id and cube_name are valid.
       const response = await fetch(
-        `/api/event-info?meeting_id=${meeting_id}&cube_name=${cube_name}`
+        `/api/event-info?meeting_id=${meeting_id_read}&cube_name=${cube_name_read}`
       );
       const res_json = await response.json();
       if (!response.ok) {
         router.push("/404");
         return;
-      } 
+      }
 
       // 2. Check if attempt and round are valid.
       console.log("res_json: ", res_json);
       if (
-        Number(attempt) > Number(res_json.FormatAttempts.max_attempts) ||
-        Number(round) > res_json.rounds ||
-        Number(attempt) < 1 ||
-        Number(round) < 1 ||
-        Number.isInteger(Number(attempt)) === false ||
-        Number.isInteger(Number(round)) === false
+        Number(attempt_read) > Number(res_json.FormatAttempts.max_attempts) ||
+        Number(round_read) > res_json.rounds ||
+        Number(attempt_read) < 1 ||
+        Number(round_read) < 1 ||
+        Number.isInteger(Number(attempt_read)) === false ||
+        Number.isInteger(Number(round_read)) === false
       ) {
         alert("Invalid link: attempt or round out of scope.");
         router.push("/404");
@@ -129,11 +129,11 @@ const Timer = () => {
 
       // If the user has still not been redirected, we know this is a valid user.
       setUser(fetchedUser);
-     
+
       // 4. Check if the user has already submitted a result for this event.
       const pending = await fetch(
-        `/api/pending?attempt=${attempt}&round=${round}&cube_name=${cube_name}&id=${member_id}&meeting_id=${meeting_id}`
-      )
+        `/api/pending?attempt=${attempt_read}&round=${round_read}&cube_name=${cube_name_read}&id=${member_id}&meeting_id=${meeting_id_read}`
+      );
       const pending_json = await pending.json();
       if (pending.ok) {
         if (pending_json.length > 0) {
@@ -145,7 +145,7 @@ const Timer = () => {
     };
 
     validateAll();
-  }, [router, searchParams]);
+  }, [router, attempt_read, round_read, cube_name_read, meeting_id_read]);
 
   // Calculating final time, hold time, etc.
   useEffect(() => {
@@ -167,15 +167,15 @@ const Timer = () => {
             setSubmitted(true);
 
             const localResult = {
-              attempt: Number(searchParams.get("attempt")),
-              cube_name: searchParams.get("cube_name") as string,
+              attempt: attempt_read,
+              cube_name: cube_name_read,
               id: Number(user?.user_metadata?.member_id),
-              meeting_id: Number(searchParams.get("meeting_id")),
-              round: Number(searchParams.get("round")),
+              meeting_id: meeting_id_read,
+              round: round_read,
               time_ms: endTimeLocal - startTime,
               record: false,
               average_record: false,
-            }
+            };
 
             submitResult(localResult);
           }
@@ -190,7 +190,12 @@ const Timer = () => {
           const holdEndTimeLocal = Date.now();
           setHoldEndTime(holdEndTimeLocal);
           const holdDuration = holdEndTimeLocal - holdStartTime;
-          if (holdDuration > READY_TIME && !running && time === 0 && !submitted) {
+          if (
+            holdDuration > READY_TIME &&
+            !running &&
+            time === 0 &&
+            !submitted
+          ) {
             // Good enough time for the release to activate the timer
             setRunning(true);
             console.log("setting time");
@@ -207,7 +212,21 @@ const Timer = () => {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
     };
-  }, [holding, time, holdStartTime, holdEndTime, endTime, running, startTime, submitted, searchParams, user]);
+  }, [
+    holding,
+    time,
+    holdStartTime,
+    holdEndTime,
+    endTime,
+    running,
+    startTime,
+    submitted,
+    user,
+    attempt_read,
+    cube_name_read,
+    meeting_id_read,
+    round_read
+  ]);
 
   // Update the timer in real time
   useEffect(() => {
@@ -235,6 +254,37 @@ const Timer = () => {
     return () => clearTimeout(timeout);
   }, [holding, time, submitted]);
 
+  // Detecting if the user is leaving the page, submit a DNF immediately if they leave the page.
+  useEffect(() => {
+    if (submitted) return;
+    const handleUnload = () => {
+      // Attempt to send data right before unload
+      const local_attempt = attempt_read;
+      const local_cube_name = cube_name_read;
+      const local_id = Number(user?.user_metadata?.member_id);
+      const local_meeting_id = meeting_id_read;
+      const local_round = round_read;
+      const localResult = {
+        attempt: local_attempt,
+        cube_name: local_cube_name,
+        id: local_id,
+        meeting_id: local_meeting_id,
+        round: local_round,
+        time_ms: -1,
+        record: false,
+        average_record: false,
+      };
+      navigator.sendBeacon("/api/pending/post", JSON.stringify(localResult));
+    };
+
+    window.addEventListener("unload", handleUnload);
+
+    return () => {
+      window.removeEventListener("unload", handleUnload);
+    };
+  }, [submitted, attempt_read, cube_name_read, meeting_id_read, round_read, user]);
+
+  // Display for the timer page
   return (
     <div className="timer">
       {ready && (

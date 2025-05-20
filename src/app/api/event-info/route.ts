@@ -22,6 +22,6 @@ export async function GET(request: NextRequest) {
         } else if (data.Meetings === null) {
             return NextResponse.json({ error: "Meeting not open" }, { status: 404 });
         }
-        console.log("Holds event: ", data);
+        // console.log("Holds event: ", data);
         return NextResponse.json(data, { status: 200 });
 }
