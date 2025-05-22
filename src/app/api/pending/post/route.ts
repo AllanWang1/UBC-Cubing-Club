@@ -13,7 +13,8 @@ export async function POST(request: NextRequest) {
         .eq("cube_name", cube_name)
         .eq("attempt", attempt)
         .eq("round", round)
-        .eq("id", id);
+        .eq("id", id)
+        .neq("time_ms", -3);
     
     if (fetchError) {
         console.error("Error fetching existing result: ", fetchError);

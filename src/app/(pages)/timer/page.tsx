@@ -31,6 +31,26 @@ interface Event {
 
 const READY_TIME = 500;
 
+const delayedSubmission = (
+  attempt: number,
+  cube_name: string,
+  id: number,
+  meeting_id: number,
+  round: number
+) => {
+  const localResult = {
+    attempt: attempt,
+    cube_name: cube_name,
+    id: id,
+    meeting_id: meeting_id,
+    round: round,
+    time_ms: -1,
+    record: false,
+    average_record: false,
+  };
+  navigator.sendBeacon("/api/pending/post", JSON.stringify(localResult));
+};
+
 const Timer = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -75,7 +95,6 @@ const Timer = () => {
   }
 
   useEffect(() => {
-  
     if (!attempt_read || !round_read || !cube_name_read || !meeting_id_read) {
       router.push("/404");
       return;
@@ -139,6 +158,7 @@ const Timer = () => {
         if (pending_json.length > 0) {
           setSubmitted(true);
           // pending_json is array of objects, we take the first and only one, if the length > 0
+          // we did not use the single() clause because the result could be empty. 
           setTime(pending_json[0].time_ms);
         }
       }
@@ -225,7 +245,7 @@ const Timer = () => {
     attempt_read,
     cube_name_read,
     meeting_id_read,
-    round_read
+    round_read,
   ]);
 
   // Update the timer in real time
@@ -257,32 +277,38 @@ const Timer = () => {
   // Detecting if the user is leaving the page, submit a DNF immediately if they leave the page.
   useEffect(() => {
     if (submitted) return;
+    const local_id = Number(user?.user_metadata?.member_id);
+    const handleDelayedSubmission = () => {
+
+      delayedSubmission(attempt_read, cube_name_read, local_id, meeting_id_read, round_read);
+
+    }
     const handleUnload = () => {
-      // Attempt to send data right before unload
-      const local_attempt = attempt_read;
-      const local_cube_name = cube_name_read;
-      const local_id = Number(user?.user_metadata?.member_id);
-      const local_meeting_id = meeting_id_read;
-      const local_round = round_read;
-      const localResult = {
-        attempt: local_attempt,
-        cube_name: local_cube_name,
-        id: local_id,
-        meeting_id: local_meeting_id,
-        round: local_round,
-        time_ms: -1,
-        record: false,
-        average_record: false,
-      };
-      navigator.sendBeacon("/api/pending/post", JSON.stringify(localResult));
-    };
+      handleDelayedSubmission();
+    }
+    
+    const handleVisibilityChange = () => {
+      // Will only submit a DNF if the page is minimized, closed, or entering a different URL.
+      // It is ok if the page is moved around, adjusted size, etc. As long as the page is still visible on screen.
+      if (document.visibilityState === "hidden") {
+        handleDelayedSubmission();
+      }
+    }
 
     window.addEventListener("unload", handleUnload);
-
+    document.addEventListener("visibilitychange", handleVisibilityChange);
     return () => {
       window.removeEventListener("unload", handleUnload);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
-  }, [submitted, attempt_read, cube_name_read, meeting_id_read, round_read, user]);
+  }, [
+    submitted,
+    attempt_read,
+    cube_name_read,
+    meeting_id_read,
+    round_read,
+    user,
+  ]);
 
   // Display for the timer page
   return (
