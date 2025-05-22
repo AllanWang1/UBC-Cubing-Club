@@ -5,22 +5,12 @@ import { useRouter } from "next/navigation";
 import { formatTime } from "../../../lib/utils";
 import { getPublicURLWithPath } from "../../../lib/utils";
 import { Meeting } from "../../../types/Meeting";
+import { HeldEvent } from "../../../types/HeldEvent";
 
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import "./TournamentID.css";
-
-interface HeldEvent {
-  meeting_id: number;
-  cube_name: string;
-  format: string;
-  rounds: number;
-  Cubes: {
-    cube_name: string;
-    icon_link: string;
-  };
-}
 
 interface Result {
   attempt: number;
@@ -149,76 +139,30 @@ export default function MeetingView({
               <h4>Format: {event.format}</h4>
               {meeting.status === "open" ? (
                 <>
-                  {[...Array(event.rounds)].map((_, index) => (
-                    <div className="rounds" key={index}>
-                      <h4>Round {index + 1}</h4>
-                      {/* AO5 */}
-                      {event.format === "AO5" && (
-                        <div className="round-submissions">
-                          {[1, 2, 3, 4, 5].map((attempt) => (
+                  {[...Array(event.rounds)].map((_, round_index) => (
+                    <div className="rounds" key={round_index}>
+                      <h4>Round {round_index + 1}</h4>
+                      <div className="round-submissions">
+                        {[...Array(event.FormatAttempts.max_attempts)].map(
+                          (_, index) => (
                             <button
-                              key={attempt}
+                              key={index + 1}
                               onClick={() =>
                                 // pass in everything except for the ID of the member
                                 router.push(
                                   `/timer?meeting_id=${
                                     meeting.meeting_id
-                                  }&round=${
+                                  }&round=${round_index + 1}&attempt=${
                                     index + 1
-                                  }&attempt=${attempt}&cube_name=${
-                                    event.cube_name
-                                  }`
+                                  }&cube_name=${event.cube_name}`
                                 )
                               }
                             >
-                              <p>Attempt {attempt}</p>
+                              <p>Attempt {index + 1}</p>
                             </button>
-                          ))}
-                        </div>
-                      )}
-                      {/* MO3 */}
-                      {event.format === "MO3" && (
-                        <div className="round-submissions">
-                          {[1, 2, 3].map((attempt) => (
-                            <button
-                              key={attempt}
-                              onClick={() =>
-                                // pass in everything except for the ID of the member
-                                router.push(
-                                  `/timer?meeting_id=${
-                                    meeting.meeting_id
-                                  }&round=${
-                                    index + 1
-                                  }&attempt=${attempt}&cube_name=${
-                                    event.cube_name
-                                  }`
-                                )
-                              }
-                            >
-                              <p>Attempt {attempt}</p>
-                            </button>
-                          ))}
-                        </div>
-                      )}
-                      {/* BO1 */}
-                      {event.format === "BO1" && (
-                        <div className="round-submissions">
-                          <button
-                            onClick={() =>
-                              // pass in everything except for the ID of the member
-                              router.push(
-                                `/timer?meeting_id=${
-                                  meeting.meeting_id
-                                }&round=${index + 1}&attempt=1&cube_name=${
-                                  event.cube_name
-                                }`
-                              )
-                            }
-                          >
-                            <p>Attempt</p>
-                          </button>
-                        </div>
-                      )}
+                          )
+                        )}
+                      </div>
                     </div>
                   ))}
                 </>
