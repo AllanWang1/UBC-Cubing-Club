@@ -1,0 +1,19 @@
+.round-submissions {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.round-submissions button {
+    width: 100px;
+    height: auto;
+    background-color: #25579c;
+    color: white;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 10px;
+    transition: 0.2s;
+}
+.round-submissions button:hover {
+    background-color: #002145;
+}

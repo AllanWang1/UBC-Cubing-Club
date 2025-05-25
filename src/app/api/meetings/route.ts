@@ -3,13 +3,12 @@ import { supabase } from "../../lib/SupabaseClient";
 
 export async function GET() {
     const {data: Tournaments, error} = await supabase
-        .from("Tournaments")
-        .select("meeting_id, name")
+        .from("Meetings")
+        .select("meeting_id, meeting_name")
        
     if (error) {
         return NextResponse.json({error: error.message}, {status: 500});
     }
     // no error, we are ok
-    console.log("Tournaments: ", Tournaments);
     return NextResponse.json(Tournaments, {status: 200});
 }
