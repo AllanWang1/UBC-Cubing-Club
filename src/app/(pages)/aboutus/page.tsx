@@ -1,12 +1,13 @@
 import React from "react";
 import './About.css';
+import Image from "next/image";
 import teamMembers from "./Members.json";
 
 const About = () => {
   return (
     <div className = "aboutus">
-      <div className="intro">
-        <img src = "/club.png" alt = "Club"/>
+      <div className="about-intro">
+        <Image src="/club.png" alt="Club" width={800} height={400} className="club-image"/>
         <h2><strong>Welcome to the UBC Cubing Club!</strong></h2>
       </div>
 
@@ -21,7 +22,7 @@ const About = () => {
           </div>
 
           <div className = "mission-img">
-            <img src = "/mission.png" alt = "Mission"/>
+            <Image src = "/mission.png" alt = "Mission" width={550} height={300} className="mission-image"/>
             <div className = "mission-text">
               <p>At the UBC Cubing Club, our mission is to <strong>promote the exciting world of speedcubing</strong> within 
                 the University of British Columbia and the broader Vancouver community. We are passionate about 
@@ -38,7 +39,7 @@ const About = () => {
                   friendly rivalry and collaboration</li>
               </ul>
 
-              <p>Whether you're solving your first cube or chasing sub-10 averages, the UBC Cubing Club is your hub for 
+              <p>Whether you&apos;re solving your first cube or chasing sub-10 averages, the UBC Cubing Club is your hub for 
                 sharpening skills, making friends, and sharing the joy of cubing.</p>
             </div>
           </div>
@@ -49,7 +50,7 @@ const About = () => {
           <div className="team">
             {teamMembers.map((member, index) => (
               <div className="team-member" key={index}>
-                <img src={member.image} alt={member.name} />
+                <Image src={member.image} alt={member.name} width={200} height={200} className="member-image"/>
                 <h4>
                   {member.name}
                 </h4>
