@@ -31,6 +31,26 @@ interface Event {
 
 const READY_TIME = 500;
 
+async function submitResult(result: Result) {
+  try {
+    const response = await fetch(`/api/pending/post`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(result),
+    });
+    const res_json = await response.json();
+    if (response.ok) {
+      alert("Result successfully submitted for review!");
+    } else {
+      alert("Error submitting result: " + res_json.error);
+    }
+  } catch (err) {
+    alert("Error submitting result: " + err);
+  }
+}
+
 const delayedSubmission = (
   attempt: number,
   cube_name: string,
@@ -69,30 +89,56 @@ const Timer = () => {
 
   const [user, setUser] = useState<User | null>(null);
 
+  const [meetingPasscode, setMeetingPasscode] = useState<string>("");
+  const [passcode, setPasscode] = useState<string>("");
+  const [verified, setVerified] = useState<boolean>(false);
+
   const attempt_read = Number(searchParams.get("attempt"));
   const cube_name_read = searchParams.get("cube_name") as string;
   const meeting_id_read = Number(searchParams.get("meeting_id"));
   const round_read = Number(searchParams.get("round"));
 
-  async function submitResult(result: Result) {
-    try {
-      const response = await fetch(`/api/pending/post`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(result),
-      });
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPasscode(e.target.value);
+  };
+  const handlePasscodeSubmission = async (
+    e: React.FormEvent<HTMLFormElement>
+  ) => {
+    e.preventDefault();
+    if (passcode === meetingPasscode) {
+      // Then there are two cases:
+      // - There is a started attempt
+      // - There is no started attempt (either the user just opened the timer, or the time has already been submitted)
+      const response = await fetch(
+        // Can rest assured that user already exists without id, otherwise the page would have returned already.
+        `/api/started-attempts?attempt=${attempt_read}&cube_name=${cube_name_read}&id=${user?.user_metadata?.member_id}&meeting_id=${meeting_id_read}&round=${round_read}`
+      );
       const res_json = await response.json();
       if (response.ok) {
-        alert("Result successfully submitted for review!");
+        if (res_json.length > 0) {
+          // User already has active session, disqualify.
+          const DNF_result: Result = {
+            attempt: attempt_read,
+            cube_name: cube_name_read,
+            id: user?.user_metadata?.member_id,
+            meeting_id: meeting_id_read,
+            round: round_read,
+            time_ms: -1,
+            record: false,
+            average_record: false
+          };
+          submitResult(DNF_result);
+        } else {
+          // No active session found, user can use the timer normally
+          
+        }
       } else {
-        alert("Error submitting result: " + res_json.error);
+        alert("Error checking started attempts: " + res_json.error);
+        return;
       }
-    } catch (err) {
-      alert("Error submitting result: " + err);
+      setVerified(true);
     }
-  }
+  };
 
   useEffect(() => {
     if (!attempt_read || !round_read || !cube_name_read || !meeting_id_read) {
@@ -157,18 +203,30 @@ const Timer = () => {
       if (pending.ok) {
         if (pending_json.length > 0) {
           setSubmitted(true);
+          setVerified(true);
           // pending_json is array of objects, we take the first and only one, if the length > 0
-          // we did not use the single() clause because the result could be empty. 
+          // we did not use the single() clause because the result could be empty.
           setTime(pending_json[0].time_ms);
+          return;
         }
+      }
+
+      // 5. If there is already an entry in the pending table, then the current useEffect
+      // would have returned already, thus, we can confidently fetch the passcode if it hasn't returned.
+      const meeting = await fetch(`api/meetings/${meeting_id_read}`);
+      const meeting_json = await meeting.json();
+      if (meeting.ok) {
+        const meeting_passcode = meeting_json[0].passcode;
+        setMeetingPasscode(meeting_passcode);
       }
     };
 
     validateAll();
   }, [router, attempt_read, round_read, cube_name_read, meeting_id_read]);
 
-  // Calculating final time, hold time, etc.
+  // Handle key events, calculating final time, hold time, etc.
   useEffect(() => {
+    if (!verified) return;
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.code === "Space") {
         event.preventDefault();
@@ -246,10 +304,12 @@ const Timer = () => {
     cube_name_read,
     meeting_id_read,
     round_read,
+    verified,
   ]);
 
   // Update the timer in real time
   useEffect(() => {
+    if (!verified) return;
     if (!running) return;
     if (submitted) return;
 
@@ -258,10 +318,11 @@ const Timer = () => {
     }, 80);
 
     return () => clearInterval(interval);
-  }, [running, startTime, submitted]);
+  }, [running, startTime, submitted, verified]);
 
   // Check for the readiness of the timer
   useEffect(() => {
+    if (!verified) return;
     if (!holding || time !== 0 || submitted) {
       setReady(false);
       return;
@@ -272,28 +333,33 @@ const Timer = () => {
     }, READY_TIME);
 
     return () => clearTimeout(timeout);
-  }, [holding, time, submitted]);
+  }, [holding, time, submitted, verified]);
 
   // Detecting if the user is leaving the page, submit a DNF immediately if they leave the page.
   useEffect(() => {
+    if (!verified) return;
     if (submitted) return;
     const local_id = Number(user?.user_metadata?.member_id);
     const handleDelayedSubmission = () => {
-
-      delayedSubmission(attempt_read, cube_name_read, local_id, meeting_id_read, round_read);
-
-    }
+      delayedSubmission(
+        attempt_read,
+        cube_name_read,
+        local_id,
+        meeting_id_read,
+        round_read
+      );
+    };
     const handleUnload = () => {
       handleDelayedSubmission();
-    }
-    
+    };
+
     const handleVisibilityChange = () => {
       // Will only submit a DNF if the page is minimized, closed, or entering a different URL.
       // It is ok if the page is moved around, adjusted size, etc. As long as the page is still visible on screen.
       if (document.visibilityState === "hidden") {
         handleDelayedSubmission();
       }
-    }
+    };
 
     window.addEventListener("unload", handleUnload);
     document.addEventListener("visibilitychange", handleVisibilityChange);
@@ -308,30 +374,42 @@ const Timer = () => {
     meeting_id_read,
     round_read,
     user,
+    verified,
   ]);
 
   // Display for the timer page
   return (
     <div className="timer">
-      {ready && (
-        <div className="holding-ready-timer">
-          <h2>{formatTime(time)}</h2>
-        </div>
-      )}
-      {((holding && !ready) || (holding && time !== 0)) && (
-        <div className="holding-unready-timer">
-          <h2>{formatTime(time)}</h2>
-        </div>
-      )}
+      {verified ? (
+        <div className="available-timer">
+          {ready && (
+            <div className="holding-ready-timer">
+              <h2>{formatTime(time)}</h2>
+            </div>
+          )}
+          {((holding && !ready) || (holding && time !== 0)) && (
+            <div className="holding-unready-timer">
+              <h2>{formatTime(time)}</h2>
+            </div>
+          )}
 
-      {running && (
-        <div className="timing-timer">
-          <h2>{formatTime(time)}</h2>
+          {running && (
+            <div className="timing-timer">
+              <h2>{formatTime(time)}</h2>
+            </div>
+          )}
+          {!holding && !running && (
+            <div className="stale-timer">
+              <h2>{formatTime(time)}</h2>
+            </div>
+          )}
         </div>
-      )}
-      {!holding && !running && (
-        <div className="stale-timer">
-          <h2>{formatTime(time)}</h2>
+      ) : (
+        <div className="prompt-passcode">
+          <form onSubmit={handlePasscodeSubmission}>
+            <input type="text" onChange={handleChange} />
+            <button type="submit"></button>
+          </form>
         </div>
       )}
     </div>
