@@ -71,7 +71,6 @@ const delayedSubmission = (
   navigator.sendBeacon("/api/pending/post", JSON.stringify(localResult));
 };
 
-
 const Timer = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -90,6 +89,7 @@ const Timer = () => {
 
   const [user, setUser] = useState<User | null>(null);
 
+  const [meetingPasscode, setMeetingPasscode] = useState<string>("");
   const [passcode, setPasscode] = useState<string>("");
   const [verified, setVerified] = useState<boolean>(false);
 
@@ -98,14 +98,47 @@ const Timer = () => {
   const meeting_id_read = Number(searchParams.get("meeting_id"));
   const round_read = Number(searchParams.get("round"));
 
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPasscode(e.target.value);
-  }
-  const handlePasscodeSubmission = (e: React.FormEvent<HTMLFormElement>) => {
+  };
+  const handlePasscodeSubmission = async (
+    e: React.FormEvent<HTMLFormElement>
+  ) => {
     e.preventDefault();
-
-  }
+    if (passcode === meetingPasscode) {
+      // Then there are two cases:
+      // - There is a started attempt
+      // - There is no started attempt (either the user just opened the timer, or the time has already been submitted)
+      const response = await fetch(
+        // Can rest assured that user already exists without id, otherwise the page would have returned already.
+        `/api/started-attempts?attempt=${attempt_read}&cube_name=${cube_name_read}&id=${user?.user_metadata?.member_id}&meeting_id=${meeting_id_read}&round=${round_read}`
+      );
+      const res_json = await response.json();
+      if (response.ok) {
+        if (res_json.length > 0) {
+          // User already has active session, disqualify.
+          const DNF_result: Result = {
+            attempt: attempt_read,
+            cube_name: cube_name_read,
+            id: user?.user_metadata?.member_id,
+            meeting_id: meeting_id_read,
+            round: round_read,
+            time_ms: -1,
+            record: false,
+            average_record: false
+          };
+          submitResult(DNF_result);
+        } else {
+          // No active session found, user can use the timer normally
+          
+        }
+      } else {
+        alert("Error checking started attempts: " + res_json.error);
+        return;
+      }
+      setVerified(true);
+    }
+  };
 
   useEffect(() => {
     if (!attempt_read || !round_read || !cube_name_read || !meeting_id_read) {
@@ -170,6 +203,7 @@ const Timer = () => {
       if (pending.ok) {
         if (pending_json.length > 0) {
           setSubmitted(true);
+          setVerified(true);
           // pending_json is array of objects, we take the first and only one, if the length > 0
           // we did not use the single() clause because the result could be empty.
           setTime(pending_json[0].time_ms);
@@ -179,13 +213,11 @@ const Timer = () => {
 
       // 5. If there is already an entry in the pending table, then the current useEffect
       // would have returned already, thus, we can confidently fetch the passcode if it hasn't returned.
-      const meeting = await fetch (
-        `api/meetings/${meeting_id_read}`
-      )
+      const meeting = await fetch(`api/meetings/${meeting_id_read}`);
       const meeting_json = await meeting.json();
       if (meeting.ok) {
         const meeting_passcode = meeting_json[0].passcode;
-        setPasscode(meeting_passcode);
+        setMeetingPasscode(meeting_passcode);
       }
     };
 
@@ -375,7 +407,7 @@ const Timer = () => {
       ) : (
         <div className="prompt-passcode">
           <form onSubmit={handlePasscodeSubmission}>
-            <input type="text" onChange={handleChange}/>
+            <input type="text" onChange={handleChange} />
             <button type="submit"></button>
           </form>
         </div>

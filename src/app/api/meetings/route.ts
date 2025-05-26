@@ -5,6 +5,7 @@ export async function GET() {
     const {data: Tournaments, error} = await supabase
         .from("Meetings")
         .select("meeting_id, meeting_name")
+        .order("date")
        
     if (error) {
         return NextResponse.json({error: error.message}, {status: 500});
