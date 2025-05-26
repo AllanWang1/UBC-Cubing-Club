@@ -1,0 +1,28 @@
+[
+  {
+    "name": "Allan Wang",
+    "roles": [
+      { "title": "Treasurer", "years": "2023–present" },
+      { "title": " Full stack developer", "years": "2025-present"}
+    ],
+    "description": "5x5 is the peak of cubing — the rest are just side quests for people scared of real cubes.",
+    "image": "/member-imgs/Allan.jpeg"
+  },
+  {
+    "name": "Bruce Hsieh",
+    "roles": [
+      { "title": "President", "years": "2020–2021" },
+      { "title": "Treasurer", "years": "2021–2023" }
+    ],
+    "description": "His speedcubing journey began in 2015 when he was deeply inspired by the cubing skills of none other than our Australian goat, Feliks Zemdegs. So far, his PB on 3x3 is 6.19s, while he averages around 11s. Presently, his main event is 4x4, slowly but surely pushing under 30s. His current goal is to clutch an 8s average on 3x3, pull off a second sub 30 on 4x4, and improve his 3 style memo & exec with 3 blind.",
+    "image": "/member-imgs/Bruce.jpg"
+  },
+  {
+    "name": "Yuqi Zhu",
+    "roles": [
+      { "title": " Full stack developer", "years": "2025-present"}
+    ],
+    "description": "Test",
+    "image": "/member-imgs/Yuqi.jpeg"
+  }
+]

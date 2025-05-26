@@ -1,0 +1,133 @@
+.aboutus {
+    width: 100%;
+    background-color: #EBE8E2;
+}
+  
+.about-intro {
+    position: relative;
+    text-align: center;
+}
+
+.club-image {
+    width: 100%;
+    height: 400px;
+}
+
+.about-intro h2 {
+    position: absolute;
+    left: 0; 
+    right: 0;
+    top: 150px;
+    font-size: 90px;
+    color: white;
+    font-weight: 1500px;
+    font-style: italic;
+}
+  
+.container {
+    margin: 0 auto;
+ }
+  
+.section {
+    margin-bottom: 60px;
+}
+
+.section h2 {
+    text-align: center;
+    color:black;
+    font-size: 36px;
+    font-weight: 700;
+}
+
+.mission {
+    margin-bottom: 20px;
+}
+
+.mission-img {
+    width: 1280px;
+    display: flex;
+    justify-content: space-between;
+    margin: auto;
+}
+
+.mission-image {
+    width: 550px;
+    height: 300px;
+}
+
+.mission-img div {
+    margin-left: 10px;
+    text-align: justify;
+}
+
+.mission-img ul {
+    list-style-type: disc;
+    padding-left: 1.5rem; 
+}
+
+
+.mission-img li {
+    font-size: 17px;
+    font-weight: 100px;
+    color: #555;
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+
+.mission-img p {
+    line-height: 1.8;
+    margin-bottom: 10px;
+    font-size: 17px;
+}
+  
+.team {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 50px;
+    margin-top: 30px;
+}
+
+  
+.team-member {
+    text-align: center;
+    max-width: clamp(200px, 25%, 250px);
+    margin: 20px;
+    padding: 10px;
+}
+  
+.member-image {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 12px;
+}
+    
+.member-image:hover {
+    transform: scale(1.05);
+}
+ 
+.team-member h4 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: #333;
+}
+
+.team-member .role {
+    margin: 0;
+    font-style: italic;
+    font-size: 0.9rem;
+    color: #555;
+}
+  
+.team-member p {
+    text-align: justify;
+    font-size: 0.85rem;
+    color: #666;
+    line-height: 1.4;
+    margin: 0 auto;
+}
+  
+  
