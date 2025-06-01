@@ -25,6 +25,29 @@ export async function GET(request: NextRequest) {
   return NextResponse.json(data, { status: 200 });
 }
 
+export async function DELETE(request: NextRequest) {
+  const searchParams = request.nextUrl.searchParams;
+  const attempt = Number(searchParams.get("attempts"));
+  const cube_name = searchParams.get("cube_name");
+  const id = Number(searchParams.get("id"));
+  const meeting_id = Number(searchParams.get("meeting_id"));
+  const round = Number(searchParams.get("round"));
+
+  const { data, error } = await supabase
+    .from("StartedAttempts")
+    .delete()
+    .eq("attempt", attempt)
+    .eq("cube_name", cube_name)
+    .eq("id", id)
+    .eq("meeting_id", meeting_id)
+    .eq("round", round);
+  if (error) {
+    return NextResponse.json({ error: error.message }, {status: 500});
+  } else {
+    return NextResponse.json(data, { status: 200 });
+  }
+}
+
 export async function POST(request: NextRequest) {
   const body = await request.json();
   const { attempt, cube_name, id, meeting_id, round } = body;

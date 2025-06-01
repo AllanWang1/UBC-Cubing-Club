@@ -4,35 +4,24 @@ import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { formatTime } from "../../lib/utils";
 import { Result } from "../../types/Result";
+import { StartedAttempt } from "../../types/StartedAttempt";
 
 import { User } from "@supabase/auth-js";
 import { supabase } from "../../lib/SupabaseClient";
 
 import "./Timer.css";
 
-interface Event {
-  meeting_id: number;
-  cube_name: string;
-  format: string;
-  rounds: number;
-  Cubes: {
-    cube_name: string;
-    icon_link: string;
-  };
-  FormatAttempts: {
-    format: string;
-    max_attempts: number;
-  };
-  Meetings: {
-    meeting_name: string;
-    status: string;
-  };
-}
-
 const READY_TIME = 500;
 
 async function submitResult(result: Result) {
   try {
+    deleteStartedAttempt({
+      attempt: result.attempt,
+      cube_name: result.cube_name,
+      id: result.id,
+      meeting_id: result.meeting_id,
+      round: result.round,
+    });
     const response = await fetch(`/api/pending/post`, {
       method: "POST",
       headers: {
@@ -71,6 +60,39 @@ const delayedSubmission = (
   navigator.sendBeacon("/api/pending/post", JSON.stringify(localResult));
 };
 
+async function submitStartedAttempt(entry: StartedAttempt) {
+  try {
+    const response = await fetch(`/api/started-attempts`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(entry),
+    });
+    const res_json = await response.json();
+    if (response.ok) {
+      // Attempt started
+    } else {
+      alert("Error starting attempt: " + res_json.error);
+    }
+  } catch (error) {
+    alert("Error starting attempt: " + error);
+  }
+}
+
+async function deleteStartedAttempt(entry: StartedAttempt) {
+  const response = await fetch(
+    `/api/started-attempts?attempt=${entry.attempt}&cube_name=${entry.cube_name}&id=${entry.id}&meeting_id=${entry.meeting_id}&round=${entry.round}`,
+    {
+      method: "DELETE"
+    }
+  );
+  const res_json = await response.json();
+  if (!response.ok) {
+    alert("Error removing started attempt: " + res_json.error);
+  }
+}
+
 const Timer = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -101,6 +123,7 @@ const Timer = () => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPasscode(e.target.value);
   };
+
   const handlePasscodeSubmission = async (
     e: React.FormEvent<HTMLFormElement>
   ) => {
@@ -125,18 +148,29 @@ const Timer = () => {
             round: round_read,
             time_ms: -1,
             record: false,
-            average_record: false
+            average_record: false,
           };
           submitResult(DNF_result);
         } else {
           // No active session found, user can use the timer normally
-          
+          // Must make an insert into the StartedAttempts table
+          const entry: StartedAttempt = {
+            attempt: attempt_read,
+            cube_name: cube_name_read,
+            id: user?.user_metadata?.member_id,
+            meeting_id: meeting_id_read,
+            round: round_read,
+          };
+          submitStartedAttempt(entry);
         }
       } else {
         alert("Error checking started attempts: " + res_json.error);
         return;
       }
       setVerified(true);
+    } else {
+      // handle incorrect password
+      alert("Password incorrect");
     }
   };
 
