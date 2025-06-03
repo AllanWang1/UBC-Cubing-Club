@@ -15,13 +15,6 @@ const READY_TIME = 500;
 
 async function submitResult(result: Result) {
   try {
-    deleteStartedAttempt({
-      attempt: result.attempt,
-      cube_name: result.cube_name,
-      id: result.id,
-      meeting_id: result.meeting_id,
-      round: result.round,
-    });
     const response = await fetch(`/api/pending/post`, {
       method: "POST",
       headers: {
@@ -40,25 +33,25 @@ async function submitResult(result: Result) {
   }
 }
 
-const delayedSubmission = (
-  attempt: number,
-  cube_name: string,
-  id: number,
-  meeting_id: number,
-  round: number
-) => {
-  const localResult = {
-    attempt: attempt,
-    cube_name: cube_name,
-    id: id,
-    meeting_id: meeting_id,
-    round: round,
-    time_ms: -1,
-    record: false,
-    average_record: false,
-  };
-  navigator.sendBeacon("/api/pending/post", JSON.stringify(localResult));
-};
+// const delayedSubmission = (
+//   attempt: number,
+//   cube_name: string,
+//   id: number,
+//   meeting_id: number,
+//   round: number
+// ) => {
+//   const localResult = {
+//     attempt: attempt,
+//     cube_name: cube_name,
+//     id: id,
+//     meeting_id: meeting_id,
+//     round: round,
+//     time_ms: -1,
+//     record: false,
+//     average_record: false,
+//   };
+//   navigator.sendBeacon("/api/pending/post", JSON.stringify(localResult));
+// };
 
 async function submitStartedAttempt(entry: StartedAttempt) {
   try {
@@ -151,6 +144,13 @@ const Timer = () => {
             average_record: false,
           };
           submitResult(DNF_result);
+          deleteStartedAttempt({
+            attempt: attempt_read,
+            cube_name: cube_name_read,
+            id: user?.user_metadata?.member_id,
+            meeting_id: meeting_id_read,
+            round: round_read,
+          });
         } else {
           // No active session found, user can use the timer normally
           // Must make an insert into the StartedAttempts table
@@ -174,6 +174,7 @@ const Timer = () => {
     }
   };
 
+  // Validating all
   useEffect(() => {
     if (!attempt_read || !round_read || !cube_name_read || !meeting_id_read) {
       router.push("/404");
@@ -290,6 +291,13 @@ const Timer = () => {
             };
 
             submitResult(localResult);
+            deleteStartedAttempt({
+              attempt: localResult.attempt,
+              cube_name: localResult.cube_name,
+              id: localResult.id,
+              meeting_id: localResult.meeting_id,
+              round: localResult.round,
+            });
           }
         }
       }
@@ -370,46 +378,56 @@ const Timer = () => {
   }, [holding, time, submitted, verified]);
 
   // Detecting if the user is leaving the page, submit a DNF immediately if they leave the page.
-  useEffect(() => {
-    if (!verified) return;
-    if (submitted) return;
-    const local_id = Number(user?.user_metadata?.member_id);
-    const handleDelayedSubmission = () => {
-      delayedSubmission(
-        attempt_read,
-        cube_name_read,
-        local_id,
-        meeting_id_read,
-        round_read
-      );
-    };
-    const handleUnload = () => {
-      handleDelayedSubmission();
-    };
+  /**
+   * This useEffect will not be used for now. If a user leaves the page and tries to return again, 
+   * we would prompt for the passcode, and the passcode entry is like a re-confirmation.
+   * 
+   * Thus, we would not need to detect reloads and window minimizing.
+   * 
+   * The case where we open another tab with the same link while the timer is already running should 
+   * also be covered: when we enter the new page, a DNF is submitted, and submitting on the older page
+   * would give an error, since it has been submitted already. 
+   */
+  // useEffect(() => {
+  //   if (!verified) return;
+  //   if (submitted) return;
+  //   const local_id = Number(user?.user_metadata?.member_id);
+  //   const handleDelayedSubmission = () => {
+  //     delayedSubmission(
+  //       attempt_read,
+  //       cube_name_read,
+  //       local_id,
+  //       meeting_id_read,
+  //       round_read
+  //     );
+  //   };
+  //   const handleUnload = () => {
+  //     handleDelayedSubmission();
+  //   };
 
-    const handleVisibilityChange = () => {
-      // Will only submit a DNF if the page is minimized, closed, or entering a different URL.
-      // It is ok if the page is moved around, adjusted size, etc. As long as the page is still visible on screen.
-      if (document.visibilityState === "hidden") {
-        handleDelayedSubmission();
-      }
-    };
+  //   const handleVisibilityChange = () => {
+  //     // Will only submit a DNF if the page is minimized, closed, or entering a different URL.
+  //     // It is ok if the page is moved around, adjusted size, etc. As long as the page is still visible on screen.
+  //     if (document.visibilityState === "hidden") {
+  //       handleDelayedSubmission();
+  //     }
+  //   };
 
-    window.addEventListener("unload", handleUnload);
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-    return () => {
-      window.removeEventListener("unload", handleUnload);
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
-    };
-  }, [
-    submitted,
-    attempt_read,
-    cube_name_read,
-    meeting_id_read,
-    round_read,
-    user,
-    verified,
-  ]);
+  //   window.addEventListener("unload", handleUnload);
+  //   document.addEventListener("visibilitychange", handleVisibilityChange);
+  //   return () => {
+  //     window.removeEventListener("unload", handleUnload);
+  //     document.removeEventListener("visibilitychange", handleVisibilityChange);
+  //   };
+  // }, [
+  //   submitted,
+  //   attempt_read,
+  //   cube_name_read,
+  //   meeting_id_read,
+  //   round_read,
+  //   user,
+  //   verified,
+  // ]);
 
   // Display for the timer page
   return (
