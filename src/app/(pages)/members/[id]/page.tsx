@@ -1,15 +1,73 @@
+"use client";
+
 import React from "react";
-import { useState, useEffect } from "react"
+import { useState, useEffect } from "react";
+import { getPublicURLWithPath, formatTime } from "@/app/lib/utils";
+import Image from "next/image";
+
+interface MemberSingleResult {
+  id: number;
+  name: string;
+  time_ms: number;
+  cube_name: string;
+  icon_link: string;
+  rank: number;
+}
 
 const Member = ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = React.use(params);
-  
-  
+  const [singleResults, setSingleResults] = useState<MemberSingleResult[]>([]);
+
+  useEffect(() => {
+    const fetchMember = async () => {
+      const response = await fetch(`/api/members/${id}`);
+      const res_json = await response.json();
+      if (response.ok) {
+        setSingleResults(res_json);
+      }
+    };
+
+    fetchMember();
+  }, []);
+
   return (
     <div className="Member">
-      <div className="Header">
-        <h2>Allan Wang</h2>
-      </div>
+      {singleResults.length > 0 ? (
+        <div className="Header">
+          <h2>{singleResults[0].name}</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Event</th>
+                <th>PR</th>
+                <th>UBC Rank</th>
+              </tr>
+            </thead>
+            <tbody>
+              {singleResults.map((result) => (
+                <tr key={result.cube_name}>
+                  <td>
+                    <Image
+                      src={getPublicURLWithPath(result.icon_link)}
+                      width={30}
+                      height={30}
+                      alt="cube image"
+                    ></Image>
+                  </td>
+                  <td>
+                    <p>{formatTime(result.time_ms)}</p>
+                  </td>
+                  <td>
+                    <p>{result.rank}</p>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <h2>Loading...</h2>
+      )}
     </div>
   );
 };

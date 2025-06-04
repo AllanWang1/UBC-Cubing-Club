@@ -238,6 +238,7 @@ const Timer = () => {
       if (pending.ok) {
         if (pending_json.length > 0) {
           setSubmitted(true);
+          setRunning(false);
           setVerified(true);
           // pending_json is array of objects, we take the first and only one, if the length > 0
           // we did not use the single() clause because the result could be empty.
