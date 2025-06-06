@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
 interface Member {
   id: number;
@@ -23,7 +24,7 @@ const Members = () => {
       } else {
         console.error("Error fetching members:", res_json.error);
       }
-    }
+    };
     fetchMembers();
   }, []);
 
@@ -33,16 +34,19 @@ const Members = () => {
         {members.map((member) => (
           <li key={member.id}>
             <div className="member-container">
-              <h3>{member.id}</h3>
-              {(member.name !== null && member.name !== undefined) &&
-                  <h3>{member.name}</h3>}
-              <h3>{member.major}</h3>
+              <Link href={`/members/${member.id}`}>
+                <h3>{member.id}</h3>
+                {member.name !== null && member.name !== undefined && (
+                  <h3>{member.name}</h3>
+                )}
+                <h3>{member.major}</h3>
+              </Link>
             </div>
           </li>
         ))}
       </ul>
     </div>
-  )
-}
+  );
+};
 
-export default Members
+export default Members;

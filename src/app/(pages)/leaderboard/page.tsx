@@ -105,7 +105,9 @@ const Leaderboard = () => {
                 .map((result, index) => (
                   <tr key={result.id}>
                     <td>{index + 1}</td>
-                    <td>{result.name}</td>
+                    <td>
+                      <Link href={`/members/${result.id}`}>{result.name}</Link>
+                    </td>
                     <td>{formatTime(result.time_ms)}</td>
                     <td>
                       <Link href={`/meetings/${result.meeting_id}`}>

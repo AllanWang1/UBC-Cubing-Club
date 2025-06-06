@@ -8,10 +8,12 @@ import Image from "next/image";
 interface MemberSingleResult {
   id: number;
   name: string;
-  time_ms: number;
   cube_name: string;
   icon_link: string;
-  rank: number;
+  single_time_ms: number;
+  single_rank: number;
+  avg_time_ms: number;
+  avg_rank: number;
 }
 
 const Member = ({ params }: { params: Promise<{ id: string }> }) => {
@@ -39,7 +41,9 @@ const Member = ({ params }: { params: Promise<{ id: string }> }) => {
             <thead>
               <tr>
                 <th>Event</th>
-                <th>PR</th>
+                <th>UBC Rank</th>
+                <th>Single</th>
+                <th>Average</th>
                 <th>UBC Rank</th>
               </tr>
             </thead>
@@ -47,18 +51,27 @@ const Member = ({ params }: { params: Promise<{ id: string }> }) => {
               {singleResults.map((result) => (
                 <tr key={result.cube_name}>
                   <td>
-                    <Image
-                      src={getPublicURLWithPath(result.icon_link)}
-                      width={30}
-                      height={30}
-                      alt="cube image"
-                    ></Image>
+                    <div className="result-event">
+                      <Image
+                        src={getPublicURLWithPath(result.icon_link)}
+                        width={30}
+                        height={30}
+                        alt="cube image"
+                      ></Image>
+                      <p>{result.cube_name}</p>
+                    </div>
                   </td>
                   <td>
-                    <p>{formatTime(result.time_ms)}</p>
+                    <p>{result.single_rank}</p>
                   </td>
                   <td>
-                    <p>{result.rank}</p>
+                    <p>{formatTime(result.single_time_ms)}</p>
+                  </td>
+                  <td>
+                    {result.avg_time_ms && <p>{formatTime(result.avg_time_ms)}</p>}
+                  </td>
+                  <td>
+                    {result.avg_rank && <p>{result.avg_rank}</p>}
                   </td>
                 </tr>
               ))}

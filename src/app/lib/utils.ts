@@ -1,8 +1,7 @@
 import { supabase } from "../lib/SupabaseClient";
 
 export function formatTime(ms: number): string {
-  if (ms === -1) return "DNF";
-  if (ms === -2) return "DNS";
+  if (ms === 99999999) return "DNF";
   
   const minutes = Math.floor(ms / 60000);
   const seconds = Math.floor((ms % 60000) / 1000);

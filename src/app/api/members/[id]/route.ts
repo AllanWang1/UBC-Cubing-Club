@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
         GROUP BY R.cube_name, M.id
         ORDER BY M.id
      */
-    const { data, error } = await supabase.rpc("member_single_results", {
+    const { data, error } = await supabase.rpc("member_results", {
         member_id: id,
     });
         
