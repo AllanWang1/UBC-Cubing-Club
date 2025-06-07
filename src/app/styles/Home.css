@@ -4,8 +4,8 @@
   align-items: center;
   justify-content: center;
   gap: 60px;
-  margin: 40px 100px;
-  padding-bottom: 80px;
+  padding-top: 10px;
+  margin-top: 0px;
 }
 
 .intro {
@@ -54,7 +54,7 @@ a:hover {
 }
 
 
-.home body {
+.home {
   background: linear-gradient(
       rgba(255, 255, 255, 0.8),
       rgba(255, 255, 255, 0.8)
@@ -66,5 +66,4 @@ a:hover {
   padding-top: 100px;
   height: 100vh;
   color: #333333;
-  font-family: Arial, Helvetica, sans-serif;
 }
