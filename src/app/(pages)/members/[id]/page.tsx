@@ -3,22 +3,13 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import { getPublicURLWithPath, formatTime } from "@/app/lib/utils";
+import { MemberRecord } from "@/app/types/MemberRecord";
 import Image from "next/image";
 
-interface MemberSingleResult {
-  id: number;
-  name: string;
-  cube_name: string;
-  icon_link: string;
-  single_time_ms: number;
-  single_rank: number;
-  avg_time_ms: number;
-  avg_rank: number;
-}
 
 const Member = ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = React.use(params);
-  const [singleResults, setSingleResults] = useState<MemberSingleResult[]>([]);
+  const [singleResults, setSingleResults] = useState<MemberRecord[]>([]);
 
   useEffect(() => {
     const fetchMember = async () => {
@@ -30,7 +21,7 @@ const Member = ({ params }: { params: Promise<{ id: string }> }) => {
     };
 
     fetchMember();
-  }, []);
+  }, [id]);
 
   return (
     <div className="Member">

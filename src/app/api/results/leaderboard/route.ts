@@ -10,7 +10,7 @@ export async function GET() {
      * - Resulting time
      * - Meeting name 
      */
-    const { data, error } = await supabase.rpc("get_single_results");
+    const { data, error } = await supabase.rpc("all_member_records");
     if (error) {
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
