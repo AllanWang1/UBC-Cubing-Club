@@ -13,14 +13,6 @@
 }
 
 body {
-  background: linear-gradient(
-      rgba(255, 255, 255, 0.8),
-      rgba(255, 255, 255, 0.8)
-    ),
-    url("assets/cube-logo-wallpaper.png");
-  background-size: cover;
-  background-position: center;
-  background-repeat: repeat-y;
   padding-top: 100px;
   height: 100vh;
   color: #333333;

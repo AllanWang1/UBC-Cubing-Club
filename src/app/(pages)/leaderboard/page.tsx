@@ -42,25 +42,29 @@ const Leaderboard = () => {
 
   return (
     <div className="leaderboard">
-      <div className="single-leaderboard">
+      <h2>Rankings</h2>
+      <div className="leaderboard-options">
         <div className="cube-selector">
-          {cubes.map((cube) => (
-            <button
-              className={`cube-button ${
-                cube.cube_name === selectedCube ? "selected" : ""
-              }`}
-              key={cube.cube_name}
-              onClick={() => setSelectedCube(cube.cube_name)}
-            >
-              <Image
-                className="cube-icon"
-                src={getPublicURLWithPath(cube.icon_link)}
-                width={50}
-                height={50}
-                alt="cube icon"
-              ></Image>
-            </button>
-          ))}
+          <h3>Event</h3>
+          <div className="leaderboard-cubes">
+            {cubes.map((cube) => (
+              <button
+                className={`cube-button ${
+                  cube.cube_name === selectedCube ? "selected" : ""
+                }`}
+                key={cube.cube_name}
+                onClick={() => setSelectedCube(cube.cube_name)}
+              >
+                <Image
+                  className="cube-icon"
+                  src={getPublicURLWithPath(cube.icon_link)}
+                  width={50}
+                  height={50}
+                  alt="cube icon"
+                ></Image>
+              </button>
+            ))}
+          </div>
         </div>
         <div className="result-type-selector">
           <button
@@ -80,61 +84,62 @@ const Leaderboard = () => {
             <h3>Average</h3>
           </button>
         </div>
-        <table>
-          <thead>
-            <tr>
-              <th>Ranking</th>
-              <th>Name</th>
-              <th>Time</th>
-              <th>Meeting</th>
-            </tr>
-          </thead>
-          {resultType === "single" ? (
-            <tbody>
-              {results
-                .filter((r) => r.cube_name === selectedCube)
-                .map((result) => (
-                  <tr key={result.id}>
-                    <td>{result.single_rank}</td>
-                    <td>
-                      <Link href={`/members/${result.id}`}>{result.name}</Link>
-                    </td>
-                    <td>{formatTime(result.single_time_ms)}</td>
-                    <td>
-                      <Link href={`/meetings/${result.single_meeting_id}`}>
-                        {result.single_meeting_name}
-                      </Link>
-                    </td>
-                  </tr>
-                ))}
-            </tbody>
-          ) : (
-            <tbody>
-              {results
-                .filter((r) => r.cube_name === selectedCube)
-                .map(
-                  (result) =>
-                    result.avg_time_ms && (
-                      <tr key={result.id}>
-                        <td>{result.avg_rank}</td>
-                        <td>
-                          <Link href={`/members/${result.id}`}>
-                            {result.name}
-                          </Link>
-                        </td>
-                        <td>{formatTime(result.avg_time_ms)}</td>
-                        <td>
-                          <Link href={`/meetings/${result.avg_meeting_id}`}>
-                            {result.avg_meeting_name}
-                          </Link>
-                        </td>
-                      </tr>
-                    )
-                )}
-            </tbody>
-          )}
-        </table>
       </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Ranking</th>
+            <th>Name</th>
+            <th>Time</th>
+            <th>Meeting</th>
+          </tr>
+        </thead>
+        {resultType === "single" ? (
+          <tbody>
+            {results
+              .filter((r) => r.cube_name === selectedCube)
+              .map((result) => (
+                <tr key={result.id}>
+                  <td>{result.single_rank}</td>
+                  <td>
+                    <Link href={`/members/${result.id}`}>{result.name}</Link>
+                  </td>
+                  <td>{formatTime(result.single_time_ms)}</td>
+                  <td>
+                    <Link href={`/meetings/${result.single_meeting_id}`}>
+                      {result.single_meeting_name}
+                    </Link>
+                  </td>
+                </tr>
+              ))}
+          </tbody>
+        ) : (
+          <tbody>
+            {results
+              .filter((r) => r.cube_name === selectedCube)
+              .map(
+                (result) =>
+                  result.avg_time_ms && (
+                    <tr key={result.id}>
+                      <td>{result.avg_rank}</td>
+                      <td>
+                        <Link href={`/members/${result.id}`}>
+                          {result.name}
+                        </Link>
+                      </td>
+                      <td>{formatTime(result.avg_time_ms)}</td>
+                      <td>
+                        <Link href={`/meetings/${result.avg_meeting_id}`}>
+                          {result.avg_meeting_name}
+                        </Link>
+                      </td>
+                    </tr>
+                  )
+              )}
+          </tbody>
+        )}
+      </table>
     </div>
   );
 };
