@@ -33,26 +33,6 @@ async function submitResult(result: Result) {
   }
 }
 
-// const delayedSubmission = (
-//   attempt: number,
-//   cube_name: string,
-//   id: number,
-//   meeting_id: number,
-//   round: number
-// ) => {
-//   const localResult = {
-//     attempt: attempt,
-//     cube_name: cube_name,
-//     id: id,
-//     meeting_id: meeting_id,
-//     round: round,
-//     time_ms: -1,
-//     record: false,
-//     average_record: false,
-//   };
-//   navigator.sendBeacon("/api/pending/post", JSON.stringify(localResult));
-// };
-
 async function submitStartedAttempt(entry: StartedAttempt) {
   try {
     const response = await fetch(`/api/started-attempts`, {
@@ -139,7 +119,7 @@ const Timer = () => {
             id: user?.user_metadata?.member_id,
             meeting_id: meeting_id_read,
             round: round_read,
-            time_ms: -1,
+            time_ms: 99999999,
             record: false,
             average_record: false,
           };
@@ -238,6 +218,7 @@ const Timer = () => {
       if (pending.ok) {
         if (pending_json.length > 0) {
           setSubmitted(true);
+          setRunning(false);
           setVerified(true);
           // pending_json is array of objects, we take the first and only one, if the length > 0
           // we did not use the single() clause because the result could be empty.

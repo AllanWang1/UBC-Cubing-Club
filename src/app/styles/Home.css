@@ -4,8 +4,8 @@
   align-items: center;
   justify-content: center;
   gap: 60px;
-  margin: 40px 100px;
-  padding-bottom: 80px;
+  padding-top: 10px;
+  margin-top: 0px;
 }
 
 .intro {
@@ -51,4 +51,19 @@ a {
 
 a:hover {
   color: #002145;
+}
+
+
+.home {
+  background: linear-gradient(
+      rgba(255, 255, 255, 0.8),
+      rgba(255, 255, 255, 0.8)
+    ),
+    url("../assets/cube-logo-wallpaper.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: repeat-y;
+  padding-top: 100px;
+  height: 100vh;
+  color: #333333;
 }
