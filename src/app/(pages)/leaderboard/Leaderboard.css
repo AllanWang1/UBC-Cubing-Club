@@ -30,7 +30,7 @@
 .result-type-selector button {
   background-color: #f0f0f0;
   color: #333333;
-  border: 1px solid rgb(186, 180, 180);
+  border: 2px solid rgb(186, 180, 180);
   border-radius: 10px;
   cursor: pointer;
   font-size: 16px;
@@ -64,7 +64,7 @@
 }
 .leaderboard-cubes button {
   background-color: #f0f0f0;
-  border: 1px solid rgb(186, 180, 180);
+  border: 2px solid rgb(186, 180, 180);
   border-radius: 10px;
   cursor: pointer;
   font-size: 16px;

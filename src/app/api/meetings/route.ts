@@ -4,8 +4,8 @@ import { supabase } from "../../lib/SupabaseClient";
 export async function GET() {
     const {data: Tournaments, error} = await supabase
         .from("Meetings")
-        .select("meeting_id, meeting_name")
-        .order("date")
+        .select("*")
+        .order("date", { ascending: false});
        
     if (error) {
         return NextResponse.json({error: error.message}, {status: 500});
