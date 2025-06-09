@@ -35,25 +35,30 @@ const Navbar = () => {
       <ul className="navlinks">
         {links.map((link) => (
           <li key={link.href}>
-            <div className="navlink">
-              <div className="navlinks-link-container">
-                <Image src={link.icon} width={20} height={20} alt="link icon" />
-                <Link href={link.href}>
-                  <p>{link.label}</p>
-                </Link>
-              </div>
-
-              {isActive(link.href) && (
-                <div className="underline">
+            <Link href={link.href}>
+              <div className="navlink">
+                <div className="navlinks-link-container">
                   <Image
-                    src="/nav_underline.png"
+                    src={link.icon}
                     width={20}
                     height={20}
-                    alt="underline"
+                    alt="link icon"
                   />
+                  <p>{link.label}</p>
                 </div>
-              )}
-            </div>
+
+                {isActive(link.href) && (
+                  <div className="underline">
+                    <Image
+                      src="/nav_underline.png"
+                      width={20}
+                      height={20}
+                      alt="underline"
+                    />
+                  </div>
+                )}
+              </div>
+            </Link>
           </li>
         ))}
       </ul>
