@@ -6,7 +6,7 @@ import { getPublicURLWithPath, formatTime } from "@/app/lib/utils";
 import { MemberRecord } from "@/app/types/MemberRecord";
 import Image from "next/image";
 
-
+import "./MemberID.css"
 const Member = ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = React.use(params);
   const [singleResults, setSingleResults] = useState<MemberRecord[]>([]);
@@ -24,9 +24,9 @@ const Member = ({ params }: { params: Promise<{ id: string }> }) => {
   }, [id]);
 
   return (
-    <div className="Member">
+    <div className="member">
       {singleResults.length > 0 ? (
-        <div className="Header">
+        <div className="member-loaded">
           <h2>{singleResults[0].name}</h2>
           <table>
             <thead>

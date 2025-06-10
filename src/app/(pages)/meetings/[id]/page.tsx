@@ -6,6 +6,7 @@ import { formatTime } from "../../../lib/utils";
 import { getPublicURLWithPath } from "../../../lib/utils";
 import { Meeting } from "../../../types/Meeting";
 import { HeldEvent } from "../../../types/HeldEvent";
+import { supabase } from "@/app/lib/SupabaseClient";
 
 import React from "react";
 import Link from "next/link";
@@ -118,6 +119,29 @@ export default function MeetingView({
     fetchResults();
   }, [id]);
 
+  useEffect(() => {
+    if (meeting.status === "closed") return;
+    const fetchUser = async () => {
+      const {
+        data: { user: fetchedUser },
+      } = await supabase.auth.getUser();
+      if (!fetchedUser) {
+        alert("Please log in to view active meeting.");
+        router.push("/signin");
+        return;
+      }
+
+      const member_id = fetchedUser.user_metadata?.member_id;
+      if (!member_id) {
+        alert(
+          "There is no member ID associated with your account. Please contact an admin."
+        );
+        router.push("/meetings");
+        return;
+      }
+    };
+    fetchUser();
+  }, [meeting, router]);
 
   return (
     <div className="meeting">
