@@ -6,11 +6,12 @@ import { formatTime } from "../../../lib/utils";
 import { getPublicURLWithPath } from "../../../lib/utils";
 import { Meeting } from "../../../types/Meeting";
 import { HeldEvent } from "../../../types/HeldEvent";
+import { supabase } from "@/app/lib/SupabaseClient";
 
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import "./TournamentID.css";
+import "./MeetingID.css";
 
 interface Result {
   attempt: number;
@@ -118,12 +119,42 @@ export default function MeetingView({
     fetchResults();
   }, [id]);
 
+  useEffect(() => {
+    if (meeting.status === "closed") return;
+    const fetchUser = async () => {
+      const {
+        data: { user: fetchedUser },
+      } = await supabase.auth.getUser();
+      if (!fetchedUser) {
+        alert("Please log in to view active meeting.");
+        router.push("/signin");
+        return;
+      }
+
+      const member_id = fetchedUser.user_metadata?.member_id;
+      if (!member_id) {
+        alert(
+          "There is no member ID associated with your account. Please contact an admin."
+        );
+        router.push("/meetings");
+        return;
+      }
+    };
+    fetchUser();
+  }, [meeting, router]);
+
   return (
-    <div className="meetings">
-      <Link href="/meetings">
-        <p>Back to all meetings</p>
-      </Link>
-      <h2>{meeting.meeting_name}</h2>
+    <div className="meeting">
+      <div className="meeting-back">
+        <Image src="/back.svg" width={16} height={16} alt="back button" />
+        <Link href="/meetings">
+          <p>Back to all meetings</p>
+        </Link>
+      </div>
+      <div className="meeting-info">
+        <h2>{meeting.meeting_name}</h2>
+        <h3>{meeting.date}</h3>
+      </div>
       <ul>
         {heldEvents.map((event) => (
           <li key={event.cube_name}>
