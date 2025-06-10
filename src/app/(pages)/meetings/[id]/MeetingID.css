@@ -1,0 +1,59 @@
+.meeting {
+    display: flex; 
+    flex-direction: column;
+    gap: 40px;
+    padding-top: 100px;
+    padding-right: 20px;
+    padding-left: 20px;
+    padding-bottom: 80px;
+    margin: 30px auto;
+    align-items: center;
+    width: 100%;
+}
+.meeting-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+.meeting-info h2 {
+    font-size: 40px;
+}
+.meeting-info h3 {
+    font-size: 20px;
+}
+.meeting-back {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    text-align: left;
+    font-size: 16px;
+    gap: 8px;
+}
+.meeting ul {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+.round-submissions {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 30px;
+}
+.round-submissions button {
+    width: 100px;
+    height: auto;
+    background-color: #25579c;
+    color: white;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 10px;
+    transition: 0.2s;
+}
+.round-submissions button:hover {
+    background-color: #002145;
+}

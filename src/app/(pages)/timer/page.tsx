@@ -440,8 +440,9 @@ const Timer = () => {
       ) : (
         <div className="prompt-passcode">
           <form onSubmit={handlePasscodeSubmission}>
+            <p>Please enter meeting passcode:</p>
             <input type="text" onChange={handleChange} />
-            <button type="submit"></button>
+            <button type="submit">Enter</button>
           </form>
         </div>
       )}

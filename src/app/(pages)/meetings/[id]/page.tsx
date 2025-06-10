@@ -10,7 +10,7 @@ import { HeldEvent } from "../../../types/HeldEvent";
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import "./TournamentID.css";
+import "./MeetingID.css";
 
 interface Result {
   attempt: number;
@@ -118,12 +118,19 @@ export default function MeetingView({
     fetchResults();
   }, [id]);
 
+
   return (
-    <div className="meetings">
-      <Link href="/meetings">
-        <p>Back to all meetings</p>
-      </Link>
-      <h2>{meeting.meeting_name}</h2>
+    <div className="meeting">
+      <div className="meeting-back">
+        <Image src="/back.svg" width={16} height={16} alt="back button" />
+        <Link href="/meetings">
+          <p>Back to all meetings</p>
+        </Link>
+      </div>
+      <div className="meeting-info">
+        <h2>{meeting.meeting_name}</h2>
+        <h3>{meeting.date}</h3>
+      </div>
       <ul>
         {heldEvents.map((event) => (
           <li key={event.cube_name}>
