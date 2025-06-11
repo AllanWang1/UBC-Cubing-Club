@@ -153,19 +153,21 @@ export default function MeetingView({
       if (response.ok) {
         setPendingResults(res_json);
       }
-    }
+    };
     fetchUser();
     fetchAllPending();
-  }, [meeting, router]);
+  }, [meeting, router, id]);
 
   const pendingMap = useMemo(() => {
     const map = new Set<string>();
     for (const result of pendingResults) {
       // Using this map to store labels, attempt-cube-id-round
-      map.add(`${result.attempt}-${result.cube_name}-${result.id}-${result.round}`)
+      map.add(
+        `${result.attempt}-${result.cube_name}-${result.id}-${result.round}`
+      );
     }
     return map;
-  }, [pendingResults])
+  }, [pendingResults]);
 
   return (
     <div className="meeting">
@@ -202,9 +204,11 @@ export default function MeetingView({
                           (_, index) => (
                             <button
                               key={index + 1}
-                              disabled={
-                                pendingMap.has(`${index+1}-${event.cube_name}-${memberId}-${round_index+1}`)
-                              }
+                              disabled={pendingMap.has(
+                                `${index + 1}-${event.cube_name}-${memberId}-${
+                                  round_index + 1
+                                }`
+                              )}
                               onClick={() =>
                                 // pass in everything except for the ID of the member
                                 router.push(

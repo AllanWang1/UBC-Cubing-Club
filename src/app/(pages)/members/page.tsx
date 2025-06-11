@@ -2,14 +2,18 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
+
+import "./Members.css";
 
 interface Member {
   id: number;
-  name: string | null;
+  name: string;
   email: string | null;
   student_id: string | null;
   membership: boolean;
-  major: string;
+  position: string | null;
+  faculty: string;
 }
 
 const Members = () => {
@@ -30,21 +34,36 @@ const Members = () => {
 
   return (
     <div className="members">
-      <ul>
-        {members.map((member) => (
-          <li key={member.id}>
-            <div className="member-container">
-              <Link href={`/members/${member.id}`}>
-                <h3>{member.id}</h3>
-                {member.name !== null && member.name !== undefined && (
-                  <h3>{member.name}</h3>
-                )}
-                <h3>{member.major}</h3>
-              </Link>
-            </div>
-          </li>
-        ))}
-      </ul>
+      <div className="members-title">
+        <Image
+          src="/navbar-icons/members.svg"
+          width={40}
+          height={40}
+          alt="members icon"
+        />
+        <h2>Members</h2>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Member ID</th>
+            <th>Name</th>
+            <th>Faculty</th>
+          </tr>
+        </thead>
+        <tbody>
+          {members.map((member) => (
+            <tr key={member.id}>
+              <td>{member.id}</td>
+              {/* the member position can only be null, "President", or "Treasurer" */}
+              <td className={member.membership ? `member-${member.position ? `${member.position}` : `paid`}` : "non-member"}>
+                <Link href={`/members/${member.id}`}>{member.name}</Link>
+              </td>
+              <td>{member.faculty}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };
