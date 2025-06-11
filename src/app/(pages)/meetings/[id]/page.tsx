@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { formatTime } from "../../../lib/utils";
 import { getPublicURLWithPath } from "../../../lib/utils";
 import { Meeting } from "../../../types/Meeting";
 import { HeldEvent } from "../../../types/HeldEvent";
+import { Result } from "../../../types/Result";
 import { supabase } from "@/app/lib/SupabaseClient";
 
 import React from "react";
@@ -13,7 +14,7 @@ import Link from "next/link";
 import Image from "next/image";
 import "./MeetingID.css";
 
-interface Result {
+interface ResultWithMembers {
   attempt: number;
   round: number;
   id: number;
@@ -31,12 +32,12 @@ interface Result {
 interface GroupedResults {
   [cube_name: string]: {
     [round: number]: {
-      [id: number]: { name: string; results: Result[] };
+      [id: number]: { name: string; results: ResultWithMembers[] };
     };
   };
 }
 
-const groupResults = (results: Result[]): GroupedResults => {
+const groupResults = (results: ResultWithMembers[]): GroupedResults => {
   const grouped: GroupedResults = {};
   for (const result of results) {
     const cube_name = result.cube_name;
@@ -79,7 +80,10 @@ export default function MeetingView({
     status: "closed",
   });
   const [heldEvents, setHeldEvents] = useState<HeldEvent[]>([]);
-  const [results, setResults] = useState<Result[]>([]);
+  const [results, setResults] = useState<ResultWithMembers[]>([]);
+  const [pendingResults, setPendingResults] = useState<Result[]>([]);
+  const [memberId, setMemberId] = useState<number>(0);
+
   const router = useRouter();
 
   useEffect(() => {
@@ -138,10 +142,30 @@ export default function MeetingView({
         );
         router.push("/meetings");
         return;
+      } else {
+        setMemberId(member_id);
       }
     };
+
+    const fetchAllPending = async () => {
+      const response = await fetch(`/api/pending/all-pending?meeting_id=${id}`);
+      const res_json = await response.json();
+      if (response.ok) {
+        setPendingResults(res_json);
+      }
+    }
     fetchUser();
+    fetchAllPending();
   }, [meeting, router]);
+
+  const pendingMap = useMemo(() => {
+    const map = new Set<string>();
+    for (const result of pendingResults) {
+      // Using this map to store labels, attempt-cube-id-round
+      map.add(`${result.attempt}-${result.cube_name}-${result.id}-${result.round}`)
+    }
+    return map;
+  }, [pendingResults])
 
   return (
     <div className="meeting">
@@ -178,6 +202,9 @@ export default function MeetingView({
                           (_, index) => (
                             <button
                               key={index + 1}
+                              disabled={
+                                pendingMap.has(`${index+1}-${event.cube_name}-${memberId}-${round_index+1}`)
+                              }
                               onClick={() =>
                                 // pass in everything except for the ID of the member
                                 router.push(

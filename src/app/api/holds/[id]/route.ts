@@ -12,7 +12,6 @@ export async function GET(request: NextRequest) {
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   } else {
-    console.log("Holds: ", Holds);
     return NextResponse.json(Holds, { status: 200 });
   }
 }
