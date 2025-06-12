@@ -15,6 +15,12 @@
 .leaderboard h2 {
   font-size: 40px;
 }
+.leaderboard-title {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+}
 .leaderboard-options {
   display: flex;
   flex-direction: column;

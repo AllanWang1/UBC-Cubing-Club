@@ -185,7 +185,7 @@ export default function MeetingView({
         {heldEvents.map((event) => (
           <li key={event.cube_name}>
             <div className="meeting-event-container">
-              <h3>{event.cube_name}</h3>
+              <h3>{event.cube_name} | Format: {event.format}</h3>
               <Image
                 className="cube-icon"
                 src={getPublicURLWithPath(event.Cubes.icon_link)}
@@ -193,7 +193,6 @@ export default function MeetingView({
                 width={50}
                 height={50}
               ></Image>
-              <h4>Format: {event.format}</h4>
               {meeting.status === "open" ? (
                 <>
                   {[...Array(event.rounds)].map((_, round_index) => (
