@@ -1,63 +1,120 @@
 .meeting {
-    display: flex; 
-    flex-direction: column;
-    gap: 40px;
-    padding-top: 100px;
-    padding-right: 20px;
-    padding-left: 20px;
-    padding-bottom: 80px;
-    margin: 30px auto;
-    align-items: center;
-    width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  padding-top: 100px;
+  padding-right: 20px;
+  padding-left: 20px;
+  padding-bottom: 80px;
+  margin: 30px auto;
+  align-items: center;
+  width: 100%;
 }
 .meeting-info {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
 }
 .meeting-info h2 {
-    font-size: 40px;
+  font-size: 40px;
 }
 .meeting-info h3 {
-    font-size: 20px;
+  font-size: 20px;
 }
 .meeting-back {
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-    text-align: left;
-    font-size: 16px;
-    gap: 8px;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  text-align: left;
+  font-size: 16px;
+  gap: 8px;
 }
-.meeting ul {
-    display: flex;
-    flex-direction: column;
-    gap: 40px;
+.meeting-events-list {
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+  width: 100%;
+  align-items: center;
+}
+.meeting-events-list h3 {
+  font-size: 24px;
+}
+.meeting-events-list > li {
+  padding-bottom: 10px;
+  border-bottom: 1px solid #ccc;
+}
+.meeting-event-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+.regular-event-results {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.regular-event-results h4 {
+  font-size: 20px;
 }
 
-.round-submissions {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 30px;
+.event-results-list h5 {
+  font-size: 18px;
 }
+.event-results-list {
+  padding: 20px;
+  border-radius: 10px;
+  background-color: #f0f0f0; /* Light background for contrast */
+}
+.round-results-list > li {
+  display: flex;
+  flex-direction: column;
+  padding-top: 10px;
+  border-top: 1px solid #ccc;
+}
+.round-submissions {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 30px;
+}
+
+.round-results-list {
+  display: grid;
+  gap: 20px;
+  list-style: none; /* optional: remove default bullets */
+  padding: 0;
+  margin: 0;
+}
+
+.round-results-list li {
+  margin-bottom: 5px; /* adjust this to reduce spacing */
+}
+
+.round-member-results {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  width: 100%;
+}
+
 .round-submissions button {
-    width: 100px;
-    height: auto;
-    background-color: #25579c;
-    color: white;
-    border: none;
-    font-size: 16px;
-    cursor: pointer;
-    border-radius: 10px;
-    transition: 0.2s;
+  width: 100px;
+  height: auto;
+  background-color: #25579c;
+  color: white;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 10px;
+  transition: 0.2s;
 }
 .round-submissions button:hover {
-    background-color: #002145;
+  background-color: #002145;
 }
 .round-submissions button:disabled {
-    background-color: #cccccc;
-    cursor: not-allowed;
+  background-color: #cccccc;
+  cursor: not-allowed;
 }

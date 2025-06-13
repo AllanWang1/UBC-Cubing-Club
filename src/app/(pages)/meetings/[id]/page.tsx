@@ -181,11 +181,13 @@ export default function MeetingView({
         <h2>{meeting.meeting_name}</h2>
         <h3>{meeting.date}</h3>
       </div>
-      <ul>
+      <ul className="meeting-events-list">
         {heldEvents.map((event) => (
           <li key={event.cube_name}>
             <div className="meeting-event-container">
-              <h3>{event.cube_name} | Format: {event.format}</h3>
+              <h3>
+                {event.cube_name} | Format: {event.format}
+              </h3>
               <Image
                 className="cube-icon"
                 src={getPublicURLWithPath(event.Cubes.icon_link)}
@@ -232,28 +234,30 @@ export default function MeetingView({
                   {event.format !== "head-to-head" && (
                     <div className="regular-event-results">
                       <h4>Results</h4>
-                      <ul>
+                      <ul className="event-results-list">
                         {Object.entries(
                           groupResults(results)[event.cube_name] || {}
                         ).map(([round, people]) => (
                           <li key={round}>
                             <h5>Round {round}</h5>
-                            <ul>
+                            <ul className="round-results-list">
                               {Object.entries(people).map(([id, entry]) => (
                                 <li key={id}>
-                                  <h6>
-                                    Member {id}: {entry.name}
-                                  </h6>
-                                  <ul>
-                                    {entry.results.map((result) => (
-                                      <li key={result.attempt}>
-                                        <p>
-                                          {result.attempt}:{" "}
-                                          {formatTime(result.time_ms)}
-                                        </p>
-                                      </li>
-                                    ))}
-                                  </ul>
+                                  <div className="round-member-results">
+                                    <h6>
+                                      Member {id}: {entry.name}
+                                    </h6>
+                                    <ul>
+                                      {entry.results.map((result) => (
+                                        <li key={result.attempt}>
+                                          <p>
+                                            {result.attempt}:{" "}
+                                            {formatTime(result.time_ms)}
+                                          </p>
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  </div>
                                 </li>
                               ))}
                             </ul>
