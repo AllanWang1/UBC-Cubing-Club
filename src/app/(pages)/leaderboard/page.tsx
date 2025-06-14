@@ -42,7 +42,15 @@ const Leaderboard = () => {
 
   return (
     <div className="leaderboard">
-      <h2>Rankings</h2>
+      <div className="leaderboard-title">
+        <Image
+          src="/navbar-icons/leaderboard.svg"
+          width={40}
+          height={40}
+          alt="leaderboard icon"
+        />
+        <h2>Rankings</h2>
+      </div>
       <div className="leaderboard-options">
         <div className="cube-selector">
           <h3>Event</h3>

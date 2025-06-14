@@ -24,7 +24,7 @@
   background: rgb(248, 240, 240);
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   border-radius: 5px;
-  width: 100px;
+  width: 140px;
   margin-right: 30px;
 }
 
@@ -41,4 +41,21 @@
 
 .dashboard-profile h2 {
     font-size: 18px;
+}
+
+.dashboard a {
+  color: #3498db;
+}
+
+.dashboard button {
+  background-color: #99c3fd;
+  color: #333333;
+  border: 2px solid rgb(186, 180, 180);
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: 0.2s;
+}
+.dashboard button:hover {
+  background-color: #99d;
 }

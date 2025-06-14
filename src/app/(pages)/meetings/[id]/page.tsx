@@ -153,19 +153,21 @@ export default function MeetingView({
       if (response.ok) {
         setPendingResults(res_json);
       }
-    }
+    };
     fetchUser();
     fetchAllPending();
-  }, [meeting, router]);
+  }, [meeting, router, id]);
 
   const pendingMap = useMemo(() => {
     const map = new Set<string>();
     for (const result of pendingResults) {
       // Using this map to store labels, attempt-cube-id-round
-      map.add(`${result.attempt}-${result.cube_name}-${result.id}-${result.round}`)
+      map.add(
+        `${result.attempt}-${result.cube_name}-${result.id}-${result.round}`
+      );
     }
     return map;
-  }, [pendingResults])
+  }, [pendingResults]);
 
   return (
     <div className="meeting">
@@ -179,11 +181,13 @@ export default function MeetingView({
         <h2>{meeting.meeting_name}</h2>
         <h3>{meeting.date}</h3>
       </div>
-      <ul>
+      <ul className="meeting-events-list">
         {heldEvents.map((event) => (
           <li key={event.cube_name}>
             <div className="meeting-event-container">
-              <h3>{event.cube_name}</h3>
+              <h3>
+                {event.cube_name} | Format: {event.format}
+              </h3>
               <Image
                 className="cube-icon"
                 src={getPublicURLWithPath(event.Cubes.icon_link)}
@@ -191,7 +195,6 @@ export default function MeetingView({
                 width={50}
                 height={50}
               ></Image>
-              <h4>Format: {event.format}</h4>
               {meeting.status === "open" ? (
                 <>
                   {[...Array(event.rounds)].map((_, round_index) => (
@@ -202,9 +205,11 @@ export default function MeetingView({
                           (_, index) => (
                             <button
                               key={index + 1}
-                              disabled={
-                                pendingMap.has(`${index+1}-${event.cube_name}-${memberId}-${round_index+1}`)
-                              }
+                              disabled={pendingMap.has(
+                                `${index + 1}-${event.cube_name}-${memberId}-${
+                                  round_index + 1
+                                }`
+                              )}
                               onClick={() =>
                                 // pass in everything except for the ID of the member
                                 router.push(
@@ -229,28 +234,30 @@ export default function MeetingView({
                   {event.format !== "head-to-head" && (
                     <div className="regular-event-results">
                       <h4>Results</h4>
-                      <ul>
+                      <ul className="event-results-list">
                         {Object.entries(
                           groupResults(results)[event.cube_name] || {}
                         ).map(([round, people]) => (
                           <li key={round}>
                             <h5>Round {round}</h5>
-                            <ul>
+                            <ul className="round-results-list">
                               {Object.entries(people).map(([id, entry]) => (
                                 <li key={id}>
-                                  <h6>
-                                    Member {id}: {entry.name}
-                                  </h6>
-                                  <ul>
-                                    {entry.results.map((result) => (
-                                      <li key={result.attempt}>
-                                        <p>
-                                          {result.attempt}:{" "}
-                                          {formatTime(result.time_ms)}
-                                        </p>
-                                      </li>
-                                    ))}
-                                  </ul>
+                                  <div className="round-member-results">
+                                    <h6>
+                                      Member {id}: {entry.name}
+                                    </h6>
+                                    <ul>
+                                      {entry.results.map((result) => (
+                                        <li key={result.attempt}>
+                                          <p>
+                                            {result.attempt}:{" "}
+                                            {formatTime(result.time_ms)}
+                                          </p>
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  </div>
                                 </li>
                               ))}
                             </ul>

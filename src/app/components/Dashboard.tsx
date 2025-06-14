@@ -67,6 +67,19 @@ const Dashboard = () => {
     reloadPage();
   };
 
+  const handleMyProfile = () => {
+    if (user) {
+      const memberId = user.user_metadata?.member_id;
+      if (memberId) {
+        router.push(`/members/${memberId}`);
+        setIsOpen(false);
+      } else {
+        alert("There is no member ID associated with your account. Please contact an admin.");
+        setIsOpen(false);
+        reloadPage();
+      }
+    }
+  }
   const toggleIsOpen = () => {
     setIsOpen(!isOpen);
   };
@@ -85,8 +98,8 @@ const Dashboard = () => {
             {isOpen && (
               <div className="dashboard-drop-down-menu">
                 <ul>
-                  <li>Profile Page</li>
-                  <li>Edit Profile</li>
+                  <li><button onClick={handleMyProfile}>My Profile</button></li>
+                  {/* <li><button>Edit Profile</button></li> */}
                   <li>
                     <button onClick={handleLogout}>Log Out</button>
                   </li>
