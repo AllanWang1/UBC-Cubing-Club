@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { supabase } from "../../lib/SupabaseClient"
+import { supabase } from "../../lib/SupabaseClient";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import "./SignUp.css";
@@ -13,8 +13,8 @@ type SignUpData = {
 };
 
 const SignUp = () => {
-  const [formData, setFormData] = useState<SignUpData> ({
-    name: "UBC Cuber",
+  const [formData, setFormData] = useState<SignUpData>({
+    name: "",
     email: "",
     password: "",
   });
@@ -24,16 +24,37 @@ const SignUp = () => {
 
   const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const { error } = await supabase.auth.signUp({
-      email: formData.email,
-      password: formData.password,
-      options: {
-        data: { full_name: formData.name },
-      },
-    });
-    if (error) {
-      setError(error.message);
+
+    const { data: signUpData, error: signUpError } = await supabase.auth.signUp(
+      {
+        email: formData.email,
+        password: formData.password,
+        options: {
+          data: { full_name: formData.name },
+        },
+      }
+    );
+    if (signUpError) {
+      setError(signUpError.message);
     } else {
+      const user = signUpData.user;
+      if (!user) {
+        setError("User creation failed");
+        return;
+      }
+      // Insert the new user into the Members table
+      const { error } = await supabase.from("Members").insert({
+        name: formData.name,
+        email: formData.email,
+      });
+      if (error) {
+        setError(error.message);
+        return;
+      } else {
+        alert(
+          "Sign up successful, you will receive a confirmation email shortly."
+        );
+      }
       router.push("/signin");
     }
   };
@@ -41,8 +62,8 @@ const SignUp = () => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
-      ...prev, 
-      [name]: value
+      ...prev,
+      [name]: value,
     }));
   };
 
@@ -54,7 +75,7 @@ const SignUp = () => {
         </Link>
       </div>
       <h2>Sign Up</h2>
-      {error && <p>Sign Up Error</p>}
+      {error && <p>Sign Up Error: {error}</p>}
       <form onSubmit={handleSignUp}>
         <input
           type="name"
