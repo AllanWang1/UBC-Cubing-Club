@@ -97,7 +97,7 @@ const Leaderboard = () => {
       <table>
         <thead>
           <tr>
-            <th>Ranking</th>
+            <th>Rank</th>
             <th>Name</th>
             <th>Time</th>
             <th>Meeting</th>
@@ -109,7 +109,17 @@ const Leaderboard = () => {
               .filter((r) => r.cube_name === selectedCube)
               .map((result) => (
                 <tr key={result.id}>
-                  <td>{result.single_rank}</td>
+                  <td>
+                    {result.single_rank === 1 ? (
+                      <span className="gold">{result.single_rank}</span>
+                    ) : result.single_rank === 2 ? (
+                      <span className="silver">{result.single_rank}</span>
+                    ) : result.single_rank === 3 ? (
+                      <span className="bronze">{result.single_rank}</span>
+                    ) : (
+                      result.single_rank
+                    )}
+                  </td>
                   <td>
                     <Link href={`/members/${result.id}`}>{result.name}</Link>
                   </td>
@@ -130,7 +140,17 @@ const Leaderboard = () => {
                 (result) =>
                   result.avg_time_ms && (
                     <tr key={result.id}>
-                      <td>{result.avg_rank}</td>
+                      <td>
+                        {result.avg_rank === 1 ? (
+                          <span className="gold">{result.avg_rank}</span>
+                        ) : result.avg_rank === 2 ? (
+                          <span className="silver">{result.avg_rank}</span>
+                        ) : result.avg_rank === 3 ? (
+                          <span className="bronze">{result.avg_rank}</span>
+                        ) : (
+                          result.avg_rank
+                        )}
+                      </td>
                       <td>
                         <Link href={`/members/${result.id}`}>
                           {result.name}

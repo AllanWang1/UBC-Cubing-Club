@@ -53,7 +53,15 @@ const Member = ({ params }: { params: Promise<{ id: string }> }) => {
                     </div>
                   </td>
                   <td>
-                    <p>{result.single_rank}</p>
+                    {result.single_rank === 1 ? (
+                      <p className="gold">{result.single_rank}</p>
+                    ) : result.single_rank === 2 ? (
+                      <p className="silver">{result.single_rank}</p>
+                    ) : result.single_rank === 3 ? (
+                      <p className="bronze">{result.single_rank}</p>
+                    ) : (
+                      <p>{result.single_rank}</p>
+                    )}
                   </td>
                   <td>
                     <p>{formatTime(result.single_time_ms)}</p>
@@ -62,7 +70,15 @@ const Member = ({ params }: { params: Promise<{ id: string }> }) => {
                     {result.avg_time_ms && <p>{formatTime(result.avg_time_ms)}</p>}
                   </td>
                   <td>
-                    {result.avg_rank && <p>{result.avg_rank}</p>}
+                    {result.avg_rank === 1 ? (
+                      <p className="gold">{result.avg_rank}</p>
+                    ) : result.avg_rank === 2 ? (
+                      <p className="silver">{result.avg_rank}</p>
+                    ) : result.avg_rank === 3 ? (
+                      <p className="bronze">{result.avg_rank}</p>
+                    ) : (
+                      <p>{result.avg_rank}</p>
+                    )}
                   </td>
                 </tr>
               ))}

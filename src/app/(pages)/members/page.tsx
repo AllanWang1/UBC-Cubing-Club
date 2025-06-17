@@ -14,6 +14,7 @@ interface Member {
   membership: boolean;
   position: string | null;
   faculty: string;
+  user_id: string | null;
 }
 
 const Members = () => {

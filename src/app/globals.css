@@ -53,3 +53,21 @@ button {
 button:hover {
   background-color: #00274d;
 }
+
+.gold {
+  color: #FFD700;
+  font-weight: bold;
+  text-shadow: 0 0 4px rgba(255, 215, 0, 0.6);
+}
+
+.silver {
+  color: #C0C0C0;
+  font-weight: bold;
+  text-shadow: 0 0 4px rgba(192, 192, 192, 0.5);
+}
+
+.bronze {
+  color: #cd7f32;
+  font-weight: bold;
+  text-shadow: 0 0 4px rgba(205, 127, 50, 0.5);
+}
