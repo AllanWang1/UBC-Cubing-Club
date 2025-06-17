@@ -117,7 +117,7 @@ const Leaderboard = () => {
                     ) : result.single_rank === 3 ? (
                       <span className="bronze">{result.single_rank}</span>
                     ) : (
-                      result.single_rank
+                      <span className="other-rank">{result.single_rank}</span>
                     )}
                   </td>
                   <td>
@@ -148,7 +148,7 @@ const Leaderboard = () => {
                         ) : result.avg_rank === 3 ? (
                           <span className="bronze">{result.avg_rank}</span>
                         ) : (
-                          result.avg_rank
+                          <span className="other-rank">{result.avg_rank}</span>
                         )}
                       </td>
                       <td>
