@@ -53,3 +53,33 @@ button {
 button:hover {
   background-color: #00274d;
 }
+
+.gold {
+  background: linear-gradient(90deg, #fff3b0, #FFD700, #ffcc00);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: bold;
+  text-shadow: 1px 1px 8px rgba(255, 215, 0, 0.8);
+}
+
+.silver {
+  background: linear-gradient(90deg, #eeeeee, #C0C0C0, #999999);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: bold;
+  text-shadow: 1px 1px 6px rgba(200, 200, 200, 0.7);
+}
+
+.bronze {
+  background: linear-gradient(90deg, #f4c193, #cd7f32, #a0522d);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: bold;
+  text-shadow: 1px 1px 6px rgba(205, 127, 50, 0.6);
+}
+
+.other-rank {
+  color: #7a7a7a;
+  opacity: 0.65;
+  font-weight: normal;
+}

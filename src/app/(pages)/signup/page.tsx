@@ -41,18 +41,9 @@ const SignUp = () => {
       if (!user) {
         setError("User creation failed");
         return;
-      }
-      // Insert the new user into the Members table
-      const { error } = await supabase.from("Members").insert({
-        name: formData.name,
-        email: formData.email,
-      });
-      if (error) {
-        setError(error.message);
-        return;
       } else {
         alert(
-          "Sign up successful, you will receive a confirmation email shortly."
+          "Sign up successful, you will receive a verification email shortly."
         );
       }
       router.push("/signin");

@@ -14,6 +14,15 @@
 .member h2 {
     font-size: 40px;
 }
+.member h3 {
+  font-size: 20px;
+}
+.member-faculty {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+}
 .member-loaded {
     align-items: center;
     display: flex;

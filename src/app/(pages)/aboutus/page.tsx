@@ -14,9 +14,11 @@ const About = () => {
           height={400}
           className="club-image"
         />
-        <h2>
-          <strong>Welcome to the UBC Cubing Club!</strong>
-        </h2>
+        <div className="about-intro-overlay">
+          <h2>
+            <strong>Welcome to the UBC Cubing Club!</strong>
+          </h2>
+        </div>
       </div>
 
       <div className="container">
@@ -29,7 +31,7 @@ const About = () => {
             <h2>Our Mission</h2>
           </div>
 
-          <div className="mission-img">
+          <div className="mission-section">
             <Image
               src="/mission.png"
               alt="Mission"
