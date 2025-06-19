@@ -3,6 +3,8 @@ CREATE OR REPLACE function member_results(member_id integer)
 returns table (
   id integer,
   name text,
+  faculty_full_name text,
+  faculty_icon_link text,
   cube_name text,
   icon_link text,
   single_time_ms integer,
@@ -99,6 +101,7 @@ best_singles AS (
   SELECT DISTINCT ON (M.id, R.cube_name)
     M.id,
     M.name,
+    M.faculty,
     R.cube_name,
     R.time_ms AS single_time_ms,
     R.meeting_id
@@ -129,6 +132,8 @@ ranked_averages AS (
 SELECT 
   s.id,
   s.name,
+  f.faculty_full_name,
+  f.faculty_icon_link,
   s.cube_name,
   c.icon_link,
   
@@ -147,20 +152,21 @@ SELECT
 FROM ranked_singles s
 LEFT JOIN ranked_averages ra ON s.id = ra.id AND s.cube_name = ra.cube_name
 JOIN public."Cubes" c ON s.cube_name = c.cube_name
+JOIN public."Faculties" f ON s.faculty = f.faculty_name
 WHERE s.id = member_id
 ORDER BY s.cube_name, s.single_rank;
-
 $$
 
 
 
 
-
 DROP function all_member_records();
-CREATE OR REPLACE function all_member_records()
+CREATE function all_member_records()
 returns table (
   id integer,
   name text,
+  faculty_full_name text,
+  faculty_icon_link text,
   cube_name text,
   icon_link text,
   single_time_ms integer,
@@ -257,6 +263,7 @@ best_singles AS (
   SELECT DISTINCT ON (M.id, R.cube_name)
     M.id,
     M.name,
+    M.faculty,
     R.cube_name,
     R.time_ms AS single_time_ms,
     R.meeting_id
@@ -287,6 +294,8 @@ ranked_averages AS (
 SELECT 
   s.id,
   s.name,
+  f.faculty_full_name,
+  f.faculty_icon_link,
   s.cube_name,
   c.icon_link,
   
@@ -305,6 +314,7 @@ SELECT
 FROM ranked_singles s
 LEFT JOIN ranked_averages ra ON s.id = ra.id AND s.cube_name = ra.cube_name
 JOIN public."Cubes" c ON s.cube_name = c.cube_name
+JOIN public."Faculties" f ON s.faculty = f.faculty_name
 ORDER BY s.cube_name, s.single_rank;
 
 $$

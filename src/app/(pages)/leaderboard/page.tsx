@@ -99,6 +99,7 @@ const Leaderboard = () => {
           <tr>
             <th>Rank</th>
             <th>Name</th>
+            <th>Respresents</th>
             <th>Time</th>
             <th>Meeting</th>
           </tr>
@@ -122,6 +123,15 @@ const Leaderboard = () => {
                   </td>
                   <td>
                     <Link href={`/members/${result.id}`}>{result.name}</Link>
+                  </td>
+                  <td className="leaderboard-faculty">
+                    <Image
+                      src={`/faculty-icons/${result.faculty_icon_link}`}
+                      height={16}
+                      width={16}
+                      alt="faculty-icon"
+                    />
+                    {result.faculty_full_name}
                   </td>
                   <td>{formatTime(result.single_time_ms)}</td>
                   <td>
@@ -155,6 +165,15 @@ const Leaderboard = () => {
                         <Link href={`/members/${result.id}`}>
                           {result.name}
                         </Link>
+                      </td>
+                      <td className="leaderboard-faculty">
+                        <Image
+                          src={`/faculty-icons/${result.faculty_icon_link}`}
+                          height={16}
+                          width={16}
+                          alt="faculty-icon"
+                        />
+                        {result.faculty_full_name}
                       </td>
                       <td>{formatTime(result.avg_time_ms)}</td>
                       <td>

@@ -1,6 +1,8 @@
 export interface MemberRecord {
   id: number;
   name: string;
+  faculty_full_name: string;
+  faculty_icon_link: string;
   cube_name: string;
   icon_link: string;
   single_time_ms: number;

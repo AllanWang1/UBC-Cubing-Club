@@ -6,17 +6,23 @@ import { getPublicURLWithPath, formatTime } from "@/app/lib/utils";
 import { MemberRecord } from "@/app/types/MemberRecord";
 import Image from "next/image";
 
-import "./MemberID.css"
+import "./MemberID.css";
 const Member = ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = React.use(params);
   const [singleResults, setSingleResults] = useState<MemberRecord[]>([]);
+  // Always loading on mount/entry
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchMember = async () => {
-      const response = await fetch(`/api/members/${id}`);
-      const res_json = await response.json();
-      if (response.ok) {
-        setSingleResults(res_json);
+      try {
+        const response = await fetch(`/api/members/${id}`);
+        const res_json = await response.json();
+        if (response.ok) {
+          setSingleResults(res_json);
+        }
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -25,9 +31,20 @@ const Member = ({ params }: { params: Promise<{ id: string }> }) => {
 
   return (
     <div className="member">
-      {singleResults.length > 0 ? (
+      {loading ? (
+        <h2>Loading...</h2>
+      ) : singleResults.length > 0 ? (
         <div className="member-loaded">
           <h2>{singleResults[0].name}</h2>
+          <div className="member-faculty">
+            <Image
+              src={`/faculty-icons/${singleResults[0].faculty_icon_link}`}
+              width={25}
+              height={25}
+              alt="faculty icon"
+              />
+            <h3>{singleResults[0].faculty_full_name}</h3>
+          </div>
           <table>
             <thead>
               <tr>
@@ -67,7 +84,9 @@ const Member = ({ params }: { params: Promise<{ id: string }> }) => {
                     <p>{formatTime(result.single_time_ms)}</p>
                   </td>
                   <td>
-                    {result.avg_time_ms && <p>{formatTime(result.avg_time_ms)}</p>}
+                    {result.avg_time_ms && (
+                      <p>{formatTime(result.avg_time_ms)}</p>
+                    )}
                   </td>
                   <td>
                     {result.avg_rank === 1 ? (
@@ -86,7 +105,7 @@ const Member = ({ params }: { params: Promise<{ id: string }> }) => {
           </table>
         </div>
       ) : (
-        <h2>Loading...</h2>
+        <h2>There are no results associated with this member</h2>
       )}
     </div>
   );

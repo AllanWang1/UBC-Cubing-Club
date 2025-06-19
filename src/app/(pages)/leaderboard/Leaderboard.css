@@ -112,3 +112,16 @@ td {
 .leaderboard tbody tr:nth-child(odd) {
   background-color: #ffffff; /* White for contrast */
 }
+.leaderboard-faculty {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+.leaderboard a {
+  color: #D8663E;
+  text-decoration: none;
+}
+.leaderboard a:hover {
+  color:#ad4620;
+}
