@@ -36,15 +36,61 @@ This is the official website for the UBC Cubing Club. Built using React.js and N
    - The deployment of the main branch can be found at: `https://speedcubingubc.vercel.app/`
 
 ## Tables (TODO)
-### 🗄️ `members` Table
-
-| Column      | Type       | Description                      |
-|-------------|------------|----------------------------------|
-| id          | INTEGER    | Unique user ID                   |
-| name        | TEXT       | Display name                     |
-| email       | TEXT       | User email address (unique)      |
-| joined_at   | TIMESTAMP  | When the user joined             |
-| is_admin    | BOOLEAN    | Admin privileges (true/false)    |
+| Table Name      | Column Name        | Data Type         |
+| --------------- | ------------------ | ----------------- |
+| Attends         | cube_name          | text              |
+| Attends         | meeting_id         | bigint            |
+| Attends         | id                 | bigint            |
+| Attends         | rank               | integer           |
+| Cubes           | order              | smallint          |
+| Cubes           | cube_name          | text              |
+| Cubes           | icon_link          | text              |
+| Cubes           | recommended_format | USER-DEFINED      |
+| Faculties       | faculty_full_name  | text              |
+| Faculties       | faculty_name       | USER-DEFINED      |
+| Faculties       | faculty_icon_link  | text              |
+| FormatAttempts  | max_attempts       | smallint          |
+| FormatAttempts  | format             | USER-DEFINED      |
+| Holds           | cube_name          | text              |
+| Holds           | format             | USER-DEFINED      |
+| Holds           | meeting_id         | bigint            |
+| Holds           | rounds             | smallint          |
+| Meetings        | description        | text              |
+| Meetings        | date               | date              |
+| Meetings        | meeting_name       | text              |
+| Meetings        | meeting_id         | bigint            |
+| Meetings        | tournament         | boolean           |
+| Meetings        | status             | USER-DEFINED      |
+| Meetings        | passcode           | character varying |
+| Members         | email              | text              |
+| Members         | id                 | bigint            |
+| Members         | membership         | boolean           |
+| Members         | faculty            | USER-DEFINED      |
+| Members         | user_id            | uuid              |
+| Members         | position           | text              |
+| Members         | name               | text              |
+| Members         | student_id         | text              |
+| PendingResults  | meeting_id         | bigint            |
+| PendingResults  | round              | integer           |
+| PendingResults  | record             | boolean           |
+| PendingResults  | cube_name          | text              |
+| PendingResults  | average_record     | boolean           |
+| PendingResults  | attempt            | bigint            |
+| PendingResults  | time_ms            | numeric           |
+| PendingResults  | id                 | bigint            |
+| Results         | average_record     | boolean           |
+| Results         | id                 | bigint            |
+| Results         | time_ms            | numeric           |
+| Results         | attempt            | bigint            |
+| Results         | cube_name          | text              |
+| Results         | meeting_id         | bigint            |
+| Results         | round              | integer           |
+| Results         | record             | boolean           |
+| StartedAttempts | meeting_id         | bigint            |
+| StartedAttempts | round              | integer           |
+| StartedAttempts | attempt            | bigint            |
+| StartedAttempts | id                 | bigint            |
+| StartedAttempts | cube_name          | text              |
 
 ## Features In Progress
 - Admin page for simpler member result validation
