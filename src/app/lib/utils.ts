@@ -1,7 +1,11 @@
 import { supabase } from "../lib/SupabaseClient";
 
 export function formatTime(ms: number): string {
-  if (ms === 99999999) return "DNF";
+  // This is what DNF is defined to be; to calculate an average, it must be less than DNF/3
+  // Then, this means if there is a DNF included in the average, it will be greater than DNF/3, which still shows DNF.
+  // This is ok because 33333333 milliseconds is 9 hours and 15 minutes, which is reasonable for a DNF.
+  const DNF = 99999999;
+  if (ms < 0 || ms > (DNF/3)) return "DNF";
   
   const minutes = Math.floor(ms / 60000);
   const seconds = Math.floor((ms % 60000) / 1000);
