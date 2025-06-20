@@ -19,7 +19,6 @@ const Member = ({ params }: { params: Promise<{ id: string }> }) => {
   // These are the links to the cube icons that the member has participated in
   const [participatedEvents, setParticipatedEvents] = useState<string[]>([]);
 
-
   useEffect(() => {
     const fetchMemberRecords = async () => {
       try {
@@ -47,7 +46,7 @@ const Member = ({ params }: { params: Promise<{ id: string }> }) => {
       } else {
         console.error("Error fetching member results: ", res_json.error);
       }
-    }
+    };
     fetchMemberResults();
   }, [id]);
 
@@ -61,7 +60,7 @@ const Member = ({ params }: { params: Promise<{ id: string }> }) => {
       }
       setParticipatedEvents(Array.from(existingEvents));
       if (existingEvents.size > 0) {
-        setSelectedCube(Array.from(existingEvents)[0]);;
+        setSelectedCube(Array.from(existingEvents)[0]);
       }
     }
   }, [memberResults]);
@@ -79,7 +78,7 @@ const Member = ({ params }: { params: Promise<{ id: string }> }) => {
               width={25}
               height={25}
               alt="faculty icon"
-              />
+            />
             <h3>{memberRecords[0].faculty_full_name}</h3>
           </div>
           <table>
@@ -142,12 +141,88 @@ const Member = ({ params }: { params: Promise<{ id: string }> }) => {
           </table>
 
           <div className="member-all-results">
+            <h3>View Results</h3>
             <div className="member-cubes">
               {participatedEvents.map((cube) => (
-                <button key={cube} className={`cube-button ${selectedCube === cube ? 'selected' : ''}`} onClick={() => setSelectedCube(cube)}>
-                  <Image src={`/event-icons/${cube}`} width={30} height={30} alt={`${cube}`} />
+                <button
+                  key={cube}
+                  className={`cube-button ${
+                    selectedCube === cube ? "selected" : ""
+                  }`}
+                  onClick={() => setSelectedCube(cube)}
+                >
+                  <Image
+                    src={`/event-icons/${cube}`}
+                    width={30}
+                    height={30}
+                    alt={`${cube}`}
+                  />
                 </button>
               ))}
+            </div>
+            <div className="member-table-wrapper">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Meeting</th>
+                    <th>Round</th>
+                    <th>Place</th>
+                    <th>Single</th>
+                    <th>Average</th>
+                    <th>Solves</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {memberResults
+                    .filter((result) => result.icon_link === selectedCube)
+                    .map((result) => (
+                      <tr key={`${result.meeting_name}-${result.round}`}>
+                        <td>{result.meeting_name}</td>
+                        <td>{result.round}</td>
+                        <td>
+                          {result.place_in_round === 1 ? (
+                            <span className="gold">
+                              {result.place_in_round}
+                            </span>
+                          ) : result.place_in_round === 2 ? (
+                            <span className="silver">
+                              {result.place_in_round}
+                            </span>
+                          ) : result.place_in_round === 3 ? (
+                            <span className="bronze">
+                              {result.place_in_round}
+                            </span>
+                          ) : (
+                            <span className="other-rank">
+                              {result.place_in_round}
+                            </span>
+                          )}
+                        </td>
+                        <td>{formatTime(result.best_single_time_ms)}</td>
+                        <td>
+                          {result.avg_time_ms && formatTime(result.avg_time_ms)}
+                        </td>
+                        <td>
+                          {/* {result.all_times.map((solve) => (
+                        <span key={solve} className="solve-time">
+                          {formatTime(solve) + " "}
+                        </span>
+                      ))} */}
+                          <div className="member-solves-container">
+                            {[...Array(5)].map((_, index) => {
+                              const solve = result.all_times[index]; // may be undefined
+                              return (
+                                <span key={index} className="solve-time">
+                                  {solve != null ? formatTime(solve) : " "}
+                                </span>
+                              );
+                            })}
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                </tbody>
+              </table>
             </div>
           </div>
         </div>

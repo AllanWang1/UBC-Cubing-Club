@@ -90,3 +90,37 @@ td {
 .member-cubes button.selected img {
   filter: invert(100);
 }
+
+.member-table-wrapper {
+  width: 100%;
+}
+.member-table-wrapper {
+  overflow-x: auto;
+  width: 100%;
+}
+.member-table-wrapper table {
+  min-width: 800px; /* or whatever your minimum size should be */
+  border-collapse: collapse;
+}
+
+.member-all-results {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 1200px;
+  gap: 40px;
+  align-items: center;
+  margin: 20px auto;
+}
+.member-solves-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.solve-time {
+  max-width: 100px;
+  padding-left: 5px;
+  padding-right: 5px;
+  text-align: center;
+}
