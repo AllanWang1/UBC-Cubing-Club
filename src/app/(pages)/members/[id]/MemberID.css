@@ -57,3 +57,84 @@ td {
 .member tbody tr:nth-child(odd) {
   background-color: #ffffff; /* White for contrast */
 }
+
+
+.member-cubes {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  gap: 7px;
+  background: #ffffff;
+  padding: 24px;
+  border-radius: 5px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+.member-cubes button {
+  background-color: #f0f0f0;
+  border-radius: 10px;
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  transition: 0.2s;
+  padding: 7px 7px;
+}
+.member-cubes button:hover {
+  background-color: #e0e0e0;
+}
+.member-cubes button.selected {
+  background-color: #99c3fd;
+}
+.member-cubes button.selected img {
+  filter: invert(100);
+}
+
+.member-table-wrapper {
+  width: 100%;
+}
+.member-table-wrapper {
+  overflow-x: auto;
+  width: 100%;
+}
+.member-table-wrapper table {
+  min-width: 800px; /* or whatever your minimum size should be */
+  border-collapse: collapse;
+}
+.member-table-wrapper {
+  -webkit-overflow-scrolling: touch; /* smooth scrolling on iOS */
+  scrollbar-width: thin; /* for Firefox */
+}
+
+.member-table-wrapper::-webkit-scrollbar {
+  height: 8px;
+}
+
+.member-table-wrapper::-webkit-scrollbar-thumb {
+  background: #bbb;
+  border-radius: 4px;
+}
+
+.member-all-results {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 1200px;
+  gap: 40px;
+  align-items: center;
+  margin: 20px auto;
+}
+.member-solves-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.solve-time {
+  max-width: 100px;
+  padding-left: 5px;
+  padding-right: 5px;
+  text-align: center;
+}
