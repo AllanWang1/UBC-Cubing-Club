@@ -4,46 +4,83 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { getPublicURLWithPath, formatTime } from "@/app/lib/utils";
 import { MemberRecord } from "@/app/types/MemberRecord";
+import { MemberResult } from "@/app/types/MemberResult";
 import Image from "next/image";
 
 import "./MemberID.css";
 const Member = ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = React.use(params);
-  const [singleResults, setSingleResults] = useState<MemberRecord[]>([]);
+  const [memberRecords, setMemberRecords] = useState<MemberRecord[]>([]);
   // Always loading on mount/entry
   const [loading, setLoading] = useState<boolean>(true);
+  const [selectedCube, setSelectedCube] = useState<string>("");
+  const [memberResults, setMemberResults] = useState<MemberResult[]>([]);
+
+  // These are the links to the cube icons that the member has participated in
+  const [participatedEvents, setParticipatedEvents] = useState<string[]>([]);
+
 
   useEffect(() => {
-    const fetchMember = async () => {
+    const fetchMemberRecords = async () => {
       try {
         const response = await fetch(`/api/members/${id}`);
         const res_json = await response.json();
         if (response.ok) {
-          setSingleResults(res_json);
+          setMemberRecords(res_json);
         }
       } finally {
         setLoading(false);
       }
     };
 
-    fetchMember();
+    fetchMemberRecords();
   }, [id]);
+
+  useEffect(() => {
+    const fetchMemberResults = async () => {
+      const response = await fetch(
+        `/api/results/member-results?memberId=${id}`
+      );
+      const res_json = await response.json();
+      if (response.ok) {
+        setMemberResults(res_json);
+      } else {
+        console.error("Error fetching member results: ", res_json.error);
+      }
+    }
+    fetchMemberResults();
+  }, [id]);
+
+  useEffect(() => {
+    if (memberResults.length > 0) {
+      const existingEvents = new Set<string>();
+      for (const result of memberResults) {
+        if (result.icon_link && result.cube_name) {
+          existingEvents.add(result.icon_link);
+        }
+      }
+      setParticipatedEvents(Array.from(existingEvents));
+      if (existingEvents.size > 0) {
+        setSelectedCube(Array.from(existingEvents)[0]);;
+      }
+    }
+  }, [memberResults]);
 
   return (
     <div className="member">
       {loading ? (
         <h2>Loading...</h2>
-      ) : singleResults.length > 0 ? (
+      ) : memberRecords.length > 0 ? (
         <div className="member-loaded">
-          <h2>{singleResults[0].name}</h2>
+          <h2>{memberRecords[0].name}</h2>
           <div className="member-faculty">
             <Image
-              src={`/faculty-icons/${singleResults[0].faculty_icon_link}`}
+              src={`/faculty-icons/${memberRecords[0].faculty_icon_link}`}
               width={25}
               height={25}
               alt="faculty icon"
               />
-            <h3>{singleResults[0].faculty_full_name}</h3>
+            <h3>{memberRecords[0].faculty_full_name}</h3>
           </div>
           <table>
             <thead>
@@ -56,7 +93,7 @@ const Member = ({ params }: { params: Promise<{ id: string }> }) => {
               </tr>
             </thead>
             <tbody>
-              {singleResults.map((result) => (
+              {memberRecords.map((result) => (
                 <tr key={result.cube_name}>
                   <td>
                     <div className="result-event">
@@ -103,6 +140,16 @@ const Member = ({ params }: { params: Promise<{ id: string }> }) => {
               ))}
             </tbody>
           </table>
+
+          <div className="member-all-results">
+            <div className="member-cubes">
+              {participatedEvents.map((cube) => (
+                <button key={cube} className={`cube-button ${selectedCube === cube ? 'selected' : ''}`} onClick={() => setSelectedCube(cube)}>
+                  <Image src={`/event-icons/${cube}`} width={30} height={30} alt={`${cube}`} />
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
       ) : (
         <h2>There are no results associated with this member</h2>

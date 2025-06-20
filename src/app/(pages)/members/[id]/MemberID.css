@@ -57,3 +57,36 @@ td {
 .member tbody tr:nth-child(odd) {
   background-color: #ffffff; /* White for contrast */
 }
+
+
+.member-cubes {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  width: 100%;
+  gap: 7px;
+  background: #ffffff;
+  padding: 24px;
+  border-radius: 5px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+.member-cubes button {
+  background-color: #f0f0f0;
+  border-radius: 10px;
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  transition: 0.2s;
+  padding: 7px 7px;
+}
+.member-cubes button:hover {
+  background-color: #e0e0e0;
+}
+.member-cubes button.selected {
+  background-color: #99c3fd;
+}
+.member-cubes button.selected img {
+  filter: invert(100);
+}
