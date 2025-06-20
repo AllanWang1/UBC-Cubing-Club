@@ -64,6 +64,7 @@ td {
   flex-direction: row;
   flex-wrap: wrap;
   align-items: center;
+  justify-content: center;
   width: 100%;
   gap: 7px;
   background: #ffffff;
@@ -101,6 +102,19 @@ td {
 .member-table-wrapper table {
   min-width: 800px; /* or whatever your minimum size should be */
   border-collapse: collapse;
+}
+.member-table-wrapper {
+  -webkit-overflow-scrolling: touch; /* smooth scrolling on iOS */
+  scrollbar-width: thin; /* for Firefox */
+}
+
+.member-table-wrapper::-webkit-scrollbar {
+  height: 8px;
+}
+
+.member-table-wrapper::-webkit-scrollbar-thumb {
+  background: #bbb;
+  border-radius: 4px;
 }
 
 .member-all-results {
