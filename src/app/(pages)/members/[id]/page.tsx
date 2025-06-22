@@ -81,64 +81,66 @@ const Member = ({ params }: { params: Promise<{ id: string }> }) => {
             />
             <h3>{memberRecords[0].faculty_full_name}</h3>
           </div>
-          <table>
-            <thead>
-              <tr>
-                <th>Event</th>
-                <th>UBC Rank</th>
-                <th>Single</th>
-                <th>Average</th>
-                <th>UBC Rank</th>
-              </tr>
-            </thead>
-            <tbody>
-              {memberRecords.map((result) => (
-                <tr key={result.cube_name}>
-                  <td>
-                    <div className="result-event">
-                      <Image
-                        src={getPublicURLWithPath(result.icon_link)}
-                        width={30}
-                        height={30}
-                        alt="cube image"
-                      ></Image>
-                      <p>{result.cube_name}</p>
-                    </div>
-                  </td>
-                  <td>
-                    {result.single_rank === 1 ? (
-                      <span className="gold">{result.single_rank}</span>
-                    ) : result.single_rank === 2 ? (
-                      <span className="silver">{result.single_rank}</span>
-                    ) : result.single_rank === 3 ? (
-                      <span className="bronze">{result.single_rank}</span>
-                    ) : (
-                      <span className="other-rank">{result.single_rank}</span>
-                    )}
-                  </td>
-                  <td>
-                    <p>{formatTime(result.single_time_ms)}</p>
-                  </td>
-                  <td>
-                    {result.avg_time_ms && (
-                      <p>{formatTime(result.avg_time_ms)}</p>
-                    )}
-                  </td>
-                  <td>
-                    {result.avg_rank === 1 ? (
-                      <p className="gold">{result.avg_rank}</p>
-                    ) : result.avg_rank === 2 ? (
-                      <p className="silver">{result.avg_rank}</p>
-                    ) : result.avg_rank === 3 ? (
-                      <p className="bronze">{result.avg_rank}</p>
-                    ) : (
-                      <span className="other-rank">{result.avg_rank}</span>
-                    )}
-                  </td>
+          <div className="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Event</th>
+                  <th>UBC Rank</th>
+                  <th>Single</th>
+                  <th>Average</th>
+                  <th>UBC Rank</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {memberRecords.map((result) => (
+                  <tr key={result.cube_name}>
+                    <td>
+                      <div className="result-event">
+                        <Image
+                          src={getPublicURLWithPath(result.icon_link)}
+                          width={30}
+                          height={30}
+                          alt="cube image"
+                        ></Image>
+                        <p>{result.cube_name}</p>
+                      </div>
+                    </td>
+                    <td>
+                      {result.single_rank === 1 ? (
+                        <span className="gold">{result.single_rank}</span>
+                      ) : result.single_rank === 2 ? (
+                        <span className="silver">{result.single_rank}</span>
+                      ) : result.single_rank === 3 ? (
+                        <span className="bronze">{result.single_rank}</span>
+                      ) : (
+                        <span className="other-rank">{result.single_rank}</span>
+                      )}
+                    </td>
+                    <td>
+                      <p>{formatTime(result.single_time_ms)}</p>
+                    </td>
+                    <td>
+                      {result.avg_time_ms && (
+                        <p>{formatTime(result.avg_time_ms)}</p>
+                      )}
+                    </td>
+                    <td>
+                      {result.avg_rank === 1 ? (
+                        <p className="gold">{result.avg_rank}</p>
+                      ) : result.avg_rank === 2 ? (
+                        <p className="silver">{result.avg_rank}</p>
+                      ) : result.avg_rank === 3 ? (
+                        <p className="bronze">{result.avg_rank}</p>
+                      ) : (
+                        <span className="other-rank">{result.avg_rank}</span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
 
           <div className="member-all-results">
             <h3>View Results</h3>
@@ -160,7 +162,7 @@ const Member = ({ params }: { params: Promise<{ id: string }> }) => {
                 </button>
               ))}
             </div>
-            <div className="member-table-wrapper">
+            <div className="table-wrapper">
               <table>
                 <thead>
                   <tr>

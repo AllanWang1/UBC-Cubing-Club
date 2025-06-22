@@ -2,12 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
 import Image from "next/image";
 
 import "../styles/Navbar.css";
 import Dashboard from "./Dashboard";
 const Navbar = () => {
   const pathname = usePathname();
+  const [isOpen, setIsOpen] = useState(false);
 
   const links = [
     { href: "/", label: "Home", icon: "/navbar-icons/home.svg" },
@@ -31,13 +33,41 @@ const Navbar = () => {
   };
 
   return (
-    <div className="navbar">
-      <ul className="navlinks">
-        {links.map((link) => (
-          <li key={link.href}>
-            <Link href={link.href}>
-              <div className="navlink">
-                <div className="navlinks-link-container">
+    <nav className="navbar">
+      {/* Hamburger button that opens/closes the side navbar */}
+      <div className="hamburger" onClick={() => setIsOpen(!isOpen)}>
+        <Image
+          src="/navbar-icons/hamburger.svg"
+          width={30}
+          height={30}
+          alt="hambuger menu"
+        />
+      </div>
+      <div className={`mobile-menu ${isOpen ? "open" : ""}`}>
+        <button className="close-button" onClick={() => setIsOpen(false)}>
+          <Image
+            src="/navbar-icons/menu_close.svg"
+            width={30}
+            height={30}
+            alt="close menu"
+          />
+        </button>
+        <div className="mobile-dashboard">
+          <Dashboard />
+        </div>
+        <div className="mobile-links">
+          {links.map((link) => (
+            <div className="mobile-link" key={link.href}>
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={() => setIsOpen(false)}
+              >
+                <div
+                  className={`mobile-navlink ${
+                    isActive(link.href) ? "active" : ""
+                  }`}
+                >
                   <Image
                     src={link.icon}
                     width={20}
@@ -46,26 +76,40 @@ const Navbar = () => {
                   />
                   <p>{link.label}</p>
                 </div>
-
-                {isActive(link.href) && (
-                  <div className="underline">
-                    <Image
-                      src="/nav_underline.png"
-                      width={20}
-                      height={20}
-                      alt="underline"
-                    />
-                  </div>
-                )}
+              </Link>
+            </div>
+          ))}
+        </div>
+      </div>
+      <nav className="links">
+        {links.map((link) => (
+          // <li key={link.href}>
+          <Link key={link.href} href={link.href}>
+            <div className="navlink">
+              <div className="navlinks-link-container">
+                <Image src={link.icon} width={20} height={20} alt="link icon" />
+                <p>{link.label}</p>
               </div>
-            </Link>
-          </li>
+
+              {isActive(link.href) && (
+                <div className="underline">
+                  <Image
+                    src="/nav_underline.png"
+                    width={20}
+                    height={20}
+                    alt="underline"
+                  />
+                </div>
+              )}
+            </div>
+          </Link>
         ))}
-      </ul>
+      </nav>
+      {/* </ul> */}
       <div className="profile">
         <Dashboard />
       </div>
-    </div>
+    </nav>
   );
 };
 export default Navbar;

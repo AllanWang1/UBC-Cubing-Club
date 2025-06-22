@@ -7,38 +7,40 @@
   align-items: center;
   position: fixed;
   top: 0;
-  z-index: 100;
+  z-index: 1000;
   width: 100%;
   background: #2c3e50;
   color: white;
   display: flex;
   flex-direction: row;
 
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); 
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
 }
 
-.navlinks {
+.links {
   display: flex;
   flex-direction: row;
   align-items: center;
+  gap: 30px;
 }
 
 .navlink {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
 }
 
-.navlinks a {
+.navbar a {
   text-decoration: none;
-  color: inherit;
+  color: #ecf0f1;
   cursor: pointer;
   transition: color 0.3s ease;
 }
 
-.navlinks a:hover {
+.navbar a:hover {
   transform: scale(1.05);
-  color: #3498db;
+  color: #fcb612;
 }
 
 .navlinks-link-container {
@@ -51,11 +53,90 @@
 .navlinks-link-container img {
   filter: invert(100%);
 }
-.navbar ul {
-  display: flex;
-  gap: 35px;
-  list-style-type: none;
-}
+
 .underline img {
   filter: invert(100%);
+}
+
+.hamburger {
+  display: none;
+  background: none;
+  border: none;
+  z-index: 1001;
+  padding: 0;
+  cursor: pointer;
+  filter: invert(100%);
+}
+.close-button {
+  display: none;
+  background: none;
+  border: none;
+  z-index: 1001;
+  padding: 0;
+  width: auto;
+}
+.mobile-menu {
+  position: fixed;
+  top: 0;
+  left: -250px; /* Start off-screen */
+  width: 250px;
+  height: 100vh;
+  background-color: white;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  display: flex; /* Changed from 'none' */
+  flex-direction: column;
+  gap: 20px;
+  transition: left 0.3s ease-in-out;
+  z-index: 1002;
+  visibility: hidden; /* Hide without breaking transition */
+}
+.mobile-menu.open {
+  left: 0;
+  visibility: visible;
+}
+
+.mobile-links {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 15px;
+}
+.mobile-navlink {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  color: #333333;
+  transition: 0.3s ease;
+}
+.mobile-navlink.active {
+  color: #fcb612;
+}
+.mobile-navlink:hover {
+  color: #fcb612;
+  transform: scale(1.05);
+}
+
+.mobile-menu.open {
+  right: 0;
+}
+/* Hide desktop nav links on small screens */
+@media (max-width: 768px) {
+  .links,
+  .profile {
+    display: none;
+  }
+
+  .mobile-menu.open {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .hamburger {
+    display: block;
+  }
+  .close-button {
+    display: block;
+  }
 }

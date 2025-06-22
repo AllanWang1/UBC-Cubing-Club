@@ -92,31 +92,6 @@ td {
   filter: invert(100);
 }
 
-.member-table-wrapper {
-  width: 100%;
-}
-.member-table-wrapper {
-  overflow-x: auto;
-  width: 100%;
-}
-.member-table-wrapper table {
-  min-width: 800px; /* or whatever your minimum size should be */
-  border-collapse: collapse;
-}
-.member-table-wrapper {
-  -webkit-overflow-scrolling: touch; /* smooth scrolling on iOS */
-  scrollbar-width: thin; /* for Firefox */
-}
-
-.member-table-wrapper::-webkit-scrollbar {
-  height: 8px;
-}
-
-.member-table-wrapper::-webkit-scrollbar-thumb {
-  background: #bbb;
-  border-radius: 4px;
-}
-
 .member-all-results {
   display: flex;
   flex-direction: column;
