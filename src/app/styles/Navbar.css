@@ -95,7 +95,9 @@
   left: 0;
   visibility: visible;
 }
-
+.mobile-dashboard {
+  color: #333333;
+}
 .mobile-links {
   display: flex;
   flex-direction: column;

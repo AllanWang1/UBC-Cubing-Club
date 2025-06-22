@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 
 import "../styles/Navbar.css";
@@ -10,6 +10,7 @@ import Dashboard from "./Dashboard";
 const Navbar = () => {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
 
   const links = [
     { href: "/", label: "Home", icon: "/navbar-icons/home.svg" },
@@ -27,6 +28,23 @@ const Navbar = () => {
     { href: "/members", label: "Members", icon: "/navbar-icons/members.svg" },
   ];
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        menuRef.current &&
+        !menuRef.current.contains(event.target as Node) &&
+        isOpen
+      ) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpen]);
+
   const isActive = (href: string) => {
     if (href === "/") return pathname === "/";
     return pathname.startsWith(href + "/") || pathname === href;
@@ -43,7 +61,7 @@ const Navbar = () => {
           alt="hambuger menu"
         />
       </div>
-      <div className={`mobile-menu ${isOpen ? "open" : ""}`}>
+      <div className={`mobile-menu ${isOpen ? "open" : ""}`} ref={menuRef}>
         <button className="close-button" onClick={() => setIsOpen(false)}>
           <Image
             src="/navbar-icons/menu_close.svg"
