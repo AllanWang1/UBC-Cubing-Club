@@ -62,14 +62,14 @@ const Navbar = () => {
         />
       </div>
       <div className={`mobile-menu ${isOpen ? "open" : ""}`} ref={menuRef}>
-        <button className="close-button" onClick={() => setIsOpen(false)}>
+        <div className="close-button" onClick={() => setIsOpen(false)}>
           <Image
             src="/navbar-icons/menu_close.svg"
             width={30}
             height={30}
             alt="close menu"
           />
-        </button>
+        </div>
         <div className="mobile-dashboard">
           <Dashboard />
         </div>

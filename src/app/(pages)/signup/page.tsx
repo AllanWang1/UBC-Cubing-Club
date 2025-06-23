@@ -10,6 +10,7 @@ type SignUpData = {
   name: string;
   email: string;
   password: string;
+  confirmPassword: string;
 };
 
 const SignUp = () => {
@@ -17,6 +18,7 @@ const SignUp = () => {
     name: "",
     email: "",
     password: "",
+    confirmPassword: "",
   });
 
   const [error, setError] = useState<string | null>(null);
@@ -24,6 +26,13 @@ const SignUp = () => {
 
   const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+    
+
 
     const { data: signUpData, error: signUpError } = await supabase.auth.signUp(
       {
@@ -66,7 +75,7 @@ const SignUp = () => {
         </Link>
       </div>
       <h2>Sign Up</h2>
-      {error && <p>Sign Up Error: {error}</p>}
+      {error && <span className="error">Sign Up Error: {error}</span>}
       <form onSubmit={handleSignUp}>
         <input
           type="name"
@@ -74,6 +83,7 @@ const SignUp = () => {
           name="name"
           value={formData.name}
           onChange={handleChange}
+          required
         />
         <input
           type="email"
@@ -81,6 +91,7 @@ const SignUp = () => {
           name="email"
           value={formData.email}
           onChange={handleChange}
+          required
         />
         <input
           type="password"
@@ -88,6 +99,15 @@ const SignUp = () => {
           name="password"
           value={formData.password}
           onChange={handleChange}
+          required
+        />
+        <input
+          type="password"
+          placeholder="Confirm Password"
+          name="confirmPassword"
+          value={formData.confirmPassword}
+          onChange={handleChange}
+          required
         />
         <button type="submit">Sign Up</button>
       </form>
