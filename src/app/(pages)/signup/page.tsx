@@ -31,15 +31,13 @@ const SignUp = () => {
       setError("Passwords do not match");
       return;
     }
-    
-
 
     const { data: signUpData, error: signUpError } = await supabase.auth.signUp(
       {
         email: formData.email,
         password: formData.password,
         options: {
-          data: { full_name: formData.name },
+          data: { full_name: formData.name, profilePicURL: "default1.png" },
         },
       }
     );
@@ -50,7 +48,12 @@ const SignUp = () => {
       if (!user) {
         setError("User creation failed");
         return;
-      } else {
+      } 
+      else if (!(user.identities) || !(user.identities.length > 0)){
+        setError("Email is already taken");
+        return;
+      } 
+      else {
         alert(
           "Sign up successful, you will receive a verification email shortly."
         );
