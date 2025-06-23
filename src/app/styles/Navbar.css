@@ -73,7 +73,9 @@
   border: none;
   z-index: 1001;
   padding: 0;
-  width: auto;
+  width: 30px;
+  cursor: pointer;
+  padding: 5px;
 }
 .mobile-menu {
   position: fixed;
@@ -95,7 +97,9 @@
   left: 0;
   visibility: visible;
 }
-
+.mobile-dashboard {
+  color: #333333;
+}
 .mobile-links {
   display: flex;
   flex-direction: column;

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { supabase } from "../lib/SupabaseClient";
 import type { User } from "@supabase/auth-js";
 import { useRouter } from "next/navigation";
@@ -8,8 +8,6 @@ import Link from "next/link";
 import Image from "next/image";
 
 import "../styles/Dashboard.css";
-
-
 
 const Dashboard = () => {
   const getPublicURLWithPath = (path: string): string => {
@@ -26,6 +24,7 @@ const Dashboard = () => {
   const [avatarURL, setAvatarURL] = useState<string>(getPublicURLWithPath("default1.png"));
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
+  const dropDownRef = useRef<HTMLDivElement>(null);
 
   const reloadPage = () => {
     window.location.reload();
@@ -48,7 +47,6 @@ const Dashboard = () => {
       }
     };
     fetchUser();
-
     // Refetch whenever the Auth state changes
     const { data: listener } = supabase.auth.onAuthStateChange(() => {
       fetchUser(); 
@@ -59,6 +57,19 @@ const Dashboard = () => {
       listener.subscription.unsubscribe();
     };
   }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropDownRef.current && !dropDownRef.current.contains(event.target as Node) && isOpen) {
+        setIsOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+  }, [isOpen])
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -96,7 +107,7 @@ const Dashboard = () => {
           <div className="dashboard-profile-menu">
             <Image className="avatar" src={avatarURL} alt="Profile Picture" width={50} height={50} onClick={toggleIsOpen} />
             {isOpen && (
-              <div className="dashboard-drop-down-menu">
+              <div className="dashboard-drop-down-menu" ref={dropDownRef}>
                 <ul>
                   <li><button onClick={handleMyProfile}>My Profile</button></li>
                   {/* <li><button>Edit Profile</button></li> */}

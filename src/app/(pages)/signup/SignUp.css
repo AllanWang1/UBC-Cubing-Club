@@ -20,3 +20,17 @@
   color: #0055a4;
   font-size: 16px;
 }
+
+.sign-up button {
+  width: 100%;
+}
+.sign-up h2 {
+  font-size: 40px;
+}
+
+.sign-up form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}

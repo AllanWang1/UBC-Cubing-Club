@@ -64,6 +64,7 @@ a:hover {
   background-position: center;
   background-repeat: repeat-y;
   padding-top: 100px;
+  padding-bottom: 30px;
   height: 100vh;
   color: #333333;
 }

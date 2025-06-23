@@ -79,6 +79,12 @@ button:hover {
   border-radius: 4px;
 }
 
+.error {
+  color: red;
+  font-size: 20px;
+  text-align: center;
+}
+
 .gold {
   background: linear-gradient(90deg, #fff3b0, #FFD700, #ffcc00);
   -webkit-background-clip: text;
