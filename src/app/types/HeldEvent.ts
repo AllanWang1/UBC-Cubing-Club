@@ -6,6 +6,7 @@ export interface HeldEvent {
     Cubes: {
       cube_name: string;
       icon_link: string;
+      order: number;
     };
     FormatAttempts: {
       format: string;

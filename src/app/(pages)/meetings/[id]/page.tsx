@@ -102,7 +102,7 @@ export default function MeetingView({
       const response = await fetch(`/api/holds/${id}`);
       const res_json = await response.json();
       if (response.ok) {
-        setHeldEvents(res_json);
+        setHeldEvents(res_json.sort((a: HeldEvent, b: HeldEvent) => a.Cubes.order - b.Cubes.order));
       } else {
         console.error("Error fetching held events: ", res_json.error);
       }

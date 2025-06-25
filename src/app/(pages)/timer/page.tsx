@@ -57,7 +57,7 @@ async function deleteStartedAttempt(entry: StartedAttempt) {
   const response = await fetch(
     `/api/started-attempts?attempt=${entry.attempt}&cube_name=${entry.cube_name}&id=${entry.id}&meeting_id=${entry.meeting_id}&round=${entry.round}`,
     {
-      method: "DELETE"
+      method: "DELETE",
     }
   );
   const res_json = await response.json();
@@ -246,72 +246,87 @@ const Timer = () => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.code === "Space") {
         event.preventDefault();
-        if (!holding && !running) {
-          // The timer has not been started, only start the timer on release
-          setHoldEndTime(0);
-          setHolding(true);
-          setHoldStartTime(Date.now());
-        } else {
-          // The press is to stop the timer
-          if (running) {
-            setRunning(false);
-            const endTimeLocal = Date.now();
-            setEndTime(endTimeLocal);
-            setTime(endTimeLocal - startTime);
-            setSubmitted(true);
-
-            const localResult = {
-              attempt: attempt_read,
-              cube_name: cube_name_read,
-              id: Number(user?.user_metadata?.member_id),
-              meeting_id: meeting_id_read,
-              round: round_read,
-              time_ms: endTimeLocal - startTime,
-              record: false,
-              average_record: false,
-            };
-
-            submitResult(localResult);
-            deleteStartedAttempt({
-              attempt: localResult.attempt,
-              cube_name: localResult.cube_name,
-              id: localResult.id,
-              meeting_id: localResult.meeting_id,
-              round: localResult.round,
-            });
-          }
-        }
+        startHold();
       }
-    };
+    }
     const handleKeyUp = (event: KeyboardEvent) => {
       if (event.code === "Space") {
         event.preventDefault();
-        if (holding) {
-          setHolding(false);
-          const holdEndTimeLocal = Date.now();
-          setHoldEndTime(holdEndTimeLocal);
-          const holdDuration = holdEndTimeLocal - holdStartTime;
-          if (
-            holdDuration > READY_TIME &&
-            !running &&
-            time === 0 &&
-            !submitted
-          ) {
-            // Good enough time for the release to activate the timer
-            setRunning(true);
-            console.log("setting time");
-            setStartTime(Date.now());
-          }
+        stopHold();
+      }
+    };
+
+    const handleTouchStart = (event: TouchEvent) => {
+      event.preventDefault();
+      startHold();
+    }
+
+    const handleTouchEnd = (event: TouchEvent) => {
+      event.preventDefault();
+      stopHold();
+    }
+
+    const startHold = () => {
+      if (!holding && !running) {
+        // The timer has not been started, only start the timer on release
+        setHoldEndTime(0);
+        setHolding(true);
+        setHoldStartTime(Date.now());
+      } else {
+        // The press is to stop the timer
+        if (running) {
+          setRunning(false);
+          const endTimeLocal = Date.now();
+          setEndTime(endTimeLocal);
+          setTime(endTimeLocal - startTime);
+          setSubmitted(true);
+
+          const localResult = {
+            attempt: attempt_read,
+            cube_name: cube_name_read,
+            id: Number(user?.user_metadata?.member_id),
+            meeting_id: meeting_id_read,
+            round: round_read,
+            time_ms: endTimeLocal - startTime,
+            record: false,
+            average_record: false,
+          };
+
+          submitResult(localResult);
+          deleteStartedAttempt({
+            attempt: localResult.attempt,
+            cube_name: localResult.cube_name,
+            id: localResult.id,
+            meeting_id: localResult.meeting_id,
+            round: localResult.round,
+          });
+        }
+      }
+    };
+    const stopHold = () => {
+      if (holding) {
+        setHolding(false);
+        const holdEndTimeLocal = Date.now();
+        setHoldEndTime(holdEndTimeLocal);
+        const holdDuration = holdEndTimeLocal - holdStartTime;
+        if (holdDuration > READY_TIME && !running && time === 0 && !submitted) {
+          // Good enough time for the release to activate the timer
+          setRunning(true);
+          console.log("setting time");
+          setStartTime(Date.now());
         }
       }
     };
 
     window.addEventListener("keydown", handleKeyDown);
     window.addEventListener("keyup", handleKeyUp);
-
+    window.addEventListener("touchstart", handleTouchStart);
+    window.addEventListener("touchend", handleTouchEnd);
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
+      window.removeEventListener("touchstart", handleTouchStart);
+      window.removeEventListener("touchend", handleTouchEnd);
     };
   }, [
     holding,
@@ -360,14 +375,14 @@ const Timer = () => {
 
   // Detecting if the user is leaving the page, submit a DNF immediately if they leave the page.
   /**
-   * This useEffect will not be used for now. If a user leaves the page and tries to return again, 
+   * This useEffect will not be used for now. If a user leaves the page and tries to return again,
    * we would prompt for the passcode, and the passcode entry is like a re-confirmation.
-   * 
+   *
    * Thus, we would not need to detect reloads and window minimizing.
-   * 
-   * The case where we open another tab with the same link while the timer is already running should 
+   *
+   * The case where we open another tab with the same link while the timer is already running should
    * also be covered: when we enter the new page, a DNF is submitted, and submitting on the older page
-   * would give an error, since it has been submitted already. 
+   * would give an error, since it has been submitted already.
    */
   // useEffect(() => {
   //   if (!verified) return;

@@ -6,7 +6,7 @@ export async function GET(request: NextRequest) {
   const { data: Holds, error } = await supabase
     .from("Holds")
     .select(
-      "meeting_id, cube_name, format, rounds, Cubes(cube_name, icon_link), FormatAttempts(format, max_attempts)"
+      "meeting_id, cube_name, format, rounds, Cubes(cube_name, icon_link, order), FormatAttempts(format, max_attempts)"
     )
     .eq("meeting_id", id);
   if (error) {
