@@ -88,6 +88,8 @@ const Timer = () => {
   const [passcode, setPasscode] = useState<string>("");
   const [verified, setVerified] = useState<boolean>(false);
 
+  const [scramble, setScramble] = useState<string>("");
+
   const attempt_read = Number(searchParams.get("attempt"));
   const cube_name_read = searchParams.get("cube_name") as string;
   const meeting_id_read = Number(searchParams.get("meeting_id"));
@@ -147,7 +149,10 @@ const Timer = () => {
         alert("Error checking started attempts: " + res_json.error);
         return;
       }
+
+      // Password is verified, available timer to start is verified.
       setVerified(true);
+
     } else {
       // handle incorrect password
       alert("Password incorrect");
@@ -210,6 +215,18 @@ const Timer = () => {
       // If the user has still not been redirected, we know this is a valid user.
       setUser(fetchedUser);
 
+      // Fetch the scramble first, before we check for any submissions. We want to display the scramble regardless of whether
+      // the user has already submitted/started an attempt.
+      const fetchedScramble = await fetch(
+        `/api/scrambles?attempt=${attempt_read}&cube_name=${cube_name_read}&meeting_id=${meeting_id_read}&round=${round_read}`
+      );
+      const scramble_json = await fetchedScramble.json();
+      if (fetchedScramble.ok) {
+        setScramble(scramble_json.scramble);
+      } else {
+        // There is really no else for this case. There may very well be no entry for the given scramble for the attempt.
+      }
+
       // 4. Check if the user has already submitted a result for this event.
       const pending = await fetch(
         `/api/pending?attempt=${attempt_read}&round=${round_read}&cube_name=${cube_name_read}&id=${member_id}&meeting_id=${meeting_id_read}`
@@ -248,7 +265,7 @@ const Timer = () => {
         event.preventDefault();
         startHold();
       }
-    }
+    };
     const handleKeyUp = (event: KeyboardEvent) => {
       if (event.code === "Space") {
         event.preventDefault();
@@ -259,12 +276,12 @@ const Timer = () => {
     const handleTouchStart = (event: TouchEvent) => {
       event.preventDefault();
       startHold();
-    }
+    };
 
     const handleTouchEnd = (event: TouchEvent) => {
       event.preventDefault();
       stopHold();
-    }
+    };
 
     const startHold = () => {
       if (!holding && !running) {
@@ -429,28 +446,31 @@ const Timer = () => {
   return (
     <div className="timer">
       {verified ? (
-        <div className="available-timer">
-          {ready && (
-            <div className="holding-ready-timer">
-              <h2>{formatTime(time)}</h2>
-            </div>
-          )}
-          {((holding && !ready) || (holding && time !== 0)) && (
-            <div className="holding-unready-timer">
-              <h2>{formatTime(time)}</h2>
-            </div>
-          )}
+        <div className="timer-menu">
+          <span className="timer-scramble">{scramble}</span>
+          <div className="available-timer">
+            {ready && (
+              <div className="holding-ready-timer">
+                <h2>{formatTime(time)}</h2>
+              </div>
+            )}
+            {((holding && !ready) || (holding && time !== 0)) && (
+              <div className="holding-unready-timer">
+                <h2>{formatTime(time)}</h2>
+              </div>
+            )}
 
-          {running && (
-            <div className="timing-timer">
-              <h2>{formatTime(time)}</h2>
-            </div>
-          )}
-          {!holding && !running && (
-            <div className="stale-timer">
-              <h2>{formatTime(time)}</h2>
-            </div>
-          )}
+            {running && (
+              <div className="timing-timer">
+                <h2>{formatTime(time)}</h2>
+              </div>
+            )}
+            {!holding && !running && (
+              <div className="stale-timer">
+                <h2>{formatTime(time)}</h2>
+              </div>
+            )}
+          </div>
         </div>
       ) : (
         <div className="prompt-passcode">
