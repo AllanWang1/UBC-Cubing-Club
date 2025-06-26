@@ -4,11 +4,11 @@
   align-items: center;
   justify-content: center;
   gap: 20px;
-  margin: 90px auto;
+  margin: 50px auto;
   width: 100%;
+  padding-top: 100px;
   padding-left: 20px;
   padding-right: 20px;
-  padding-bottom: 80px;
 }
 .timer h2 {
   font-size: 160px;
@@ -48,4 +48,14 @@
   flex-direction: column;
   align-items: center;
   gap: 8px;
+}
+.prompt-passcode {
+  display: flex;
+  justify-content: center;   /* center horizontally */
+  align-items: center;       /* center vertically */
+  height: 80vh;             /* full viewport height */
+  width: 100vw;              /* full viewport width (optional) */
+  position: fixed;           /* ensure it floats above other content */
+  top: 0;
+  left: 0;
 }
