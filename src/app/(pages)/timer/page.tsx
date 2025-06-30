@@ -438,9 +438,14 @@ const Timer = () => {
     <div className="timer">
       {verified ? (
         <div className="timer-menu">
-          {!running && scramble !== "" && (
-            <span className="timer-scramble">{scramble}</span>
-          )}
+          <span
+            className="timer-scramble"
+            style={{
+              visibility: !running && scramble ? "visible" : "hidden",
+            }}
+          >
+            {scramble}
+          </span>
           <div className="available-timer">
             {ready && (
               <div className="holding-ready-timer">
