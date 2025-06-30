@@ -276,7 +276,11 @@ const Timer = () => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.code === "Space") {
         event.preventDefault();
-        startHold();
+        startHold(true);
+      } else {
+        // It is another key being pressed, it should only stop the timer if running.
+        event.preventDefault();
+        startHold(false);
       }
     };
     const handleKeyUp = (event: KeyboardEvent) => {
@@ -288,7 +292,7 @@ const Timer = () => {
 
     const handleTouchStart = (event: TouchEvent) => {
       event.preventDefault();
-      startHold();
+      startHold(true);
     };
 
     const handleTouchEnd = (event: TouchEvent) => {
@@ -296,8 +300,8 @@ const Timer = () => {
       stopHold();
     };
 
-    const startHold = () => {
-      if (!holding && !running) {
+    const startHold = (space: boolean) => {
+      if (!holding && !running && space) {
         // The timer has not been started, only start the timer on release
         setHoldEndTime(0);
         setHolding(true);
@@ -350,11 +354,13 @@ const Timer = () => {
 
     window.addEventListener("keydown", handleKeyDown);
     window.addEventListener("keyup", handleKeyUp);
+
     window.addEventListener("touchstart", handleTouchStart);
     window.addEventListener("touchend", handleTouchEnd);
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
+      
       window.removeEventListener("touchstart", handleTouchStart);
       window.removeEventListener("touchend", handleTouchEnd);
     };
