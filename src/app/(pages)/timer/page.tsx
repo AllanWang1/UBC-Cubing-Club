@@ -22,7 +22,7 @@ interface CubeModel {
   model_name: string;
   scramble_name: string;
   order: number;
-};
+}
 
 async function submitResult(result: Result) {
   try {
@@ -165,7 +165,6 @@ const Timer = () => {
 
       // Password is verified, available timer to start is verified.
       setVerified(true);
-
     } else {
       // handle incorrect password
       alert("Password incorrect");
@@ -360,7 +359,7 @@ const Timer = () => {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
-      
+
       window.removeEventListener("touchstart", handleTouchStart);
       window.removeEventListener("touchend", handleTouchEnd);
     };
@@ -414,11 +413,13 @@ const Timer = () => {
     if (scramble === "") return;
     if (!puzzleContainerRef.current) return;
 
-    const modelMap: CubeModel | undefined = CubeDetails.find((m) => m.cube_name === cube_name_read);
+    const modelMap: CubeModel | undefined = CubeDetails.find(
+      (m) => m.cube_name === cube_name_read
+    );
     const player = new TwistyPlayer({
       puzzle: modelMap?.model_name as TwistyPlayerConfig["puzzle"],
       alg: scramble,
-    //   hintFacelets: "none",
+      //   hintFacelets: "none",
       controlPanel: "none",
       background: "none",
       backView: "top-right",
@@ -430,14 +431,16 @@ const Timer = () => {
         puzzleContainerRef.current.removeChild(player);
       }
     };
-  }, [scramble, verified, puzzleContainerRef]);
+  }, [scramble, verified, puzzleContainerRef, submitted]);
 
   // Display for the timer page
   return (
     <div className="timer">
       {verified ? (
         <div className="timer-menu">
-          {!running && scramble !== "" && <span className="timer-scramble">{scramble}</span>}
+          {!running && scramble !== "" && (
+            <span className="timer-scramble">{scramble}</span>
+          )}
           <div className="available-timer">
             {ready && (
               <div className="holding-ready-timer">
@@ -461,7 +464,12 @@ const Timer = () => {
               </div>
             )}
           </div>
-          {!running && scramble !== "" && <div ref={puzzleContainerRef}></div>}
+          {!running && scramble !== "" && (
+            <div
+              ref={puzzleContainerRef}
+              className="timer-scramble-model"
+            ></div>
+          )}
         </div>
       ) : (
         <div className="prompt-passcode">
