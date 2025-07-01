@@ -38,3 +38,5 @@ export async function getCurrentUser() {
   }
   return data?.user ?? null;
 }
+
+export const DNF = 99999999;

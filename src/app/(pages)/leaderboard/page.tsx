@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Cube } from "../../types/Cube";
-import { formatTime, getPublicURLWithPath } from "../../lib/utils";
+import { formatTime, getPublicURLWithPath, DNF} from "../../lib/utils";
 import { MemberRecord } from "@/app/types/MemberRecord";
 import Image from "next/image";
 import Link from "next/link";
@@ -107,7 +107,7 @@ const Leaderboard = () => {
           {resultType === "single" ? (
             <tbody>
               {results
-                .filter((r) => r.cube_name === selectedCube)
+                .filter((r) => r.cube_name === selectedCube && r.single_time_ms < DNF)
                 .map((result) => (
                   <tr key={result.id}>
                     <td>
@@ -145,7 +145,8 @@ const Leaderboard = () => {
           ) : (
             <tbody>
               {results
-                .filter((r) => r.cube_name === selectedCube)
+                .filter((r) => r.cube_name === selectedCube && r.avg_time_ms < DNF/3)
+                .sort((a, b) => (a.avg_rank - b.avg_rank))
                 .map(
                   (result) =>
                     result.avg_time_ms && (

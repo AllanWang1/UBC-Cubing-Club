@@ -5,6 +5,7 @@ export interface MemberRecord {
   faculty_icon_link: string;
   cube_name: string;
   icon_link: string;
+  cube_order: number;
   single_time_ms: number;
   single_rank: number;
   single_meeting_id: number;

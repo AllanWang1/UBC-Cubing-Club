@@ -1,6 +1,7 @@
 export interface MemberResult {
     cube_name: string,
     icon_link: string,
+    cube_order: number,
     meeting_name: string,
     round: number,
     member_id: number,
