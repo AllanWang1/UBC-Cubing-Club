@@ -137,6 +137,7 @@ const Timer = () => {
             time_ms: 99999999,
             record: false,
             average_record: false,
+            penalty: "DNF"
           };
           submitResult(DNF_result);
           deleteStartedAttempt({
@@ -323,6 +324,7 @@ const Timer = () => {
             time_ms: endTimeLocal - startTime,
             record: false,
             average_record: false,
+            penalty: null,
           };
 
           submitResult(localResult);
