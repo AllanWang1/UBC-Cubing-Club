@@ -5,9 +5,30 @@ import { useState, useEffect } from "react";
 import { getPublicURLWithPath, formatTime } from "@/app/lib/utils";
 import { MemberRecord } from "@/app/types/MemberRecord";
 import { MemberResult } from "@/app/types/MemberResult";
+
+import { Radar } from "react-chartjs-2";
 import Image from "next/image";
 
 import "./MemberID.css";
+
+import {
+  Chart as ChartJS,
+  RadialLinearScale,
+  PointElement,
+  LineElement,
+  Filler,
+  Tooltip,
+} from "chart.js";
+
+// Register ChartJS components
+ChartJS.register(
+  RadialLinearScale,
+  PointElement,
+  LineElement,
+  Filler,
+  Tooltip,
+);
+
 const Member = ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = React.use(params);
   const [memberRecords, setMemberRecords] = useState<MemberRecord[]>([]);
@@ -19,6 +40,53 @@ const Member = ({ params }: { params: Promise<{ id: string }> }) => {
   // These are the links to the cube icons that the member has participated in
   const [participatedEvents, setParticipatedEvents] = useState<string[]>([]);
 
+  const radarOptions = {
+    scales: {
+      r: {
+        angleLines: {
+          display: true
+        },
+        // Fix range to 0 and 100
+        suggestedMin: 0,
+        suggestedMax: 100,
+        ticks: {
+          stepSize: 20,
+          backdropColor: 'rgba(0, 0, 0, 0)' // Optional: makes ticks more readable
+        }
+      }
+    },
+    elements: {
+      line: {
+        borderWidth: 3
+      }
+    }
+  };
+
+  const radarData = {
+    labels: [
+      "NxN",
+      "Non-cubic",
+      "Consistency", // Coefficient of deviation
+      "Versatility",
+      "Growth",
+      "Persistence",
+    ],
+    datasets: [
+      {
+        label: "data",
+        data: [89, 20, 88, 30, 90, 100],
+        fill: true,
+        backgroundColor: "rgba(54, 162, 235, 0.2)",
+        borderColor: "rgb(54, 162, 235)",
+        pointBackgroundColor: "rgb(54, 162, 235)",
+        pointBorderColor: "#fff",
+        pointHoverBackgroundColor: "#fff",
+        pointHoverBorderColor: "rgb(54, 162, 235)",
+      },
+    ],
+  };
+
+  // Fetch member records
   useEffect(() => {
     const fetchMemberRecords = async () => {
       try {
@@ -35,6 +103,7 @@ const Member = ({ params }: { params: Promise<{ id: string }> }) => {
     fetchMemberRecords();
   }, [id]);
 
+  // Fetch member's history results
   useEffect(() => {
     const fetchMemberResults = async () => {
       const response = await fetch(
@@ -50,6 +119,7 @@ const Member = ({ params }: { params: Promise<{ id: string }> }) => {
     fetchMemberResults();
   }, [id]);
 
+  // Determining the events that the member has participated in
   useEffect(() => {
     if (memberResults.length > 0) {
       const existingEvents = new Set<string>();
@@ -72,6 +142,9 @@ const Member = ({ params }: { params: Promise<{ id: string }> }) => {
       ) : memberRecords.length > 0 ? (
         <div className="member-loaded">
           <h2>{memberRecords[0].name}</h2>
+          {/* <div className="member-radar-chart">
+            <Radar data={radarData} options={radarOptions}></Radar>
+          </div> */}
           <div className="member-faculty">
             <Image
               src={`/faculty-icons/${memberRecords[0].faculty_icon_link}`}
@@ -94,7 +167,7 @@ const Member = ({ params }: { params: Promise<{ id: string }> }) => {
               </thead>
               <tbody>
                 {memberRecords
-                  .sort((a, b) => (a.cube_order - b.cube_order))
+                  .sort((a, b) => a.cube_order - b.cube_order)
                   .map((result) => (
                     <tr key={result.cube_name}>
                       <td>

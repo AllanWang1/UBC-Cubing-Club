@@ -1,0 +1,86 @@
+[
+  {
+    "cube_name": "3x3",
+    "model_name": "3x3x3",
+    "scramble_name": "333",
+    "order": 1
+  },
+  {
+    "cube_name": "2x2",
+    "model_name": "2x2x2",
+    "scramble_name": "222",
+    "order": 2
+  },
+  {
+    "cube_name": "4x4",
+    "model_name": "4x4x4",
+    "scramble_name": "444",
+    "order": 3
+  },
+  {
+    "cube_name": "5x5",
+    "model_name": "5x5x5",
+    "scramble_name": "555",
+    "order": 4
+  },
+  {
+    "cube_name": "6x6",
+    "model_name": "6x6x6",
+    "scramble_name": "666",
+    "order": 5
+  },
+  {
+    "cube_name": "7x7",
+    "model_name": "7x7x7",
+    "scramble_name": "777",
+    "order": 6
+  },
+  {
+    "cube_name": "3x3 BLD",
+    "model_name": "3x3x3",
+    "scramble_name": "333bf",
+    "order": 7
+  },
+  {
+    "cube_name": "FMC",
+    "model_name": "3x3x3",
+    "scramble_name": "333fm",
+    "order": 8
+  },
+  {
+    "cube_name": "3x3 OH",
+    "model_name": "3x3x3",
+    "scramble_name": "333",
+    "order": 9
+  },
+  {
+    "cube_name": "Clock",
+    "model_name": "clock",
+    "scramble_name": "clock",
+    "order": 10
+  },
+  {
+    "cube_name": "Megaminx",
+    "model_name": "megaminx",
+    "scramble_name": "minx",
+    "order": 11
+  },
+  {
+    "cube_name": "Pyraminx",
+    "model_name": "pyraminx",
+    "scramble_name": "pyram",
+    "order": 12
+  },
+  {
+    "cube_name": "Skewb",
+    "model_name": "skewb",
+    "scramble_name": "skewb",
+    "order": 13
+  },
+  {
+    "cube_name": "Square-1",
+    "model_name": "square1",
+    "scramble_name": "sq1",
+    "order": 14
+  }
+]

@@ -1,17 +1,28 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, Suspense, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { formatTime } from "../../lib/utils";
 import { Result } from "../../types/Result";
 import { StartedAttempt } from "../../types/StartedAttempt";
 
+import { TwistyPlayer } from "cubing/twisty";
+import { TwistyPlayerConfig } from "cubing/twisty";
+
 import { User } from "@supabase/auth-js";
 import { supabase } from "../../lib/SupabaseClient";
+import CubeDetails from "@/app/types/CubeDetails.json";
 
 import "./Timer.css";
 
 const READY_TIME = 500;
+
+interface CubeModel {
+  cube_name: string;
+  model_name: string;
+  scramble_name: string;
+  order: number;
+}
 
 async function submitResult(result: Result) {
   try {
@@ -95,6 +106,8 @@ const Timer = () => {
   const meeting_id_read = Number(searchParams.get("meeting_id"));
   const round_read = Number(searchParams.get("round"));
 
+  const puzzleContainerRef = useRef<HTMLDivElement>(null);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPasscode(e.target.value);
   };
@@ -124,6 +137,8 @@ const Timer = () => {
             time_ms: 99999999,
             record: false,
             average_record: false,
+            penalty: "DNF",
+            raw_time_ms: 99999999,
           };
           submitResult(DNF_result);
           deleteStartedAttempt({
@@ -152,7 +167,6 @@ const Timer = () => {
 
       // Password is verified, available timer to start is verified.
       setVerified(true);
-
     } else {
       // handle incorrect password
       alert("Password incorrect");
@@ -263,7 +277,11 @@ const Timer = () => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.code === "Space") {
         event.preventDefault();
-        startHold();
+        startHold(true);
+      } else {
+        // It is another key being pressed, it should only stop the timer if running.
+        event.preventDefault();
+        startHold(false);
       }
     };
     const handleKeyUp = (event: KeyboardEvent) => {
@@ -275,7 +293,7 @@ const Timer = () => {
 
     const handleTouchStart = (event: TouchEvent) => {
       event.preventDefault();
-      startHold();
+      startHold(true);
     };
 
     const handleTouchEnd = (event: TouchEvent) => {
@@ -283,8 +301,8 @@ const Timer = () => {
       stopHold();
     };
 
-    const startHold = () => {
-      if (!holding && !running) {
+    const startHold = (space: boolean) => {
+      if (!holding && !running && space) {
         // The timer has not been started, only start the timer on release
         setHoldEndTime(0);
         setHolding(true);
@@ -307,6 +325,8 @@ const Timer = () => {
             time_ms: endTimeLocal - startTime,
             record: false,
             average_record: false,
+            penalty: null,
+            raw_time_ms: endTimeLocal - startTime,
           };
 
           submitResult(localResult);
@@ -337,11 +357,13 @@ const Timer = () => {
 
     window.addEventListener("keydown", handleKeyDown);
     window.addEventListener("keyup", handleKeyUp);
+
     window.addEventListener("touchstart", handleTouchStart);
     window.addEventListener("touchend", handleTouchEnd);
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
+
       window.removeEventListener("touchstart", handleTouchStart);
       window.removeEventListener("touchend", handleTouchEnd);
     };
@@ -390,64 +412,46 @@ const Timer = () => {
     return () => clearTimeout(timeout);
   }, [holding, time, submitted, verified]);
 
-  // Detecting if the user is leaving the page, submit a DNF immediately if they leave the page.
-  /**
-   * This useEffect will not be used for now. If a user leaves the page and tries to return again,
-   * we would prompt for the passcode, and the passcode entry is like a re-confirmation.
-   *
-   * Thus, we would not need to detect reloads and window minimizing.
-   *
-   * The case where we open another tab with the same link while the timer is already running should
-   * also be covered: when we enter the new page, a DNF is submitted, and submitting on the older page
-   * would give an error, since it has been submitted already.
-   */
-  // useEffect(() => {
-  //   if (!verified) return;
-  //   if (submitted) return;
-  //   const local_id = Number(user?.user_metadata?.member_id);
-  //   const handleDelayedSubmission = () => {
-  //     delayedSubmission(
-  //       attempt_read,
-  //       cube_name_read,
-  //       local_id,
-  //       meeting_id_read,
-  //       round_read
-  //     );
-  //   };
-  //   const handleUnload = () => {
-  //     handleDelayedSubmission();
-  //   };
+  useEffect(() => {
+    if (!verified) return;
+    if (scramble === "") return;
+    if (!puzzleContainerRef.current) return;
 
-  //   const handleVisibilityChange = () => {
-  //     // Will only submit a DNF if the page is minimized, closed, or entering a different URL.
-  //     // It is ok if the page is moved around, adjusted size, etc. As long as the page is still visible on screen.
-  //     if (document.visibilityState === "hidden") {
-  //       handleDelayedSubmission();
-  //     }
-  //   };
+    const container = puzzleContainerRef.current;
 
-  //   window.addEventListener("unload", handleUnload);
-  //   document.addEventListener("visibilitychange", handleVisibilityChange);
-  //   return () => {
-  //     window.removeEventListener("unload", handleUnload);
-  //     document.removeEventListener("visibilitychange", handleVisibilityChange);
-  //   };
-  // }, [
-  //   submitted,
-  //   attempt_read,
-  //   cube_name_read,
-  //   meeting_id_read,
-  //   round_read,
-  //   user,
-  //   verified,
-  // ]);
+    const modelMap: CubeModel | undefined = CubeDetails.find(
+      (m) => m.cube_name === cube_name_read
+    );
+    const player = new TwistyPlayer({
+      puzzle: modelMap?.model_name as TwistyPlayerConfig["puzzle"],
+      alg: scramble,
+      //   hintFacelets: "none",
+      controlPanel: "none",
+      background: "none",
+      backView: "top-right",
+    });
+    container.appendChild(player);
+
+    return () => {
+      if (container.contains(player)) {
+        container.removeChild(player);
+      }
+    };
+  }, [scramble, verified, submitted, cube_name_read]);
 
   // Display for the timer page
   return (
     <div className="timer">
       {verified ? (
         <div className="timer-menu">
-          <span className="timer-scramble">{scramble}</span>
+          <span
+            className="timer-scramble"
+            style={{
+              visibility: !running && scramble ? "visible" : "hidden",
+            }}
+          >
+            {scramble}
+          </span>
           <div className="available-timer">
             {ready && (
               <div className="holding-ready-timer">
@@ -471,6 +475,12 @@ const Timer = () => {
               </div>
             )}
           </div>
+          {!running && scramble !== "" && (
+            <div
+              ref={puzzleContainerRef}
+              className="timer-scramble-model"
+            ></div>
+          )}
         </div>
       ) : (
         <div className="prompt-passcode">

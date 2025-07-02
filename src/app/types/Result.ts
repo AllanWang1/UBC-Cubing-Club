@@ -7,4 +7,6 @@ export interface Result {
     time_ms: number;
     record: boolean;
     average_record: boolean;
+    penalty: string | null;
+    raw_time_ms: number;
 }
