@@ -8,4 +8,5 @@ export interface Result {
     record: boolean;
     average_record: boolean;
     penalty: string | null;
+    raw_time_ms: number;
 }

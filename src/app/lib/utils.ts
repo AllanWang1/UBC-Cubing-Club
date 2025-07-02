@@ -1,4 +1,6 @@
 import { supabase } from "../lib/SupabaseClient";
+import { Result } from "@/app/types/Result";
+
 
 export function formatTime(ms: number): string {
   // This is what DNF is defined to be; to calculate an average, it must be less than DNF/3
@@ -40,3 +42,18 @@ export async function getCurrentUser() {
 }
 
 export const DNF = 99999999;
+
+
+export function getRadarStats(results: Result[]) {
+  const nxnCubes = ["3x3", "2x2", "4x4", "5x5", "6x6", "7x7", "FMC", "3x3 OH", "3x3 BLD"];
+  const nonCubicCubes = ["Pyraminx", "Skewb", "Clock", "Megaminx", "Square-1"];
+
+  const groupedByEvent = new Map<string, Result[]>();
+  for (const result of results) {
+    if (!groupedByEvent.has(result.cube_name)) {
+      groupedByEvent.set(result.cube_name, []);
+    }
+  }
+
+  
+}
