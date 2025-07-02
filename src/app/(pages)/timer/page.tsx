@@ -326,7 +326,7 @@ const Timer = () => {
             record: false,
             average_record: false,
             penalty: null,
-            raw_time_ms: endTimeLocal - startTime
+            raw_time_ms: endTimeLocal - startTime,
           };
 
           submitResult(localResult);
@@ -417,6 +417,8 @@ const Timer = () => {
     if (scramble === "") return;
     if (!puzzleContainerRef.current) return;
 
+    const container = puzzleContainerRef.current;
+
     const modelMap: CubeModel | undefined = CubeDetails.find(
       (m) => m.cube_name === cube_name_read
     );
@@ -428,14 +430,14 @@ const Timer = () => {
       background: "none",
       backView: "top-right",
     });
-    puzzleContainerRef.current.appendChild(player);
+    container.appendChild(player);
 
     return () => {
-      if (puzzleContainerRef.current?.contains(player)) {
-        puzzleContainerRef.current.removeChild(player);
+      if (container.contains(player)) {
+        container.removeChild(player);
       }
     };
-  }, [scramble, verified, puzzleContainerRef, submitted]);
+  }, [scramble, verified, submitted, cube_name_read]);
 
   // Display for the timer page
   return (
