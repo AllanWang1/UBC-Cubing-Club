@@ -8,6 +8,7 @@ This is the official website for the UBC Cubing Club. Built using React.js and N
 
 ## Tech Stack
 - **Front end**: React.js, Next.js, TypeScript, CSS
+- **3D Rendering**: Cubing.js
 - **Back end & Database**: Supabase
 - **Authentication**: Supabase authentication
 - **Hosting**: Vercel
@@ -20,11 +21,7 @@ This is the official website for the UBC Cubing Club. Built using React.js and N
   npm install
   </pre>
 
-2. Request the Supabase credentials like the ANON KEY from an admin. Then create an .env file in src, specify:
-<pre> 
-   NEXT_PUBLIC_SUPABASE_URL=...
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=...
-</pre>
+2. Request the Supabase credentials like the ANON KEY from an admin, as this may not be the same key as shown in the repository. It is safe to develop with these public keys as long as the Row Level Security rules were set properly on Supabase.
 
 3. Run locally:
    
@@ -92,8 +89,12 @@ This is the official website for the UBC Cubing Club. Built using React.js and N
 | StartedAttempts | id                 | bigint            |
 | StartedAttempts | cube_name          | text              |
 
-## Features In Progress
+## Future Improvements/Features In Progress
 - Admin page for simpler member result validation
+- Member ability radars
+- Member account settings page
+  - Custom profile pictures, password and name settings, password reset request, etc.
+- Membership request page
 - UX enhancements
 
 ## Logging 
