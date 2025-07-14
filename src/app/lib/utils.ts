@@ -1,6 +1,6 @@
 import { supabase } from "../lib/SupabaseClient";
 import { Result } from "@/app/types/Result";
-
+import { User } from "@supabase/auth-js";
 
 export function formatTime(ms: number): string {
   // This is what DNF is defined to be; to calculate an average, it must be less than DNF/3
@@ -31,14 +31,9 @@ export function getPublicURLWithPath(path: string): string {
   return data?.publicUrl ?? "";
 }
 
-export async function getCurrentUser() {
-  const { data, error } = await supabase.auth.getUser();
-
-  if (error) {
-    console.error("Error fetching user:", error.message);
-    return null;
-  }
-  return data?.user ?? null;
+export async function getCurrentUser(): Promise<User | null> {
+  const {data: {user: fetchedUser}} = await supabase.auth.getUser();
+  return fetchedUser;
 }
 
 export const DNF = 99999999;
