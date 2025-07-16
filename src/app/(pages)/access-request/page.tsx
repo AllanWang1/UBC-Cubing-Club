@@ -14,7 +14,7 @@ type AccessRequestProps = {
   faculty: string;
   WCAId: string;
   birthDate: Date;
-}
+};
 
 const AccessRequest = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -28,6 +28,77 @@ const AccessRequest = () => {
   });
   const router = useRouter();
 
+  const informationInputs = [
+    {
+      label: "Full Name",
+      type: "text",
+      name: "fullName",
+      placeHolder: "Enter your full name",
+      required: true,
+    },
+    {
+      label: "Student ID",
+      type: "text",
+      name: "studentId",
+      placeHolder: "Enter your student ID (If applicable)",
+      required: false,
+    },
+    {
+      label: "Faculty of Study",
+      type: "select",
+      name: "faculty",
+      placeholder: "Select your faculty",
+      options: [
+        "Applied Science",
+        "Architecture and Landscape Architecture",
+        "Arts",
+        "Audiology and Speech Sciences",
+        "Business",
+        "Community and Regional Planning",
+        "Dentistry",
+        "Education",
+        "Extended Learning",
+        "Forestry",
+        "Graduate and Postdoctoral Studies",
+        "Journalism",
+        "Kinesiology",
+        "Land and Food Systems",
+        "Law",
+        "Library, Archival and Information Studies",
+        "Medicine",
+        "Music",
+        "Nursing",
+        "Pharmaceutical Sciences",
+        "Population and Public Health",
+        "Public Policy and Global Affairs",
+        "Science",
+        "Social Work",
+        "UBC Vantage College",
+        "Vancouver School of Economics",
+        "External",
+      ],
+      required: true,
+    },
+    {
+      label: "WCA ID",
+      type: "text",
+      name: "WCAId",
+      placeHolder: "Enter your WCA ID (If applicable)",
+      required: false,
+    },
+    {
+      label: "Date of Birth",
+      type: "date",
+      name: "birthDate",
+      placeHolder: "Select your date of birth",
+      required: true,
+    },
+  ];
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+
+  }
+  
   const handleRequest = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
   };
@@ -69,7 +140,35 @@ const AccessRequest = () => {
         </li>
       </ul>
       <form className="access-request-form" onSubmit={handleRequest}>
-        <input type="text" />
+        {informationInputs.map((i) => (
+          <div key={i.name} className="access-request-input">
+            <label htmlFor={i.name}>{i.label}</label>
+            {i.type === "select" ? (
+              <select
+                name={i.name}
+                required={i.required}
+                onChange={(e) => {handleChange(e)}}
+              >
+                {i.options?.map((o) => (
+                  <option key={o} value={o}>
+                    {o}
+                  </option>
+                ))}
+              </select>
+            ) : (
+              <input 
+                name={i.name}
+                type={i.type}
+                placeholder={i.placeHolder}
+                required={i.required}
+                onChange={(e) => {handleChange(e)}}
+              />
+            )}
+          </div>
+        ))}
+        <button type="submit" className="access-request-submit">
+          Submit Request
+        </button>
       </form>
     </div>
   );
