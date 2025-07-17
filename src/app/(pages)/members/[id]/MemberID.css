@@ -17,6 +17,24 @@
 .member h3 {
   font-size: 20px;
 }
+.member-info-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 30px;
+}
+.member-wca-id {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+  cursor: pointer;
+}
+.member-wca-id:hover {
+  transform: scale(1.05);
+  transition: transform 0.2s ease-in-out;
+}
+
 .member-faculty {
   display: flex;
   flex-direction: row;
