@@ -44,7 +44,7 @@ const AccessRequest = () => {
       required: false,
     },
     {
-      label: "Faculty of Study",
+      label: "Faculty/School of Study",
       type: "select",
       name: "faculty",
       placeholder: "Select your faculty",
