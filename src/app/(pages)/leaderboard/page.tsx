@@ -56,7 +56,7 @@ const Leaderboard = () => {
           <h3>Event</h3>
           <div className="leaderboard-cubes">
             {cubes.map((cube) => (
-              <div className="leaderboard-cube-container">
+              <div className="leaderboard-cube-container" key={cube.cube_name}>
                 <button
                   className={`cube-button ${
                     cube.cube_name === selectedCube ? "selected" : ""
