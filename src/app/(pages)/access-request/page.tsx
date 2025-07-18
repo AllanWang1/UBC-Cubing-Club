@@ -127,7 +127,7 @@ const AccessRequest = () => {
   return (
     <div className="access-request">
       <h2>Request Membership</h2>
-      <h3>Please note the following:</h3>
+      <h3>Please note:</h3>
       <ul className="members-access-request-info">
         <li>
           There will be a charge of $5 membership fee that you need to

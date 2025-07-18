@@ -4,14 +4,48 @@
   align-items: center;
   justify-content: center;
   padding-top: 100px;
+  padding-bottom: 80px;
+  width: 100%;
+  max-width: 1200px;
+  margin: 20px auto;
+  gap: 40px;
+}
+
+.members-access-request-info {
+  width: 80%;
+}
+.access-request-input {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
 }
 
 .access-request h2 {
   font-size: 40px;
 }
+.access-request h3 {
+  font-size: 30px;
+}
 
+.access-request form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  max-width: 500px;
+}
 .access-request ul {
-    list-style-type: disc;
-    padding-left: 20px;
-    list-style: circle;
+  list-style-type: disc;
+  padding-left: 20px;
+  list-style: circle;
+}
+.access-request-form label {
+  font-size: 20px;
+}
+.access-request-form select {
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: 2px solid #007086;
 }
