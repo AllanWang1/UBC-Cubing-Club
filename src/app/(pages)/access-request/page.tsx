@@ -22,7 +22,7 @@ const AccessRequest = () => {
     fullName: "",
     email: "",
     studentId: "",
-    faculty: "External",
+    faculty: "",
     WCAId: "",
     birthDate: new Date(),
   });
@@ -47,8 +47,9 @@ const AccessRequest = () => {
       label: "Faculty/School of Study",
       type: "select",
       name: "faculty",
-      placeholder: "Select your faculty",
+      placeholder: "",
       options: [
+        "",
         "Applied Science",
         "Architecture and Landscape Architecture",
         "Arts",
@@ -95,12 +96,38 @@ const AccessRequest = () => {
     },
   ];
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    setAccessRequest((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
 
-  }
-  
   const handleRequest = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const response = await fetch("/api/access-request", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        ...accessRequest,
+        UUID: user?.id,
+      }),
+    });
+    const res_json = await response.json();
+    if (response.ok) {
+      alert(
+        "Your request has been submitted successfully. We will process it after you make."
+      );
+      router.push("/");
+    } else {
+      alert(`Error submitting request: ${res_json.error}`);
+      router.push("/");
+    }
   };
 
   useEffect(() => {
@@ -120,6 +147,10 @@ const AccessRequest = () => {
       }
       // At this point the user is logged in and not a member.
       setUser(fetchedUser);
+      setAccessRequest((prev) => ({
+        ...prev,
+        email: fetchedUser.email || "",
+      }));
     };
 
     validate();
@@ -147,7 +178,10 @@ const AccessRequest = () => {
               <select
                 name={i.name}
                 required={i.required}
-                onChange={(e) => {handleChange(e)}}
+                onChange={(e) => {
+                  handleChange(e);
+                }}
+                defaultValue={i.placeholder}
               >
                 {i.options?.map((o) => (
                   <option key={o} value={o}>
@@ -156,12 +190,14 @@ const AccessRequest = () => {
                 ))}
               </select>
             ) : (
-              <input 
+              <input
                 name={i.name}
                 type={i.type}
                 placeholder={i.placeHolder}
                 required={i.required}
-                onChange={(e) => {handleChange(e)}}
+                onChange={(e) => {
+                  handleChange(e);
+                }}
               />
             )}
           </div>
