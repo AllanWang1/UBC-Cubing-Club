@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Cube } from "../../types/Cube";
-import { formatTime, getPublicURLWithPath, DNF} from "../../lib/utils";
+import { formatTime, getPublicURLWithPath, DNF } from "../../lib/utils";
 import { MemberRecord } from "@/app/types/MemberRecord";
 import Image from "next/image";
 import Link from "next/link";
@@ -56,21 +56,26 @@ const Leaderboard = () => {
           <h3>Event</h3>
           <div className="leaderboard-cubes">
             {cubes.map((cube) => (
-              <button
-                className={`cube-button ${
-                  cube.cube_name === selectedCube ? "selected" : ""
-                }`}
-                key={cube.cube_name}
-                onClick={() => setSelectedCube(cube.cube_name)}
-              >
-                <Image
-                  className="cube-icon"
-                  src={getPublicURLWithPath(cube.icon_link)}
-                  width={50}
-                  height={50}
-                  alt="cube icon"
-                ></Image>
-              </button>
+              <div className="leaderboard-cube-container" key={cube.cube_name}>
+                <button
+                  className={`cube-button ${
+                    cube.cube_name === selectedCube ? "selected" : ""
+                  }`}
+                  key={cube.cube_name}
+                  onClick={() => setSelectedCube(cube.cube_name)}
+                >
+                  <Image
+                    className="cube-icon"
+                    src={getPublicURLWithPath(cube.icon_link)}
+                    width={50}
+                    height={50}
+                    alt="cube icon"
+                  ></Image>
+                </button>
+                <h3 className="leaderboard-cube-tooltip">
+                  {cube.cube_name}
+                </h3>
+              </div>
             ))}
           </div>
         </div>
@@ -107,7 +112,9 @@ const Leaderboard = () => {
           {resultType === "single" ? (
             <tbody>
               {results
-                .filter((r) => r.cube_name === selectedCube && r.single_time_ms < DNF)
+                .filter(
+                  (r) => r.cube_name === selectedCube && r.single_time_ms < DNF
+                )
                 .map((result) => (
                   <tr key={result.id}>
                     <td>
@@ -145,8 +152,10 @@ const Leaderboard = () => {
           ) : (
             <tbody>
               {results
-                .filter((r) => r.cube_name === selectedCube && r.avg_time_ms < DNF/3)
-                .sort((a, b) => (a.avg_rank - b.avg_rank))
+                .filter(
+                  (r) => r.cube_name === selectedCube && r.avg_time_ms < DNF / 3
+                )
+                .sort((a, b) => a.avg_rank - b.avg_rank)
                 .map(
                   (result) =>
                     result.avg_time_ms && (

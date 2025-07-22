@@ -21,13 +21,7 @@ import {
 } from "chart.js";
 
 // Register ChartJS components
-ChartJS.register(
-  RadialLinearScale,
-  PointElement,
-  LineElement,
-  Filler,
-  Tooltip,
-);
+ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip);
 
 const Member = ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = React.use(params);
@@ -39,27 +33,28 @@ const Member = ({ params }: { params: Promise<{ id: string }> }) => {
 
   // These are the links to the cube icons that the member has participated in
   const [participatedEvents, setParticipatedEvents] = useState<string[]>([]);
+  const [WCAId, setWCAId] = useState<string>("");
 
   const radarOptions = {
     scales: {
       r: {
         angleLines: {
-          display: true
+          display: true,
         },
         // Fix range to 0 and 100
         suggestedMin: 0,
         suggestedMax: 100,
         ticks: {
           stepSize: 20,
-          backdropColor: 'rgba(0, 0, 0, 0)' // Optional: makes ticks more readable
-        }
-      }
+          backdropColor: "rgba(0, 0, 0, 0)", // Optional: makes ticks more readable
+        },
+      },
     },
     elements: {
       line: {
-        borderWidth: 3
-      }
-    }
+        borderWidth: 3,
+      },
+    },
   };
 
   const radarData = {
@@ -100,7 +95,19 @@ const Member = ({ params }: { params: Promise<{ id: string }> }) => {
       }
     };
 
+    const fetchMemberWCAId = async () => {
+      const response = await fetch(`/api/members/${id}/wca-id`);
+      // since we performed .single() in the route, we know the response is not an array
+      const res_json = await response.json();
+      if (response.ok) {
+        setWCAId(res_json.wca_id);
+      } else {
+        alert("Error fetching WCA ID: " + res_json.error);
+      }
+    };
+
     fetchMemberRecords();
+    fetchMemberWCAId();
   }, [id]);
 
   // Fetch member's history results
@@ -145,15 +152,28 @@ const Member = ({ params }: { params: Promise<{ id: string }> }) => {
           {/* <div className="member-radar-chart">
             <Radar data={radarData} options={radarOptions}></Radar>
           </div> */}
-          <div className="member-faculty">
-            <Image
-              src={`/faculty-icons/${memberRecords[0].faculty_icon_link}`}
-              width={25}
-              height={25}
-              alt="faculty icon"
-            />
-            <h3>{memberRecords[0].faculty_full_name}</h3>
+          <div className="member-info-container">
+            <div className="member-faculty">
+              <Image
+                src={`/faculty-icons/${memberRecords[0].faculty_icon_link}`}
+                width={25}
+                height={25}
+                alt="faculty icon"
+              />
+              <h3>{memberRecords[0].faculty_full_name}</h3>
+            </div>
+            {WCAId && (
+              <div className="member-wca-id">
+                <Image src="/wca.svg" width={25} height={25} alt="" />
+                <a
+                  href={`https://www.worldcubeassociation.org/persons/${WCAId}`}
+                >
+                  <h3>{WCAId} 🔗</h3>
+                </a>
+              </div>
+            )}
           </div>
+
           <div className="table-wrapper">
             <table>
               <thead>

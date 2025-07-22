@@ -87,7 +87,7 @@ const Dashboard = () => {
       } else {
         alert("There is no member ID associated with your account. Please contact an admin.");
         setIsOpen(false);
-        reloadPage();
+        router.push("/access-request");
       }
     }
   }
