@@ -30,6 +30,14 @@
   font-size: 16px;
   gap: 8px;
 }
+
+.event-results {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  max-width: 1200px;
+}
 .meeting-events-list {
   display: flex;
   flex-direction: column;
@@ -49,29 +57,35 @@
   flex-direction: column;
   align-items: center;
   gap: 20px;
+  width: 100%;
+  max-width: 1200px;
 }
 .regular-event-results {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  width: 100%;
+  max-width: 1200px;
 }
 .regular-event-results h4 {
-  font-size: 20px;
+  font-size: 26px;
 }
 
 .event-results-list h5 {
-  font-size: 18px;
+  font-size: 22px;
 }
 .event-results-list {
   padding: 20px;
+  width: 100%;
   border-radius: 10px;
   background-color: #f0f0f0; /* Light background for contrast */
 }
 .round-results-list > li {
   display: flex;
   flex-direction: column;
-  padding-top: 10px;
+  padding: 10px;
   border-top: 1px solid #ccc;
+  min-width: 180px;
 }
 .round-submissions {
   display: flex;
@@ -82,13 +96,18 @@
 }
 
 .round-results-list {
-  display: grid;
-  gap: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 50px;
   list-style: none; /* optional: remove default bullets */
   padding: 0;
   margin: 0;
+  width: 100%;
 }
-
+.round-results-list table {
+  width: 100%;
+  border-collapse: collapse;
+}
 .round-results-list li {
   margin-bottom: 5px; /* adjust this to reduce spacing */
 }
@@ -96,8 +115,12 @@
 .round-member-results {
   display: flex;
   flex-direction: column;
-  gap: 1px;
+  gap: 10px;
   width: 100%;
+}
+.round-member-results h6 {
+  font-size: 18px;
+  font-weight: bold;
 }
 
 .round-submissions button {

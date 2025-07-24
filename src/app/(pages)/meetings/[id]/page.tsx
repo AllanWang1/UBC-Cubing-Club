@@ -102,7 +102,11 @@ export default function MeetingView({
       const response = await fetch(`/api/holds/${id}`);
       const res_json = await response.json();
       if (response.ok) {
-        setHeldEvents(res_json.sort((a: HeldEvent, b: HeldEvent) => a.Cubes.order - b.Cubes.order));
+        setHeldEvents(
+          res_json.sort(
+            (a: HeldEvent, b: HeldEvent) => a.Cubes.order - b.Cubes.order
+          )
+        );
       } else {
         console.error("Error fetching held events: ", res_json.error);
       }
@@ -230,6 +234,7 @@ export default function MeetingView({
                   ))}
                 </>
               ) : (
+                // The below is for unopened meetings
                 <div className="event-results">
                   {event.format !== "head-to-head" && (
                     <div className="regular-event-results">
@@ -244,19 +249,27 @@ export default function MeetingView({
                               {Object.entries(people).map(([id, entry]) => (
                                 <li key={id}>
                                   <div className="round-member-results">
-                                    <h6>
-                                      Member {id}: {entry.name}
-                                    </h6>
-                                    <ul>
-                                      {entry.results.map((result) => (
-                                        <li key={result.attempt}>
-                                          <p>
-                                            {result.attempt}:{" "}
-                                            {formatTime(result.time_ms)}
-                                          </p>
-                                        </li>
-                                      ))}
-                                    </ul>
+                                    <h6>{entry.name}</h6>
+                                    <table>
+                                      <thead>
+                                        <tr>
+                                          <th>Attempt</th>
+                                          <th>Time</th>
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+                                        {entry.results
+                                          .sort((a, b) => a.attempt - b.attempt)
+                                          .map((result) => (
+                                            <tr key={result.attempt}>
+                                              <td>{result.attempt}</td>
+                                              <td>
+                                                {formatTime(result.time_ms)}
+                                              </td>
+                                            </tr>
+                                          ))}
+                                      </tbody>
+                                    </table>
                                   </div>
                                 </li>
                               ))}
