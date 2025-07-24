@@ -78,7 +78,6 @@
   padding: 20px;
   width: 100%;
   border-radius: 10px;
-  background-color: #f0f0f0; /* Light background for contrast */
 }
 .round-results-list > li {
   display: flex;
@@ -86,6 +85,15 @@
   padding: 10px;
   border-top: 1px solid #ccc;
   min-width: 180px;
+  border-radius: 15px;
+  background-color: #f0f0f0; /* Light background for contrast */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+}
+.round-results-list > li:hover {
+  background-color: #c7eff2;
+  transform: scale(1.02);
+  transition: background-color 0.2s, transform 0.2s;
 }
 .round-submissions {
   display: flex;
