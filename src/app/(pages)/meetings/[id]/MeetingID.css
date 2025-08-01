@@ -60,6 +60,12 @@
   width: 100%;
   max-width: 1200px;
 }
+.rounds {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+}
 .regular-event-results {
   display: flex;
   flex-direction: column;

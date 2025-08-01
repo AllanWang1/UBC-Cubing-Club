@@ -1,0 +1,9 @@
+.meeting-id-edit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+    width: 100%;
+    max-width: 1200px;
+    padding-top: 100px;
+}

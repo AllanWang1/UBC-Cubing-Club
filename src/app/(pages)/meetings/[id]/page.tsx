@@ -87,14 +87,22 @@ export default function MeetingView({
   const router = useRouter();
 
   useEffect(() => {
-    const fetchTournament = async () => {
+    /**
+     * Fetch the meeting data from the API using the meeting ID. 
+     * Check if the meeting exists, if not, redirect to the meetings page. 
+     */
+    const fetchMeeting = async () => {
       const response = await fetch(`/api/meetings/${id}`);
       const res_json = await response.json();
       if (response.ok) {
+        // Check if an empty array is returned -> there is no associated meeting for the given ID.
+        if (res_json.length === 0) {
+          throw new Error("No meeting found with the given ID.");
+        }
         // The API returns an array, so access the first (only) element.
         setMeeting(res_json[0]);
       } else {
-        console.error("Error fetching tournament: ", res_json.error);
+        throw new Error("Error: " + res_json.status);
       }
     };
 
@@ -109,10 +117,13 @@ export default function MeetingView({
         );
       } else {
         console.error("Error fetching held events: ", res_json.error);
+        return;
       }
     };
 
     const fetchResults = async () => {
+      // We only need results for closed meetings
+      if (meeting.status === "open") return;
       const response = await fetch(`/api/results/meeting-results/${id}`);
       const res_json = await response.json();
       if (response.ok) {
@@ -122,11 +133,23 @@ export default function MeetingView({
       }
     };
 
-    fetchTournament();
-    fetchHeldEvents();
-    fetchResults();
+    const fetchMeetingInfo = async () => {
+      try {
+        // Wait on results of verifying the meeting exists and fetching held events
+        await fetchMeeting();
+        await fetchHeldEvents();
+        await fetchResults();
+      } catch(error: any) {
+        alert("Error fetching meeting data: " + error.message);
+        router.push("/meetings");
+        return;
+      }
+    }
+    
+    fetchMeetingInfo();
   }, [id]);
 
+  // For active meetings, we need to check whether the meeting is closed.
   useEffect(() => {
     if (meeting.status === "closed") return;
     const fetchUser = async () => {
@@ -172,6 +195,8 @@ export default function MeetingView({
     }
     return map;
   }, [pendingResults]);
+
+
 
   return (
     <div className="meeting">
@@ -230,6 +255,9 @@ export default function MeetingView({
                           )
                         )}
                       </div>
+                      <button>
+                        Generate Scrambles
+                      </button>
                     </div>
                   ))}
                 </>
