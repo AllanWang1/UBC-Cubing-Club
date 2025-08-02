@@ -88,8 +88,8 @@ export default function MeetingView({
 
   useEffect(() => {
     /**
-     * Fetch the meeting data from the API using the meeting ID. 
-     * Check if the meeting exists, if not, redirect to the meetings page. 
+     * Fetch the meeting data from the API using the meeting ID.
+     * Check if the meeting exists, if not, redirect to the meetings page.
      */
     const fetchMeeting = async () => {
       const response = await fetch(`/api/meetings/${id}`);
@@ -139,15 +139,19 @@ export default function MeetingView({
         await fetchMeeting();
         await fetchHeldEvents();
         await fetchResults();
-      } catch(error: any) {
-        alert("Error fetching meeting data: " + error.message);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          alert("Error fetching meeting data: " + error.message);
+        } else {
+          alert("An unknown error occurred while fetching meeting data.");
+        }
         router.push("/meetings");
         return;
       }
-    }
-    
+    };
+
     fetchMeetingInfo();
-  }, [id]);
+  }, [id, router, meeting]);
 
   // For active meetings, we need to check whether the meeting is closed.
   useEffect(() => {
@@ -195,8 +199,6 @@ export default function MeetingView({
     }
     return map;
   }, [pendingResults]);
-
-
 
   return (
     <div className="meeting">
@@ -255,9 +257,7 @@ export default function MeetingView({
                           )
                         )}
                       </div>
-                      <button>
-                        Generate Scrambles
-                      </button>
+                      <button>Generate Scrambles</button>
                     </div>
                   ))}
                 </>
