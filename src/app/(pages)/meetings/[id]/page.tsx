@@ -151,7 +151,7 @@ export default function MeetingView({
     };
 
     fetchMeetingInfo();
-  }, [id, router, meeting]);
+  }, [id, router, meeting.status]);
 
   // For active meetings, we need to check whether the meeting is closed.
   useEffect(() => {
