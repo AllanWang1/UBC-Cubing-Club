@@ -38,11 +38,12 @@ export async function POST(request: NextRequest) {
         round,
         scramble,
       },
-    ])
+    ]);
     // Ensure that the inserted data was successful.
-    .select()
-    .single();
+    // .select()
+    // .single();
   if (error) {
+    console.log("Error: ", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   } else {
     console.log("Inserted scramble: ", data);

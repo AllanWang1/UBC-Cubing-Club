@@ -6,7 +6,7 @@ import { Meeting } from "@/app/types/Meeting";
 import { HeldEvent } from "@/app/types/HeldEvent";
 import Image from "next/image";
 import { getPublicURLWithPath } from "@/app/lib/utils";
-import { randomScrambleForEvent } from "cubing/scramble";
+import { Scrambow } from "scrambow";
 import cubeDetails from "@/app/types/CubeDetails.json";
 
 import "./MeetingIDEdit.css";
@@ -77,7 +77,7 @@ const MeetingIDEdit = () => {
 
   const fetchScrambledEvents = async () => {
     const response = await fetch(
-      `/api/scrambles/meeting-scrambles/meeting-scrambled-cubes?meeting_id=${meetingId}`
+      `/api/scrambles/meeting-scrambled-cubes?meeting_id=${meetingId}`
     );
     const res_json = await response.json();
     if (response.ok) {
@@ -86,25 +86,72 @@ const MeetingIDEdit = () => {
         scrambledCubes.add(entry.cube_name);
       }
       setScrambledEvents(scrambledCubes);
+      console.log("Scrambled Events: ", scrambledCubes);
     }
   };
   // Use effect on mount only to fetch scrambled events. Future fetches will be done from the button.
   useEffect(() => {
+    console.log("Checked scrambled events on mount");
     fetchScrambledEvents();
-  }, );
+  }, [meetingId]);
 
-  const handleGenerateScramble = async (cubeName: string) => {
+  const handleGenerateScramble = async (
+    cube_name: string,
+    max_attempts: number,
+    round: number
+  ) => {
     // It might be easier to handle the generation of scrambles in the backend and insert them immediately
 
+    const scrambleName = cubeDetails.find(
+      (cube) => cube.cube_name === cube_name
+    )?.scramble_name;
+
+    if (!scrambleName) {
+      alert("There is no associated cube in database.");
+    } else {
+      const scrambles: string[] = [];
+      const scrambler = new Scrambow(scrambleName).get(max_attempts);
+
+      for (let i = 0; i < max_attempts; i++) {
+        // console.log(scrambler[i].scramble_string);
+        scrambles.push(scrambler[i].scramble_string);
+      }
+      // By now the scrambles are ready. We simply call the api to post into database
+      for (let i = 0; i < max_attempts; i++) {
+        const entry = {
+          meeting_id: meetingId,
+          attempt: i + 1,
+          cube_name: cube_name,
+          round: round,
+          scramble: scrambles[i],
+        };
+        try {
+          const response = await fetch(`/api/scrambles`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(entry),
+          });
+          if (response.ok) {
+            // The scramble has been posted successfully
+            fetchScrambledEvents();
+            alert("Scrambles generated successfully.");
+          } else {
+            throw new Error("Failed to post scramble.");
+          }
+        } catch (err) {
+          alert("Error while inserting scramble: " + err);
+        }
+      }
+    }
   };
 
   return (
     <div className="meeting-id-edit">
       <h2>{meeting?.meeting_name}</h2>
       {heldEvents.map((event) => (
-        // Make below kind of into a small card, give an option to generate the scramble
-        // if there is no associated scramble in the database.
-        <div key={event.Cubes.cube_name} className="meeting-id-edit-event">
+        <div key={event.cube_name} className="meeting-id-edit-event">
           <Image
             src={getPublicURLWithPath(event.Cubes.icon_link)}
             alt={event.Cubes.cube_name}
@@ -112,7 +159,24 @@ const MeetingIDEdit = () => {
             height={50}
           />
           <h3>{event.cube_name}</h3>
-          <button>Generate Scrambles</button>
+          {[...Array(event.rounds)].map((_, round_index) => (
+            // Make below kind of into a small card, give an option to generate the scramble
+            // if there is no associated scramble in the database.
+            <div key={round_index + 1} className="meeting-id-edit-round">
+              <button
+                onClick={() =>
+                  handleGenerateScramble(
+                    event.cube_name,
+                    event.FormatAttempts.max_attempts,
+                    round_index + 1
+                  )
+                }
+                disabled={scrambledEvents.has(event.cube_name)}
+              >
+                Generate Scrambles
+              </button>
+            </div>
+          ))}
         </div>
       ))}
     </div>
