@@ -151,7 +151,7 @@ export default function MeetingView({
     };
 
     fetchMeetingInfo();
-  }, [id, router, meeting]);
+  }, [id, router, meeting.status]);
 
   // For active meetings, we need to check whether the meeting is closed.
   useEffect(() => {
@@ -257,7 +257,6 @@ export default function MeetingView({
                           )
                         )}
                       </div>
-                      <button>Generate Scrambles</button>
                     </div>
                   ))}
                 </>
