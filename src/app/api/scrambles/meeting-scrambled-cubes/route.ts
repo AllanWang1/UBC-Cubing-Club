@@ -21,7 +21,7 @@ export async function GET(request: NextRequest) {
 
   const { data, error } = await supabase
     .from("Scrambles")
-    .select("cube_name")
+    .select("cube_name, round")
     .eq("meeting_id", meeting_id);
 
   if (error) {

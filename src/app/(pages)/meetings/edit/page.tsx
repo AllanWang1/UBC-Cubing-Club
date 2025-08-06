@@ -83,10 +83,9 @@ const MeetingIDEdit = () => {
     if (response.ok) {
       const scrambledCubes: Set<string> = new Set();
       for (const entry of res_json) {
-        scrambledCubes.add(entry.cube_name);
+        scrambledCubes.add(`${entry.cube_name}-${entry.round}`);
       }
       setScrambledEvents(scrambledCubes);
-      console.log("Scrambled Events: ", scrambledCubes);
     }
   };
   // Use effect on mount only to fetch scrambled events. Future fetches will be done from the button.
@@ -163,6 +162,7 @@ const MeetingIDEdit = () => {
             // Make below kind of into a small card, give an option to generate the scramble
             // if there is no associated scramble in the database.
             <div key={round_index + 1} className="meeting-id-edit-round">
+              <h4>Round {round_index + 1}</h4>
               <button
                 onClick={() =>
                   handleGenerateScramble(
@@ -171,7 +171,7 @@ const MeetingIDEdit = () => {
                     round_index + 1
                   )
                 }
-                disabled={scrambledEvents.has(event.cube_name)}
+                disabled={scrambledEvents.has(`${event.cube_name}-${round_index+1}`)}
               >
                 Generate Scrambles
               </button>

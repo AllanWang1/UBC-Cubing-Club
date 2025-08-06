@@ -7,3 +7,10 @@
     max-width: 1200px;
     padding-top: 100px;
 }
+.meeting-id-edit button:hover {
+  background-color: #002145;
+}
+.meeting-id-edit button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}

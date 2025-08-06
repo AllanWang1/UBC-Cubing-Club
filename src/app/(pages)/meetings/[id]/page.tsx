@@ -257,7 +257,6 @@ export default function MeetingView({
                           )
                         )}
                       </div>
-                      <button>Generate Scrambles</button>
                     </div>
                   ))}
                 </>
