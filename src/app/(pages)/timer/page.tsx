@@ -11,6 +11,8 @@ import { TwistyPlayerConfig } from "cubing/twisty";
 
 import { User } from "@supabase/auth-js";
 import { supabase } from "../../lib/SupabaseClient";
+
+import Image from "next/image";
 import CubeDetails from "@/app/types/CubeDetails.json";
 import SubmissionPopUp from "@/app/components/SubmissionPopUp";
 
@@ -187,6 +189,10 @@ const Timer = () => {
       alert("Password incorrect");
     }
   };
+
+  const handleBack = () => {
+    router.push(`/meetings/${meeting_id_read}`);
+  }
 
   // Validating all
   useEffect(() => {
@@ -430,6 +436,7 @@ const Timer = () => {
     return () => clearTimeout(timeout);
   }, [holding, time, submitted, verified]);
 
+  // Scramble renderer
   useEffect(() => {
     if (!verified) return;
     if (scramble === "") return;
@@ -498,6 +505,12 @@ const Timer = () => {
               </div>
             )}
           </div>
+          {submitted && !popUp && (
+            <div className="timer-back" onClick={handleBack}>
+              <Image src={"/back.svg"} width={20} height={20} alt=""/>
+              <h5>Back to meeting</h5>
+            </div>
+          )}
           {!running && scramble !== "" && (
             <div
               ref={puzzleContainerRef}
