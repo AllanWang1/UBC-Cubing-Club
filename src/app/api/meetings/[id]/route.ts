@@ -14,6 +14,7 @@ export async function GET(request: NextRequest) {
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
     else {
+        console.log("Meeting: ", data);
         return NextResponse.json(data, {status: 200});
     }
 }

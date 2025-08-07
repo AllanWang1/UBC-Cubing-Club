@@ -99,8 +99,8 @@ export default function MeetingView({
         if (res_json.length === 0) {
           throw new Error("No meeting found with the given ID.");
         }
-        // The API returns an array, so access the first (only) element.
-        setMeeting(res_json[0]);
+        // Changed return of API to single json object
+        setMeeting(res_json);
       } else {
         throw new Error("Error: " + res_json.status);
       }
@@ -123,7 +123,6 @@ export default function MeetingView({
 
     const fetchResults = async () => {
       // We only need results for closed meetings
-      if (meeting.status === "open") return;
       const response = await fetch(`/api/results/meeting-results/${id}`);
       const res_json = await response.json();
       if (response.ok) {
@@ -150,12 +149,14 @@ export default function MeetingView({
       }
     };
 
+    // fetchMeeting();
+    // fetchHeldEvents();
+    // fetchResults();
     fetchMeetingInfo();
-  }, [id, router, meeting.status]);
+  }, [id, router]);
 
   // For active meetings, we need to check whether the meeting is closed.
   useEffect(() => {
-    if (meeting.status === "closed") return;
     const fetchUser = async () => {
       const {
         data: { user: fetchedUser },
@@ -187,7 +188,7 @@ export default function MeetingView({
     };
     fetchUser();
     fetchAllPending();
-  }, [meeting, router, id]);
+  }, [router, id]);
 
   const pendingMap = useMemo(() => {
     const map = new Set<string>();

@@ -12,6 +12,7 @@ import { TwistyPlayerConfig } from "cubing/twisty";
 import { User } from "@supabase/auth-js";
 import { supabase } from "../../lib/SupabaseClient";
 import CubeDetails from "@/app/types/CubeDetails.json";
+import SubmissionPopUp from "@/app/components/SubmissionPopUp";
 
 import "./Timer.css";
 
@@ -101,11 +102,25 @@ const Timer = () => {
 
   const [scramble, setScramble] = useState<string>("");
 
+  const [popUp, setPopUp] = useState<boolean>(false);
+
   const attempt_read = Number(searchParams.get("attempt"));
   const cube_name_read = searchParams.get("cube_name") as string;
   const meeting_id_read = Number(searchParams.get("meeting_id"));
   const round_read = Number(searchParams.get("round"));
 
+  const [temporaryResult, setTemporaryResult] = useState<Result>({
+    attempt: attempt_read,
+    cube_name: cube_name_read,
+    id: user?.user_metadata?.member_id,
+    meeting_id: meeting_id_read,
+    round: round_read,
+    time_ms: 99999999,
+    record: false,
+    average_record: false,
+    penalty: "DNF",
+    raw_time_ms: 99999999,
+  });
   const puzzleContainerRef = useRef<HTMLDivElement>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -263,7 +278,7 @@ const Timer = () => {
       const meeting = await fetch(`api/meetings/${meeting_id_read}`);
       const meeting_json = await meeting.json();
       if (meeting.ok) {
-        const meeting_passcode = meeting_json[0].passcode;
+        const meeting_passcode = meeting_json.passcode;
         setMeetingPasscode(meeting_passcode);
       }
     };
@@ -329,7 +344,10 @@ const Timer = () => {
             raw_time_ms: endTimeLocal - startTime,
           };
 
-          submitResult(localResult);
+          setTemporaryResult(localResult);
+          setPopUp(true);
+          // This can stay here, I just need to submit the result through the pop-up
+          // The attempt will be deleted regardless of what is specified as the penalty.
           deleteStartedAttempt({
             attempt: localResult.attempt,
             cube_name: localResult.cube_name,
@@ -453,6 +471,11 @@ const Timer = () => {
             {scramble}
           </span>
           <div className="available-timer">
+            <SubmissionPopUp
+              isOpen={popUp}
+              onClose={() => setPopUp(false)}
+              result={temporaryResult}
+            ></SubmissionPopUp>
             {ready && (
               <div className="holding-ready-timer">
                 <h2>{formatTime(time)}</h2>
