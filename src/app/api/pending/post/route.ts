@@ -3,8 +3,11 @@ import { supabase } from "../../../lib/SupabaseClient";
 
 export async function POST(request: NextRequest) {
     const body = await request.json();
-    const { attempt, cube_name, id, meeting_id, round, time_ms } = body;
-    
+
+    const { attempt, cube_name, id, meeting_id, round, time_ms, penalty, raw_time_ms } = body;
+    const record = false;
+    const average_record = false;
+
     // Check if the result already exists
     const { data: existingResult, error: fetchError } = await supabase
         .from("PendingResults")
@@ -39,6 +42,10 @@ export async function POST(request: NextRequest) {
             meeting_id,
             round,
             time_ms,
+            record,
+            average_record,
+            penalty,
+            raw_time_ms,
         },
         ]);
     

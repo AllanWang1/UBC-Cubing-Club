@@ -4,6 +4,7 @@ import { useState } from "react";
 import { formatTime } from "../lib/utils";
 import { Result } from "../types/Result";
 import { DNF } from "../lib/utils";
+import "@/app/styles/SubmissionPopUp.css"
 
 type PopUpProps = {
   isOpen: boolean;
@@ -69,19 +70,19 @@ const SubmissionPopUp = ({ isOpen, onClose, result }: PopUpProps) => {
       <p>Mark as (penalties?):</p>
       <ul className="submission-pop-up-penalty-list">
         <li
-          className={`penalty-option${selected == "OK" ? "selected" : ""}`}
+          className={`penalty-option${selected == "OK" ? "-selected" : ""}`}
           onClick={() => handleChoice("OK")}
         >
           OK
         </li>
         <li
-          className={`penalty-option${selected == "+2" ? "selected" : ""}`}
+          className={`penalty-option${selected == "+2" ? "-selected" : ""}`}
           onClick={() => handleChoice("+2")}
         >
           +2
         </li>
         <li
-          className={`penalty-option${selected == "DNF" ? "selected" : ""}`}
+          className={`penalty-option${selected == "DNF" ? "-selected" : ""}`}
           onClick={() => handleChoice("DNF")}
         >
           DNF
