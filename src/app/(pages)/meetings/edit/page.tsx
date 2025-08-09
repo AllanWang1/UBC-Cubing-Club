@@ -135,14 +135,16 @@ const MeetingIDEdit = () => {
           if (response.ok) {
             // The scramble has been posted successfully
             fetchScrambledEvents();
-            alert("Scrambles generated successfully.");
+            // alert("Scrambles generated successfully.");
           } else {
             throw new Error("Failed to post scramble.");
           }
         } catch (err) {
           alert("Error while inserting scramble: " + err);
+          return;
         }
       }
+      alert("All scrambles were generated successfully.");
     }
   };
 
