@@ -23,10 +23,6 @@ const About = () => {
 
       <div className="container">
         <div className="section">
-          <h2>Who We Are</h2>
-        </div>
-
-        <div className="section">
           <div className="mission">
             <h2>Our Mission</h2>
           </div>
