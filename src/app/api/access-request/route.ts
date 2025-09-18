@@ -1,6 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "@/app/lib/SupabaseClient";
 
+export async function GET() {
+  const { data, error } = await supabase.from("MemberRequest").select("*");
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+  console.log("requests: ", data);
+  return NextResponse.json(data, { status: 200 });
+}
+
 export async function POST(request: NextRequest) {
   const { fullName, email, studentId, faculty, WCAId, birthDate, UUID } =
     await request.json();

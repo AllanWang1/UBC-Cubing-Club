@@ -1,0 +1,9 @@
+.TempRequestHandler {
+    display: flex;
+    flex-direction: column;
+    gap: 80px;
+    align-items: center;
+    width: 100%;
+    justify-content: center;
+    padding-top: 100px;
+}
