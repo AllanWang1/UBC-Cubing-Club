@@ -13,11 +13,11 @@ const Home = () => {
       <div className="info-container">
         <div className="info">
           <Image src="/location-icon.svg" width={35} height={35} alt="Location: "/>
-          <p>IBLC 156, 1961 East Mall, Vancouver, BC V6T 1Z1</p>
+          <p>IBLC 185, 1961 East Mall, Vancouver, BC V6T 1Z1</p>
         </div>
         <div className="info">
           <Image src="/time-icon.svg" width={35} height={35} alt="Time: "/>
-          <p>Thursdays @ 17:30 - 19:30</p>
+          <p>Thursdays @ 18:00 - 20:00</p>
         </div>
         <div className="info">
           <Image src="/instagram-icon.svg" width={35} height={35} alt="Instagram: "/>
