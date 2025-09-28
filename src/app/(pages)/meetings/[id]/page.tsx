@@ -84,6 +84,8 @@ export default function MeetingView({
   const [pendingResults, setPendingResults] = useState<Result[]>([]);
   const [memberId, setMemberId] = useState<number>(0);
 
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
+
   const router = useRouter();
 
   useEffect(() => {
@@ -132,12 +134,45 @@ export default function MeetingView({
       }
     };
 
+    // Fetch user data and determine if the user is an admin
+    const fetchUser = async () => {
+      const { data: { user }} = await supabase.auth.getUser();
+      if (user) {
+        const member_id = user.user_metadata?.member_id;
+        if (member_id) {
+          // Go into the Members table and check if the user is an admin 
+          try {
+            const response = await supabase
+              .from("Members")
+              .select("position")
+              .eq("id", member_id);
+              if (response.error) {
+                throw response.error;
+              }
+              const position = response.data?.[0]?.position;
+              console.log("Member position: ", position);
+              if (position) {
+                // The member has a special role. Currently these are limited to 
+                // executive positions, meaning they should have special access.
+                setIsAdmin(true);
+              }
+          } catch (error) {
+            console.error("Error fetching member position: ", error);
+          }
+        } else {
+          // No member ID associated with the user, thus not an admint and nothing needs
+          // to be done. 
+        }
+      }
+    }
+
     const fetchMeetingInfo = async () => {
       try {
         // Wait on results of verifying the meeting exists and fetching held events
         await fetchMeeting();
         await fetchHeldEvents();
         await fetchResults();
+        await fetchUser();
       } catch (error: unknown) {
         if (error instanceof Error) {
           alert("Error fetching meeting data: " + error.message);
@@ -212,6 +247,13 @@ export default function MeetingView({
       <div className="meeting-info">
         <h2>{meeting.meeting_name}</h2>
         <h3>{meeting.date}</h3>
+        {isAdmin && (
+          <button className="round-submissions">
+            <Link href={`/meetings/edit?meetingId=${meeting.meeting_id}`}>
+              Edit Meeting
+            </Link>
+          </button>
+        )}
       </div>
       <ul className="meeting-events-list">
         {heldEvents.map((event) => (

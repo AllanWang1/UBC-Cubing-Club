@@ -90,8 +90,21 @@ const MeetingIDEdit = () => {
   };
   // Use effect on mount only to fetch scrambled events. Future fetches will be done from the button.
   useEffect(() => {
+    const fetchScrambledEventsInit = async () => {
+    const response = await fetch(
+      `/api/scrambles/meeting-scrambled-cubes?meeting_id=${meetingId}`
+    );
+    const res_json = await response.json();
+    if (response.ok) {
+      const scrambledCubes: Set<string> = new Set();
+      for (const entry of res_json) {
+        scrambledCubes.add(`${entry.cube_name}-${entry.round}`);
+      }
+      setScrambledEvents(scrambledCubes);
+    }
+  };
     console.log("Checked scrambled events on mount");
-    fetchScrambledEvents();
+    fetchScrambledEventsInit();
   }, [meetingId]);
 
   const handleGenerateScramble = async (
