@@ -2,13 +2,14 @@
 
 import React from "react";
 import { useEffect, useState } from "react";
+import { supabase } from "@/app/lib/SupabaseClient";
 import { AccessRequest } from "@/app/types/AccessRequest";
 
-import "./TempRequestHandler.css";
+import "./membershipRequests.css";
 
-const TempRequestHandler = () => {
+const MembershipManagement = () => {
   const [accessRequests, setAccessRequests] = useState<AccessRequest[]>([]);
-
+  const [userRole, setUserRole] = useState<string>("");
   const handleApproval = (request: AccessRequest) => async () => {
     const response = await fetch(`/api/members/${request.user_id}`, {
       method: "POST",
@@ -35,13 +36,34 @@ const TempRequestHandler = () => {
           name: request.name,
         }),
       });
-      
     } else {
       alert(`Failed to approve ${request.name}'s request: ${res_json.error}`);
     }
   };
 
   useEffect(() => {
+    const getUserPermission = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (user?.user_metadata?.member_id) {
+        const response = await fetch(
+          `/api/members/${user.user_metadata.member_id}/role`
+        );
+        const res_json = await response.json();
+        if (response.ok) {
+          setUserRole("admin");
+        }
+      }
+      // Handle no user and error cases silently, as we have the default "all" permission
+    };
+
+    getUserPermission();
+  }, []);
+
+  useEffect(() => {
+    if (userRole !== "admin") return;
+
     const fetchRequests = async () => {
       const response = await fetch("/api/access-request");
       const res_json = await response.json();
@@ -54,8 +76,10 @@ const TempRequestHandler = () => {
     };
 
     fetchRequests();
-  }, []);
+  }, [userRole]);
+
   return (
+    userRole === "admin" ? (
     <div className="TempRequestHandler">
       <h2>Access Requests</h2>
       <table>
@@ -102,8 +126,10 @@ const TempRequestHandler = () => {
           ))}
         </tbody>
       </table>
-    </div>
+    </div>) : (
+      <h2>You do not have access rights to view this page</h2>
+    )
   );
 };
 
-export default TempRequestHandler;
+export default MembershipManagement;
