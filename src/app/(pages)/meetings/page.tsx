@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { getUserRole } from "@/app/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -17,6 +18,18 @@ interface Meeting {
 
 const Meetings = () => {
   const [meetings, setMeetings] = useState<Meeting[]>([]);
+  const [userRole, setUserRole] = useState<string>("all");
+
+  useEffect(() => {
+    const fetchUserPermission = async () => {
+      const role = await getUserRole();
+      if (role) {
+        setUserRole("admin");
+      }
+    };
+
+    fetchUserPermission();
+  }, []);
 
   useEffect(() => {
     const fetchMeetings = async () => {
@@ -36,10 +49,15 @@ const Meetings = () => {
   return (
     <div className="meetings">
       <div className="meetings-title">
-        <Image src="/navbar-icons/meetings.svg" width={40} height={40} alt="meeting icon"/>
+        <Image
+          src="/navbar-icons/meetings.svg"
+          width={40}
+          height={40}
+          alt="meeting icon"
+        />
         <h2>Meetings</h2>
       </div>
-      
+
       <table>
         <thead>
           <tr>

@@ -46,19 +46,26 @@ td {
   color: #66a5fd;
   text-decoration: none;
 }
-.member-paid a {
+.member-member a {
   color: #ffd700;
   text-decoration: none;
 }
-.member-President a {
+.member-president a {
   background: linear-gradient(90deg, #f6d365, #fda085);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   font-weight: bold;
   text-decoration: none;
 }
-.member-Treasurer a {
+.member-treasurer a {
   background: linear-gradient(to right, #ff416c, #ff4b2b, #ff6a00, #8e2de2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: bold;
+  text-decoration: none;
+}
+.member-admin a {
+  background: linear-gradient(to right, #a603ac, #2a5298, #4facfe);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   font-weight: bold;
