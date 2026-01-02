@@ -43,7 +43,7 @@ const Members = () => {
     if (b.role === "admin" && a.role !== "admin") return 1;
     if (a.membership && !b.membership) return -1;
     if (!a.membership && b.membership) return 1;
-    return a.name.localeCompare(b.name);
+    return a.id - b.id;
   }
 
   return (

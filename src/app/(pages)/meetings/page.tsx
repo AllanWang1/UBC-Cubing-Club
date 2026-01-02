@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getUserRole } from "@/app/lib/utils";
+import { getUserRole, ADMIN_ROLES } from "@/app/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -18,7 +18,18 @@ interface Meeting {
 
 const Meetings = () => {
   const [meetings, setMeetings] = useState<Meeting[]>([]);
-  const [userRole, setUserRole] = useState<string>("all");
+  const [userRole, setUserRole] = useState<string>("member");
+
+  useEffect(() => {
+    const fetchUserRole = async () => {
+      const role = await getUserRole();
+      if (role) {
+        setUserRole(role);
+      }
+    };
+
+    fetchUserRole();
+  }, []);
 
   useEffect(() => {
     const fetchUserPermission = async () => {
@@ -56,6 +67,12 @@ const Meetings = () => {
           alt="meeting icon"
         />
         <h2>Meetings</h2>
+        {ADMIN_ROLES.includes(userRole) && (
+          <Link href="/meetings/create" className="create-meeting-button">
+            <span className="plus">＋</span>
+            Create Meeting
+          </Link>
+        )}
       </div>
 
       <table>

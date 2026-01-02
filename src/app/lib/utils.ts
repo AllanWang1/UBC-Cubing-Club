@@ -2,11 +2,13 @@ import { supabase } from "../lib/SupabaseClient";
 import { Result } from "@/app/types/Result";
 import { User } from "@supabase/auth-js";
 
+export const DNF = 99999999;
+export const ADMIN_ROLES = ["admin", "president", "treasurer"];
+
 export function formatTime(ms: number): string {
   // This is what DNF is defined to be; to calculate an average, it must be less than DNF/3
   // Then, this means if there is a DNF included in the average, it will be greater than DNF/3, which still shows DNF.
   // This is ok because 33333333 milliseconds is 9 hours and 15 minutes, which is reasonable for a DNF.
-  const DNF = 99999999;
   if (ms < 0 || ms > DNF / 3) return "DNF";
 
   const minutes = Math.floor(ms / 60000);
@@ -37,8 +39,6 @@ export async function getCurrentUser(): Promise<User | null> {
   } = await supabase.auth.getUser();
   return fetchedUser;
 }
-
-export const DNF = 99999999;
 
 export function getRadarStats(results: Result[]) {
   const nxnCubes = [
