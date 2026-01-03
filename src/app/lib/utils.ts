@@ -4,6 +4,22 @@ import { User } from "@supabase/auth-js";
 
 export const DNF = 99999999;
 export const ADMIN_ROLES = ["admin", "president", "treasurer"];
+export const SUPPORTED_CUBES = [
+  "2x2",
+  "3x3",
+  "4x4",
+  "5x5",
+  "6x6",
+  "7x7",
+  "3x3 OH",
+  "3x3 BLD",
+  "FMC",
+  "Pyraminx",
+  "Skewb",
+  "Megaminx",
+  "Clock",
+  "Square-1",
+]
 
 export function formatTime(ms: number): string {
   // This is what DNF is defined to be; to calculate an average, it must be less than DNF/3

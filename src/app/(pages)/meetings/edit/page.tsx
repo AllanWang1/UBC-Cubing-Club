@@ -5,7 +5,12 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { Meeting } from "@/app/types/Meeting";
 import { HeldEvent } from "@/app/types/HeldEvent";
 import Image from "next/image";
-import { getPublicURLWithPath } from "@/app/lib/utils";
+import {
+  getPublicURLWithPath,
+  getUserRole,
+  ADMIN_ROLES,
+} from "@/app/lib/utils";
+import MeetingEventAdder from "@/app/components/MeetingEventAdder";
 import { Scrambow } from "scrambow";
 import cubeDetails from "@/app/types/CubeDetails.json";
 
@@ -17,6 +22,7 @@ const MeetingIDEdit = () => {
   const meetingId = searchParams.get("meetingId");
   const [meeting, setMeeting] = useState<Meeting | null>(null);
   const [heldEvents, setHeldEvents] = useState<HeldEvent[]>([]);
+  const [userRole, setUserRole] = useState<string>("member");
   const router = useRouter();
 
   const [scrambledEvents, setScrambledEvents] = useState<Set<string>>(
@@ -72,7 +78,21 @@ const MeetingIDEdit = () => {
       }
     };
 
+    const fetchUserRole = async () => {
+      try {
+        const role = await getUserRole();
+        if (role) {
+          setUserRole(role);
+        }
+      } catch (error) {
+        alert("An error occurred while fetching user role.");
+        router.push("/meetings");
+        return;
+      }
+    };
+
     fetchMeetingInfo();
+    fetchUserRole();
   }, [router, meetingId]);
 
   const fetchScrambledEvents = async () => {
@@ -88,21 +108,22 @@ const MeetingIDEdit = () => {
       setScrambledEvents(scrambledCubes);
     }
   };
+
   // Use effect on mount only to fetch scrambled events. Future fetches will be done from the button.
   useEffect(() => {
     const fetchScrambledEventsInit = async () => {
-    const response = await fetch(
-      `/api/scrambles/meeting-scrambled-cubes?meeting_id=${meetingId}`
-    );
-    const res_json = await response.json();
-    if (response.ok) {
-      const scrambledCubes: Set<string> = new Set();
-      for (const entry of res_json) {
-        scrambledCubes.add(`${entry.cube_name}-${entry.round}`);
+      const response = await fetch(
+        `/api/scrambles/meeting-scrambled-cubes?meeting_id=${meetingId}`
+      );
+      const res_json = await response.json();
+      if (response.ok) {
+        const scrambledCubes: Set<string> = new Set();
+        for (const entry of res_json) {
+          scrambledCubes.add(`${entry.cube_name}-${entry.round}`);
+        }
+        setScrambledEvents(scrambledCubes);
       }
-      setScrambledEvents(scrambledCubes);
-    }
-  };
+    };
     console.log("Checked scrambled events on mount");
     fetchScrambledEventsInit();
   }, [meetingId]);
@@ -161,9 +182,10 @@ const MeetingIDEdit = () => {
     }
   };
 
-  return (
+  return ADMIN_ROLES.includes(userRole) ? (
     <div className="meeting-id-edit">
       <h2>{meeting?.meeting_name}</h2>
+      <MeetingEventAdder />
       {heldEvents.map((event) => (
         <div key={event.cube_name} className="meeting-id-edit-event">
           <Image
@@ -186,7 +208,9 @@ const MeetingIDEdit = () => {
                     round_index + 1
                   )
                 }
-                disabled={scrambledEvents.has(`${event.cube_name}-${round_index+1}`)}
+                disabled={scrambledEvents.has(
+                  `${event.cube_name}-${round_index + 1}`
+                )}
               >
                 Generate Scrambles
               </button>
@@ -194,6 +218,10 @@ const MeetingIDEdit = () => {
           ))}
         </div>
       ))}
+    </div>
+  ) : (
+    <div>
+      <h2>You do not have permission to edit meetings.</h2>
     </div>
   );
 };
