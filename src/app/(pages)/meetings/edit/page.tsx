@@ -29,6 +29,18 @@ const MeetingIDEdit = () => {
     new Set()
   );
 
+  const fetchHeldEvents = async () => {
+    // We do not need to check any preconditions for held events, since
+    // this function will only be called after fetchMeeting is successful.
+    const response = await fetch(`/api/holds/${meetingId}`);
+    const res_json = await response.json();
+    if (response.ok) {
+      setHeldEvents(res_json);
+    } else {
+      throw new Error("Failed to fetch held events");
+    }
+  };
+
   // Check that meetingId is valid, and the database contains the correct information.
   useEffect(() => {
     const fetchMeeting = async () => {
@@ -44,18 +56,6 @@ const MeetingIDEdit = () => {
         }
       } else {
         throw new Error("Invalid meeting ID");
-      }
-    };
-
-    const fetchHeldEvents = async () => {
-      // We do not need to check any preconditions for held events, since
-      // this function will only be called after fetchMeeting is successful.
-      const response = await fetch(`/api/holds/${meetingId}`);
-      const res_json = await response.json();
-      if (response.ok) {
-        setHeldEvents(res_json);
-      } else {
-        throw new Error("Failed to fetch held events");
       }
     };
 
@@ -185,7 +185,7 @@ const MeetingIDEdit = () => {
   return ADMIN_ROLES.includes(userRole) ? (
     <div className="meeting-id-edit">
       <h2>{meeting?.meeting_name}</h2>
-      <MeetingEventAdder />
+      <MeetingEventAdder onEventAdded={fetchHeldEvents} />
       {heldEvents.map((event) => (
         <div key={event.cube_name} className="meeting-id-edit-event">
           <Image
