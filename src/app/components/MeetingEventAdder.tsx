@@ -53,7 +53,7 @@ const MeetingEventAdder = ({ onEventAdded }: MeetingEventAdderProps) => {
   return (
     <div className="meeting-event-adder">
       <form className="meeting-event-adder-form" onSubmit={handleAddEvent}>
-        <h3>Add Event to Meeting</h3>
+        <h3>Add Event</h3>
         <p>
           Note: please be mindful to keep the events and rounds appropriate,
           thanks!

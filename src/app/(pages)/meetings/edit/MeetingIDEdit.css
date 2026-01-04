@@ -1,11 +1,16 @@
 .meeting-id-edit {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 40px;
-    width: 100%;
-    max-width: 1200px;
-    padding-top: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 50px auto;
+  gap: 40px;
+  width: 100%;
+  max-width: 1200px;
+  padding-top: 100px;
+  padding-bottom: 80px;
+}
+.meeting-id-edit h2 {
+  font-size: 36px;
 }
 .meeting-id-edit button:hover {
   background-color: #002145;
@@ -13,4 +18,19 @@
 .meeting-id-edit button:disabled {
   background-color: #cccccc;
   cursor: not-allowed;
+}
+.meeting-id-edit-event-options {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+.meeting-id-edit-delete-button {
+  background-color: #d83e3e;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
 }
