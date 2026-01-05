@@ -1,0 +1,7 @@
+.create-meeting {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 100px;
+    margin: 50px auto;
+}

@@ -1,0 +1,17 @@
+.meeting-event-adder-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+    max-width: 400px;
+}
+
+.meeting-event-adder-form label {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.meeting-event-adder-form h3 {
+    font-size: 28px;
+    margin-bottom: 10px;
+}

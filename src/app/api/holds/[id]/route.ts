@@ -15,3 +15,17 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(Holds, { status: 200 });
   }
 }
+
+export async function DELETE(request: NextRequest) {
+  const meeting_id = request.nextUrl.pathname.split("/").pop();
+  const cube_name = request.nextUrl.searchParams.get("cube_name");
+  const { data, error } = await supabase
+    .from("Holds")
+    .delete()
+    .eq("meeting_id", meeting_id)
+    .eq("cube_name", cube_name);
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+  return NextResponse.json(data, { status: 200 });
+}

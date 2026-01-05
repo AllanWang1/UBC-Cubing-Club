@@ -5,7 +5,12 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { Meeting } from "@/app/types/Meeting";
 import { HeldEvent } from "@/app/types/HeldEvent";
 import Image from "next/image";
-import { getPublicURLWithPath } from "@/app/lib/utils";
+import {
+  getPublicURLWithPath,
+  getUserRole,
+  ADMIN_ROLES,
+} from "@/app/lib/utils";
+import MeetingEventAdder from "@/app/components/MeetingEventAdder";
 import { Scrambow } from "scrambow";
 import cubeDetails from "@/app/types/CubeDetails.json";
 
@@ -17,11 +22,24 @@ const MeetingIDEdit = () => {
   const meetingId = searchParams.get("meetingId");
   const [meeting, setMeeting] = useState<Meeting | null>(null);
   const [heldEvents, setHeldEvents] = useState<HeldEvent[]>([]);
+  const [userRole, setUserRole] = useState<string>("member");
   const router = useRouter();
 
   const [scrambledEvents, setScrambledEvents] = useState<Set<string>>(
     new Set()
   );
+
+  const fetchHeldEvents = async () => {
+    // We do not need to check any preconditions for held events, since
+    // this function will only be called after fetchMeeting is successful.
+    const response = await fetch(`/api/holds/${meetingId}`);
+    const res_json = await response.json();
+    if (response.ok) {
+      setHeldEvents(res_json);
+    } else {
+      throw new Error("Failed to fetch held events");
+    }
+  };
 
   // Check that meetingId is valid, and the database contains the correct information.
   useEffect(() => {
@@ -38,18 +56,6 @@ const MeetingIDEdit = () => {
         }
       } else {
         throw new Error("Invalid meeting ID");
-      }
-    };
-
-    const fetchHeldEvents = async () => {
-      // We do not need to check any preconditions for held events, since
-      // this function will only be called after fetchMeeting is successful.
-      const response = await fetch(`/api/holds/${meetingId}`);
-      const res_json = await response.json();
-      if (response.ok) {
-        setHeldEvents(res_json);
-      } else {
-        throw new Error("Failed to fetch held events");
       }
     };
 
@@ -72,7 +78,21 @@ const MeetingIDEdit = () => {
       }
     };
 
+    const fetchUserRole = async () => {
+      try {
+        const role = await getUserRole();
+        if (role) {
+          setUserRole(role);
+        }
+      } catch (error) {
+        alert("An error occurred while fetching user role.");
+        router.push("/meetings");
+        return;
+      }
+    };
+
     fetchMeetingInfo();
+    fetchUserRole();
   }, [router, meetingId]);
 
   const fetchScrambledEvents = async () => {
@@ -88,21 +108,22 @@ const MeetingIDEdit = () => {
       setScrambledEvents(scrambledCubes);
     }
   };
+
   // Use effect on mount only to fetch scrambled events. Future fetches will be done from the button.
   useEffect(() => {
     const fetchScrambledEventsInit = async () => {
-    const response = await fetch(
-      `/api/scrambles/meeting-scrambled-cubes?meeting_id=${meetingId}`
-    );
-    const res_json = await response.json();
-    if (response.ok) {
-      const scrambledCubes: Set<string> = new Set();
-      for (const entry of res_json) {
-        scrambledCubes.add(`${entry.cube_name}-${entry.round}`);
+      const response = await fetch(
+        `/api/scrambles/meeting-scrambled-cubes?meeting_id=${meetingId}`
+      );
+      const res_json = await response.json();
+      if (response.ok) {
+        const scrambledCubes: Set<string> = new Set();
+        for (const entry of res_json) {
+          scrambledCubes.add(`${entry.cube_name}-${entry.round}`);
+        }
+        setScrambledEvents(scrambledCubes);
       }
-      setScrambledEvents(scrambledCubes);
-    }
-  };
+    };
     console.log("Checked scrambled events on mount");
     fetchScrambledEventsInit();
   }, [meetingId]);
@@ -161,9 +182,33 @@ const MeetingIDEdit = () => {
     }
   };
 
-  return (
+  /**
+   * Since we have no action set properly for foreign keys from Results and PendingResults to Holds, 
+   * and we have cascade from Scrambles to Holds, we are safe to DELETE on /api/holds/:meeting_id?:cube_name
+   */
+  const deleteHeldEvent = (cube_name: string) => async () => {
+    const response = await fetch(
+      `/api/holds/${meetingId}?cube_name=${cube_name}`, {
+        method: "DELETE",
+      }
+    );
+    const res_json = await response.json();
+    if (response.ok) {
+      alert(`Successfully deleted held event: ${cube_name}`);
+      // Refresh held events
+      fetchHeldEvents();
+      // Refresh scrambled events
+      fetchScrambledEvents();
+    } else {
+      alert(`Failed to delete held event: ${res_json.error}`); 
+    }
+  };
+
+  return ADMIN_ROLES.includes(userRole) ? (
     <div className="meeting-id-edit">
       <h2>{meeting?.meeting_name}</h2>
+      <h2>{meeting?.date}</h2>
+      <MeetingEventAdder onEventAdded={fetchHeldEvents} />
       {heldEvents.map((event) => (
         <div key={event.cube_name} className="meeting-id-edit-event">
           <Image
@@ -178,22 +223,34 @@ const MeetingIDEdit = () => {
             // if there is no associated scramble in the database.
             <div key={round_index + 1} className="meeting-id-edit-round">
               <h4>Round {round_index + 1}</h4>
-              <button
-                onClick={() =>
-                  handleGenerateScramble(
-                    event.cube_name,
-                    event.FormatAttempts.max_attempts,
-                    round_index + 1
-                  )
-                }
-                disabled={scrambledEvents.has(`${event.cube_name}-${round_index+1}`)}
-              >
-                Generate Scrambles
-              </button>
+              <div className="meeting-id-edit-event-options">
+                <button
+                  onClick={() =>
+                    handleGenerateScramble(
+                      event.cube_name,
+                      event.FormatAttempts.max_attempts,
+                      round_index + 1
+                    )
+                  }
+                  disabled={scrambledEvents.has(
+                    `${event.cube_name}-${round_index + 1}`
+                  )}
+                >
+                  Generate Scrambles
+                </button>
+
+                <button className="meeting-id-edit-delete-button" onClick={deleteHeldEvent(event.cube_name)}>
+                  Delete Event
+                </button>
+              </div>
             </div>
           ))}
         </div>
       ))}
+    </div>
+  ) : (
+    <div>
+      <h2>You do not have permission to edit meetings.</h2>
     </div>
   );
 };

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
-import type { User } from "@supabase/auth-js";
+import { getUserRole } from "../lib/utils";
 import { supabase } from "../lib/SupabaseClient";
 
 import "../styles/Navbar.css";
@@ -73,17 +73,10 @@ const Navbar = () => {
 
   useEffect(() => {
     const getUserPermission = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (user?.user_metadata?.member_id) {
-        const response = await fetch(`/api/members/${user.user_metadata.member_id}/role`);
-        const res_json = await response.json();
-        if (response.ok) {
-          setUserPermission("admin");
-        }
+      const role = await getUserRole();
+      if (role) {
+        setUserPermission("admin");
       }
-      // Handle no user and error cases silently, as we have the default "all" permission
     };
 
     getUserPermission();

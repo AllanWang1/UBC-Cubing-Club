@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { formatTime } from "../../../lib/utils";
+import { formatTime, getUserRole, ADMIN_ROLES } from "../../../lib/utils";
 import { getPublicURLWithPath } from "../../../lib/utils";
 import { Meeting } from "../../../types/Meeting";
 import { HeldEvent } from "../../../types/HeldEvent";
@@ -135,34 +135,14 @@ export default function MeetingView({
     };
 
     // Fetch user data and determine if the user is an admin
-    const fetchUser = async () => {
-      const { data: { user }} = await supabase.auth.getUser();
-      if (user) {
-        const member_id = user.user_metadata?.member_id;
-        if (member_id) {
-          // Go into the Members table and check if the user is an admin 
-          try {
-            const response = await supabase
-              .from("Members")
-              .select("position")
-              .eq("id", member_id);
-              if (response.error) {
-                throw response.error;
-              }
-              const position = response.data?.[0]?.position;
-              console.log("Member position: ", position);
-              if (position) {
-                // The member has a special role. Currently these are limited to 
-                // executive positions, meaning they should have special access.
-                setIsAdmin(true);
-              }
-          } catch (error) {
-            console.error("Error fetching member position: ", error);
-          }
-        } else {
-          // No member ID associated with the user, thus not an admint and nothing needs
-          // to be done. 
+    const fetchUserRole = async () => {
+      try {
+        const role = await getUserRole();
+        if (role && ADMIN_ROLES.includes(role)) {
+          setIsAdmin(true);
         }
+      } catch(error) {
+        console.error("Error fetching user role: ", error);
       }
     }
 
@@ -172,7 +152,7 @@ export default function MeetingView({
         await fetchMeeting();
         await fetchHeldEvents();
         await fetchResults();
-        await fetchUser();
+        await fetchUserRole();
       } catch (error: unknown) {
         if (error instanceof Error) {
           alert("Error fetching meeting data: " + error.message);

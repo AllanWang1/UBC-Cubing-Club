@@ -12,9 +12,9 @@ interface Member {
   email: string | null;
   student_id: string | null;
   membership: boolean;
-  position: string | null;
   faculty: string;
   user_id: string | null;
+  role: "president" | "treasurer" | "admin" | "member";
 }
 
 const Members = () => {
@@ -25,13 +25,26 @@ const Members = () => {
       const response = await fetch("/api/members");
       const res_json = await response.json();
       if (response.ok) {
-        setMembers(res_json);
+        const sortedMembers = res_json.sort(sortMembers);
+        setMembers(sortedMembers);
       } else {
         console.error("Error fetching members:", res_json.error);
       }
     };
     fetchMembers();
   }, []);
+
+  const sortMembers = (a: Member, b: Member) => {
+    if (a.role === "president") return -1;
+    if (b.role === "president") return 1;
+    if (a.role === "treasurer") return -1;
+    if (b.role === "treasurer") return 1;
+    if (a.role === "admin" && b.role !== "admin") return -1;
+    if (b.role === "admin" && a.role !== "admin") return 1;
+    if (a.membership && !b.membership) return -1;
+    if (!a.membership && b.membership) return 1;
+    return a.id - b.id;
+  }
 
   return (
     <div className="members">
@@ -56,8 +69,7 @@ const Members = () => {
           {members.map((member) => (
             <tr key={member.id}>
               <td>{member.id}</td>
-              {/* the member position can only be null, "President", or "Treasurer" */}
-              <td className={member.membership ? `member-${member.position ? `${member.position}` : `paid`}` : "non-member"}>
+              <td className={member.membership ? `member-${member.role ? `${member.role}` : `paid`}` : "non-member"}>
                 <Link href={`/members/${member.id}`}>{member.name}</Link>
               </td>
               <td>{member.faculty}</td>

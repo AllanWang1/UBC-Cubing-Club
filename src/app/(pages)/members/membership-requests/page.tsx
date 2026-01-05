@@ -2,14 +2,14 @@
 
 import React from "react";
 import { useEffect, useState } from "react";
-import { supabase } from "@/app/lib/SupabaseClient";
 import { AccessRequest } from "@/app/types/AccessRequest";
+import { getUserRole, ADMIN_ROLES } from "@/app/lib/utils";
 
 import "./membershipRequests.css";
 
 const MembershipManagement = () => {
   const [accessRequests, setAccessRequests] = useState<AccessRequest[]>([]);
-  const [userRole, setUserRole] = useState<string>("");
+  const [userRole, setUserRole] = useState<string>("member");
   const handleApproval = (request: AccessRequest) => async () => {
     const response = await fetch(`/api/members/${request.user_id}`, {
       method: "POST",
@@ -43,17 +43,9 @@ const MembershipManagement = () => {
 
   useEffect(() => {
     const getUserPermission = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (user?.user_metadata?.member_id) {
-        const response = await fetch(
-          `/api/members/${user.user_metadata.member_id}/role`
-        );
-        const res_json = await response.json();
-        if (response.ok) {
-          setUserRole("admin");
-        }
+      const role = await getUserRole();
+      if (role) {
+        setUserRole(role);
       }
       // Handle no user and error cases silently, as we have the default "all" permission
     };
@@ -62,7 +54,7 @@ const MembershipManagement = () => {
   }, []);
 
   useEffect(() => {
-    if (userRole !== "admin") return;
+    if (!ADMIN_ROLES.includes(userRole)) return;
 
     const fetchRequests = async () => {
       const response = await fetch("/api/access-request");
@@ -78,8 +70,7 @@ const MembershipManagement = () => {
     fetchRequests();
   }, [userRole]);
 
-  return (
-    userRole === "admin" ? (
+  return ADMIN_ROLES.includes(userRole) ? (
     <div className="TempRequestHandler">
       <h2>Access Requests</h2>
       <table>
@@ -126,9 +117,9 @@ const MembershipManagement = () => {
           ))}
         </tbody>
       </table>
-    </div>) : (
-      <h2>You do not have access rights to view this page</h2>
-    )
+    </div>
+  ) : (
+    <h2>You do not have access rights to view this page</h2>
   );
 };
 
