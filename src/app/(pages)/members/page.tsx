@@ -10,7 +10,6 @@ interface Member {
   id: number;
   name: string;
   email: string | null;
-  student_id: string | null;
   membership: boolean;
   faculty: string;
   user_id: string | null;
