@@ -88,6 +88,7 @@ export default function MeetingView({
 
   const router = useRouter();
 
+  // For fetching meeting data on component mount
   useEffect(() => {
     /**
      * Fetch the meeting data from the API using the meeting ID.
@@ -141,10 +142,10 @@ export default function MeetingView({
         if (role && ADMIN_ROLES.includes(role)) {
           setIsAdmin(true);
         }
-      } catch(error) {
+      } catch (error) {
         console.error("Error fetching user role: ", error);
       }
-    }
+    };
 
     const fetchMeetingInfo = async () => {
       try {
@@ -170,9 +171,13 @@ export default function MeetingView({
     fetchMeetingInfo();
   }, [id, router]);
 
-  // For active meetings, we need to check whether the meeting is closed.
   useEffect(() => {
     const fetchUser = async () => {
+      // Check if the meeting is closed; if so, do not perform any further checking
+      // as closed meeting pages are publicly available. 
+      if (meeting.status === "closed") {
+        return;
+      }
       const {
         data: { user: fetchedUser },
       } = await supabase.auth.getUser();
@@ -227,13 +232,6 @@ export default function MeetingView({
       <div className="meeting-info">
         <h2>{meeting.meeting_name}</h2>
         <h3>{meeting.date}</h3>
-        {isAdmin && (
-          <button className="round-submissions">
-            <Link href={`/meetings/edit?meetingId=${meeting.meeting_id}`}>
-              Edit Meeting
-            </Link>
-          </button>
-        )}
       </div>
       <ul className="meeting-events-list">
         {heldEvents.map((event) => (
@@ -251,6 +249,15 @@ export default function MeetingView({
               ></Image>
               {meeting.status === "open" ? (
                 <>
+                  {isAdmin && (
+                    <button className="round-submissions">
+                      <Link
+                        href={`/meetings/edit?meetingId=${meeting.meeting_id}`}
+                      >
+                        Edit Meeting
+                      </Link>
+                    </button>
+                  )}
                   {[...Array(event.rounds)].map((_, round_index) => (
                     <div className="rounds" key={round_index}>
                       <h4>Round {round_index + 1}</h4>
