@@ -174,7 +174,7 @@ export default function MeetingView({
   useEffect(() => {
     const fetchUser = async () => {
       // Check if the meeting is closed; if so, do not perform any further checking
-      // as closed meeting pages are publicly available. 
+      // as closed meeting pages are publicly available.
       if (meeting.status === "closed") {
         return;
       }
@@ -208,7 +208,7 @@ export default function MeetingView({
     };
     fetchUser();
     fetchAllPending();
-  }, [router, id]);
+  }, [router, id, meeting.status]);
 
   const pendingMap = useMemo(() => {
     const map = new Set<string>();
@@ -233,6 +233,13 @@ export default function MeetingView({
         <h2>{meeting.meeting_name}</h2>
         <h3>{meeting.date}</h3>
       </div>
+      {isAdmin && meeting.status === "open" && (
+        <button className="edit-meeting-button">
+          <Link href={`/meetings/edit?meetingId=${meeting.meeting_id}`}>
+            Edit Meeting
+          </Link>
+        </button>
+      )}
       <ul className="meeting-events-list">
         {heldEvents.map((event) => (
           <li key={event.cube_name}>
@@ -249,15 +256,6 @@ export default function MeetingView({
               ></Image>
               {meeting.status === "open" ? (
                 <>
-                  {isAdmin && (
-                    <button className="round-submissions">
-                      <Link
-                        href={`/meetings/edit?meetingId=${meeting.meeting_id}`}
-                      >
-                        Edit Meeting
-                      </Link>
-                    </button>
-                  )}
                   {[...Array(event.rounds)].map((_, round_index) => (
                     <div className="rounds" key={round_index}>
                       <h4>Round {round_index + 1}</h4>
