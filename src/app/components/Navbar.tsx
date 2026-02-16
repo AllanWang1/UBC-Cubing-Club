@@ -4,8 +4,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
-import { getUserRole } from "../lib/utils";
-import { supabase } from "../lib/SupabaseClient";
 
 import "../styles/Navbar.css";
 import Dashboard from "./Dashboard";
@@ -46,12 +44,6 @@ const Navbar = () => {
       icon: "/navbar-icons/members.svg",
       permission: "all",
     },
-    {
-      href: "/members/membership-requests",
-      label: "Memberships",
-      icon: "/navbar-icons/membershipManagement.svg",
-      permission: "admin",
-    },
   ];
 
   useEffect(() => {
@@ -70,17 +62,6 @@ const Navbar = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isOpen]);
-
-  useEffect(() => {
-    const getUserPermission = async () => {
-      const role = await getUserRole();
-      if (role) {
-        setUserPermission("admin");
-      }
-    };
-
-    getUserPermission();
-  }, []);
 
   const isActive = (href: string) => {
     if (href === "/") return pathname === "/";

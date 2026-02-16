@@ -63,7 +63,7 @@ const MembershipManagement = () => {
       if (response.ok) {
         setAccessRequests(res_json);
       } else {
-        console.error("Error fetching meetings:", res_json.error);
+        alert("Error fetching access requests: " + res_json.error);
       }
     };
 

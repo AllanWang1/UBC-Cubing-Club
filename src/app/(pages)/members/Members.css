@@ -71,3 +71,21 @@ td {
   font-weight: bold;
   text-decoration: none;
 }
+.manage-requests-button {
+  padding: 10px;
+  background-color: #0055a4;
+  color: white;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s ease-in-out;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  gap: 8px;
+}
+.manage-requests-button img {
+  filter: invert(100%);
+}

@@ -28,7 +28,7 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  const { id, name, email, faculty, student_id, birthdate, wca_id } =
+  const { id, name, email, faculty, birthdate, wca_id } =
     await request.json();
   if (!name || !faculty) {
     console.log("missing: ", { id, name, faculty });
@@ -43,7 +43,6 @@ export async function POST(request: NextRequest) {
       {
         name: name,
         email: email,
-        student_id: student_id,
         membership: true,
         position: null,
         faculty: faculty,

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-
+import { getUserRole, ADMIN_ROLES } from "@/app/lib/utils";
 import "./Members.css";
 
 interface Member {
@@ -18,6 +18,17 @@ interface Member {
 
 const Members = () => {
   const [members, setMembers] = useState<Member[]>([]);
+  const [userRole, setUserRole] = useState<string>("member");
+
+  useEffect(() => {
+    const fetchUserRole = async () => {
+      const role = await getUserRole();
+      if (role) {
+        setUserRole(role);
+      }
+    };
+    fetchUserRole();
+  }, []);
 
   useEffect(() => {
     const fetchMembers = async () => {
@@ -43,7 +54,7 @@ const Members = () => {
     if (a.membership && !b.membership) return -1;
     if (!a.membership && b.membership) return 1;
     return a.id - b.id;
-  }
+  };
 
   return (
     <div className="members">
@@ -56,6 +67,19 @@ const Members = () => {
         />
         <h2>Members</h2>
       </div>
+      {ADMIN_ROLES.includes(userRole) && (
+        <button className="manage-requests-button">
+          <Image
+            src="/navbar-icons/membershipManagement.svg"
+            width={20}
+            height={20}
+            alt="membership management icon"
+          />
+          <Link href="/members/membership-requests">
+            Manage membership requests
+          </Link>
+        </button>
+      )}
       <table>
         <thead>
           <tr>
@@ -68,7 +92,13 @@ const Members = () => {
           {members.map((member) => (
             <tr key={member.id}>
               <td>{member.id}</td>
-              <td className={member.membership ? `member-${member.role ? `${member.role}` : `paid`}` : "non-member"}>
+              <td
+                className={
+                  member.membership
+                    ? `member-${member.role ? `${member.role}` : `paid`}`
+                    : "non-member"
+                }
+              >
                 <Link href={`/members/${member.id}`}>{member.name}</Link>
               </td>
               <td>{member.faculty}</td>

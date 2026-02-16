@@ -6,7 +6,6 @@ import { getPublicURLWithPath, formatTime } from "@/app/lib/utils";
 import { MemberRecord } from "@/app/types/MemberRecord";
 import { MemberResult } from "@/app/types/MemberResult";
 
-import { Radar } from "react-chartjs-2";
 import Image from "next/image";
 
 import "./MemberID.css";
@@ -34,52 +33,6 @@ const Member = ({ params }: { params: Promise<{ id: string }> }) => {
   // These are the links to the cube icons that the member has participated in
   const [participatedEvents, setParticipatedEvents] = useState<string[]>([]);
   const [WCAId, setWCAId] = useState<string>("");
-
-  const radarOptions = {
-    scales: {
-      r: {
-        angleLines: {
-          display: true,
-        },
-        // Fix range to 0 and 100
-        suggestedMin: 0,
-        suggestedMax: 100,
-        ticks: {
-          stepSize: 20,
-          backdropColor: "rgba(0, 0, 0, 0)", // Optional: makes ticks more readable
-        },
-      },
-    },
-    elements: {
-      line: {
-        borderWidth: 3,
-      },
-    },
-  };
-
-  const radarData = {
-    labels: [
-      "NxN",
-      "Non-cubic",
-      "Consistency", // Coefficient of deviation
-      "Versatility",
-      "Growth",
-      "Persistence",
-    ],
-    datasets: [
-      {
-        label: "data",
-        data: [89, 20, 88, 30, 90, 100],
-        fill: true,
-        backgroundColor: "rgba(54, 162, 235, 0.2)",
-        borderColor: "rgb(54, 162, 235)",
-        pointBackgroundColor: "rgb(54, 162, 235)",
-        pointBorderColor: "#fff",
-        pointHoverBackgroundColor: "#fff",
-        pointHoverBorderColor: "rgb(54, 162, 235)",
-      },
-    ],
-  };
 
   // Fetch member records
   useEffect(() => {
