@@ -78,7 +78,6 @@ const Meetings = () => {
       <table>
         <thead>
           <tr>
-            <th>Meeting ID</th>
             <th>Name</th>
             <th>Date</th>
           </tr>
@@ -86,9 +85,6 @@ const Meetings = () => {
         <tbody>
           {meetings.map((meeting) => (
             <tr key={meeting.meeting_id}>
-              <td>
-                <h3>{meeting.meeting_id}</h3>
-              </td>
               <td>
                 <Link href={`/meetings/${meeting.meeting_id}`}>
                   {meeting.meeting_name}

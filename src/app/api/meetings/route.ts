@@ -23,8 +23,6 @@ export async function POST(request: Request) {
   const supabaseServer = await createSupabaseServerClient();
 
   const reqBody: Meeting = await request.json();
-  const { data: test, error: testError } = await supabaseServer.rpc("auth_uid_debug");
-  console.log(test);
 
   const { data, error } = await supabaseServer
     .from("Meetings")
