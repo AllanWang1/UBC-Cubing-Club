@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { supabase } from "../../lib/SupabaseClient";
+import { createSupabaseServerClient } from "@/app/lib/SupabaseServer";
+import { cookies } from "next/headers";
 import { Meeting } from "@/app/types/Meeting";
+import { create } from "domain";
 
 export async function GET() {
   const { data: Tournaments, error } = await supabase
@@ -16,8 +19,14 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+
+  const supabaseServer = await createSupabaseServerClient();
+
   const reqBody: Meeting = await request.json();
-  const { data, error } = await supabase
+  const { data: test, error: testError } = await supabaseServer.rpc("auth_uid_debug");
+  console.log(test);
+
+  const { data, error } = await supabaseServer
     .from("Meetings")
     .insert([
       {
