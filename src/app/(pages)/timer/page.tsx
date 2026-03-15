@@ -27,6 +27,25 @@ interface CubeModel {
   order: number;
 }
 
+const DNF_RESULT_TEMPLATE = (
+  attempt: number,
+  cube_name: string,
+  id: number,
+  meeting_id: number,
+  round: number,
+): Result => ({
+  attempt,
+  cube_name,
+  id,
+  meeting_id,
+  round,
+  time_ms: 99999999,
+  record: false,
+  average_record: false,
+  penalty: "DNF",
+  raw_time_ms: 99999999,
+});
+
 async function submitResult(result: Result) {
   try {
     const response = await fetch(`/api/pending/post`, {
@@ -44,6 +63,62 @@ async function submitResult(result: Result) {
     }
   } catch (err) {
     alert("Error submitting result: " + err);
+  }
+}
+
+async function submitDNFResult(
+  attempt: number,
+  cube_name: string,
+  id: number,
+  meeting_id: number,
+  round: number,
+) {
+  const DNF_result = DNF_RESULT_TEMPLATE(
+    attempt,
+    cube_name,
+    id,
+    meeting_id,
+    round,
+  );
+  await submitResult(DNF_result);
+}
+
+async function checkAndHandleStartedAttempts(
+  attempt: number,
+  cube_name: string,
+  id: number,
+  meeting_id: number,
+  round: number,
+) {
+  const response = await fetch(
+    `/api/started-attempts?attempt=${attempt}&cube_name=${cube_name}&id=${id}&meeting_id=${meeting_id}&round=${round}`,
+  );
+  const res_json = await response.json();
+  if (response.ok) {
+    if (res_json.length > 0) {
+      // User already has active session, disqualify.
+      await submitDNFResult(attempt, cube_name, id, meeting_id, round);
+      deleteStartedAttempt({
+        attempt,
+        cube_name,
+        id,
+        meeting_id,
+        round,
+      });
+    } else {
+      // No active session found, user can use the timer normally
+      // Must make an insert into the StartedAttempts table
+      const entry: StartedAttempt = {
+        attempt,
+        cube_name,
+        id,
+        meeting_id,
+        round,
+      };
+      submitStartedAttempt(entry);
+    }
+  } else {
+    alert("Error checking started attempts: " + res_json.error);
   }
 }
 
@@ -72,7 +147,7 @@ async function deleteStartedAttempt(entry: StartedAttempt) {
     `/api/started-attempts?attempt=${entry.attempt}&cube_name=${entry.cube_name}&id=${entry.id}&meeting_id=${entry.meeting_id}&round=${entry.round}`,
     {
       method: "DELETE",
-    }
+    },
   );
   const res_json = await response.json();
   if (!response.ok) {
@@ -130,57 +205,24 @@ const Timer = () => {
   };
 
   const handlePasscodeSubmission = async (
-    e: React.FormEvent<HTMLFormElement>
+    e: React.FormEvent<HTMLFormElement>,
   ) => {
     e.preventDefault();
     if (passcode === meetingPasscode) {
-      // Then there are two cases:
-      // - There is a started attempt
-      // - There is no started attempt (either the user just opened the timer, or the time has already been submitted)
-      const response = await fetch(
-        // Can rest assured that user already exists without id, otherwise the page would have returned already.
-        `/api/started-attempts?attempt=${attempt_read}&cube_name=${cube_name_read}&id=${user?.user_metadata?.member_id}&meeting_id=${meeting_id_read}&round=${round_read}`
+      // Store verification in localStorage for this meeting
+      localStorage.setItem(
+        `meeting_${meeting_id_read}_user_${user?.user_metadata?.member_id}_verified`,
+        "true",
       );
-      const res_json = await response.json();
-      if (response.ok) {
-        if (res_json.length > 0) {
-          // User already has active session, disqualify.
-          const DNF_result: Result = {
-            attempt: attempt_read,
-            cube_name: cube_name_read,
-            id: user?.user_metadata?.member_id,
-            meeting_id: meeting_id_read,
-            round: round_read,
-            time_ms: 99999999,
-            record: false,
-            average_record: false,
-            penalty: "DNF",
-            raw_time_ms: 99999999,
-          };
-          submitResult(DNF_result);
-          deleteStartedAttempt({
-            attempt: attempt_read,
-            cube_name: cube_name_read,
-            id: user?.user_metadata?.member_id,
-            meeting_id: meeting_id_read,
-            round: round_read,
-          });
-        } else {
-          // No active session found, user can use the timer normally
-          // Must make an insert into the StartedAttempts table
-          const entry: StartedAttempt = {
-            attempt: attempt_read,
-            cube_name: cube_name_read,
-            id: user?.user_metadata?.member_id,
-            meeting_id: meeting_id_read,
-            round: round_read,
-          };
-          submitStartedAttempt(entry);
-        }
-      } else {
-        alert("Error checking started attempts: " + res_json.error);
-        return;
-      }
+
+      // Handle started attempts
+      await checkAndHandleStartedAttempts(
+        attempt_read,
+        cube_name_read,
+        user?.user_metadata?.member_id,
+        meeting_id_read,
+        round_read,
+      );
 
       // Password is verified, available timer to start is verified.
       setVerified(true);
@@ -192,7 +234,7 @@ const Timer = () => {
 
   const handleBack = () => {
     router.push(`/meetings/${meeting_id_read}`);
-  }
+  };
 
   // Validating all
   useEffect(() => {
@@ -204,7 +246,7 @@ const Timer = () => {
     const validateAll = async () => {
       // 1. Check if meeting_id and cube_name are valid.
       const response = await fetch(
-        `/api/event-info?meeting_id=${meeting_id_read}&cube_name=${cube_name_read}`
+        `/api/event-info?meeting_id=${meeting_id_read}&cube_name=${cube_name_read}`,
       );
       const res_json = await response.json();
       if (!response.ok) {
@@ -241,7 +283,7 @@ const Timer = () => {
       const member_id = fetchedUser.user_metadata?.member_id;
       if (!member_id) {
         alert(
-          "There is no member ID associated with your account. Please contact an admin."
+          "There is no member ID associated with your account. Please contact an admin.",
         );
         router.push("/meetings");
         return;
@@ -253,7 +295,7 @@ const Timer = () => {
       // Fetch the scramble first, before we check for any submissions. We want to display the scramble regardless of whether
       // the user has already submitted/started an attempt.
       const fetchedScramble = await fetch(
-        `/api/scrambles?attempt=${attempt_read}&cube_name=${cube_name_read}&meeting_id=${meeting_id_read}&round=${round_read}`
+        `/api/scrambles?attempt=${attempt_read}&cube_name=${cube_name_read}&meeting_id=${meeting_id_read}&round=${round_read}`,
       );
       const scramble_json = await fetchedScramble.json();
       if (fetchedScramble.ok) {
@@ -264,7 +306,7 @@ const Timer = () => {
 
       // 4. Check if the user has already submitted a result for this event.
       const pending = await fetch(
-        `/api/pending?attempt=${attempt_read}&round=${round_read}&cube_name=${cube_name_read}&id=${member_id}&meeting_id=${meeting_id_read}`
+        `/api/pending?attempt=${attempt_read}&round=${round_read}&cube_name=${cube_name_read}&id=${member_id}&meeting_id=${meeting_id_read}`,
       );
       const pending_json = await pending.json();
       if (pending.ok) {
@@ -279,13 +321,29 @@ const Timer = () => {
         }
       }
 
-      // 5. If there is already an entry in the pending table, then the current useEffect
-      // would have returned already, thus, we can confidently fetch the passcode if it hasn't returned.
-      const meeting = await fetch(`api/meetings/${meeting_id_read}`);
-      const meeting_json = await meeting.json();
-      if (meeting.ok) {
-        const meeting_passcode = meeting_json.passcode;
-        setMeetingPasscode(meeting_passcode);
+      // 5. Check if password has been verified for this meeting before
+      const isVerified =
+        localStorage.getItem(
+          `meeting_${meeting_id_read}_user_${member_id}_verified`,
+        ) === "true";
+      if (isVerified) {
+        setVerified(true);
+        // Check for started attempts since user is verified
+        await checkAndHandleStartedAttempts(
+          attempt_read,
+          cube_name_read,
+          member_id,
+          meeting_id_read,
+          round_read,
+        );
+      } else {
+        // Fetch the passcode since not verified
+        const meeting = await fetch(`api/meetings/${meeting_id_read}`);
+        const meeting_json = await meeting.json();
+        if (meeting.ok) {
+          const meeting_passcode = meeting_json.passcode;
+          setMeetingPasscode(meeting_passcode);
+        }
       }
     };
 
@@ -445,7 +503,7 @@ const Timer = () => {
     const container = puzzleContainerRef.current;
 
     const modelMap: CubeModel | undefined = CubeDetails.find(
-      (m) => m.cube_name === cube_name_read
+      (m) => m.cube_name === cube_name_read,
     );
     const player = new TwistyPlayer({
       puzzle: modelMap?.model_name as TwistyPlayerConfig["puzzle"],
@@ -507,7 +565,7 @@ const Timer = () => {
           </div>
           {submitted && !popUp && (
             <div className="timer-back" onClick={handleBack}>
-              <Image src={"/back.svg"} width={20} height={20} alt=""/>
+              <Image src={"/back.svg"} width={20} height={20} alt="" />
               <h5>Back to meeting</h5>
             </div>
           )}
