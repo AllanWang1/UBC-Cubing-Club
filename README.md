@@ -1,13 +1,24 @@
 # UBC-Cubing-Club
-This is the website for the UBC Cubing Club. Online/in person meetings are fostered using this website, using an intuitive timer that submits member results automatically. Built using React.js and Next.js with TypeScript, it displays the UBC Cubing Club statistics such as member rankings grouped by events, to encourage friendly competition within the club. 
 
-## Features
-- View member results and statistics with filters
-- Result submission from user's end
-- Display club information to the public
-- Automatic scramble generation and scramble display for meetings
+This repository powers the UBC Cubing Club website: a member portal, meeting manager, and results system for club sessions. It supports public club information, member access requests, live timed solves during meetings, post-solve review and submission, and event-based rankings and statistics.
+
+## What The Site Does
+
+- Public club information page with meeting time, location, contact links, and club details
+- Member directory and member profile pages with per-event rankings, historical results, and WCA ID links
+- Meeting pages for viewing open or closed meetings, event schedules, and round-by-round results
+- Live timer flow for verified members, including scramble display, started-attempt tracking, and result submission for review
+- Admin tools for creating and editing meetings, adding events, and reviewing membership requests
+
+## Most Important Features
+
+1. Live result capture and submission is the core workflow. Members use the timer during meetings, see the scramble, and submit solves for review with penalties such as `OK`, `+2`, or `DNF`.
+2. Meeting management is the next major feature. Admins can create meetings, add events and rounds, open or close sessions, and review results after a meeting ends.
+3. Rankings and member statistics make the site useful after the meeting. The leaderboard groups results by event and solve type, while individual member pages show event-by-event performance and solve history.
+4. Access control and membership onboarding keep the club data organized. New users can request membership, while signed-in members and admins see the workflows relevant to their role.
 
 ## Tech Stack
+
 - **Front end**: React.js, Next.js, TypeScript, CSS
 - **3D Rendering**: Cubing.js, Scrambow
 - **Back end & Database**: Supabase
@@ -15,22 +26,24 @@ This is the website for the UBC Cubing Club. Online/in person meetings are foste
 - **Hosting**: Vercel
 
 ## Required Tools
+
 - Node.js $\geq$ 18.x
 - npm
 - Supabase account
   - Supabase access (please submit request)
 
 ## Setup & Installation
+
 1. Clone and install
-  <pre>
-  git clone https://github.com/AllanWang1/UBC-Cubing-Club.git
-  cd src
-  npm install </pre>
+<pre>
+git clone https://github.com/AllanWang1/UBC-Cubing-Club.git
+cd src
+npm install </pre>
 
 2. Request the Supabase credentials like the ANON KEY from an admin, as this may not be the same key as shown in the repository. It is safe to develop with these public keys as long as the Row Level Security rules were set properly on Supabase.
 
 3. Run locally for development:
-   
+
    `npm run dev`
 
 4. Deployment:
@@ -41,7 +54,7 @@ This is the website for the UBC Cubing Club. Online/in person meetings are foste
 ## Project Structure
 
 ```
-├── app/
+├── src/app/
 |   ├── (pages)                    # Displayed pages, including the home page, along with their styling css files
 │   ├── api/                       # API routes e.g. /api/scrambles/route.ts
 │   ├── assets/
@@ -56,8 +69,10 @@ This is the website for the UBC Cubing Club. Online/in person meetings are foste
 └── (configurations, packages...)
 ```
 
-## Workflow 
+## Workflow
+
 This project follows a client-server-database workflow:
+
 - Frontend (client)
   - Next.js App Router is used; in the `app` folder, the relative URLs for different pages are described by the work directory folder names
   - Client will interact with UI elements in `page.tsx`
@@ -73,18 +88,29 @@ This project follows a client-server-database workflow:
   - The response can be sent back to the frontend for further processing and rendering
 
 ## Future Improvements/Features In Progress
-- Admin page for simpler member result validation
-- Member ability radars
-  - How to make this measurable? What algorithms can be used to calculate this?
-- Member account settings page
-  - Custom profile pictures, password and name settings, password reset request, etc.
-- UX enhancements
 
-## Logging 
+- Result validation page for admins
+  - Review meeting results to approve/delete/update any data as required
+  - Allow filtering by member and event
+- User customizability
+  - Uploading profile pictures
+    - Feature to report profile picture should be available as well
+  - Password reset & forgot password feature
+- Meeting results display page: should be ranked in order from fastest member to slowest member
+  - Would also be nice to mark fastest/slowest time of an average with brackets
+  - Live results page (for viewing temporary data while meetings are still in progress, low priority)
+- Admin ability to admit membership requests
+- Optimizing timer page for touch screen devices to allow timer usage from mobile devices
+  - Currently the timer only starts by space bar
+  - After this change, members may come to meetings with just their cubes and their phone
+
+## Logging
+
 - Server side logging viewable in the terminal after executing `npm run dev`
-  - Check for status codes from API 
+  - Check for status codes from API
 - Client side logging available through the browser developer tools
-  
+
 ## Contributors
+
 - Allan Wang - Developer/Design
 - Yuqi Zhu - Developer/Design
