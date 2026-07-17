@@ -13,6 +13,7 @@ import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import "./MeetingID.css";
+import "./validate/validateResults.css";
 
 interface ResultWithMembers {
   attempt: number;
@@ -239,6 +240,14 @@ export default function MeetingView({
             Edit Meeting
           </Link>
         </button>
+      )}
+      {isAdmin && (
+        <Link
+          className="validate-results-button"
+          href={`/meetings/${meeting.meeting_id}/validate`}
+        >
+          Validate Results
+        </Link>
       )}
       <ul className="meeting-events-list">
         {heldEvents.map((event) => (

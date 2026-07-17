@@ -1,0 +1,29 @@
+.meetings .validate-results-button {
+  margin-left: auto; /* pushes it to the right */
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  padding: 8px 14px;
+  border-radius: 999px;
+
+  background: linear-gradient(to right, #1e3c72, #2a5298);
+  color: white;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-decoration: none;
+
+  box-shadow: 0 4px 12px rgba(30, 60, 114, 0.25);
+  transition: all 0.2s ease;
+}
+
+.meetings .validate-results-button:hover {
+  transform: translateY(-1px);
+  color: rgb(255, 229, 200);
+  box-shadow: 0 6px 16px rgba(30, 60, 114, 0.35);
+}
+
+.meetings .validate-results-button .plus {
+  font-size: 1.1rem;
+  line-height: 1;
+}
