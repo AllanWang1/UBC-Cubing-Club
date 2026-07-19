@@ -8,9 +8,13 @@ export async function GET(request: NextRequest) {
 
     const { data, error } = await supabase
         .from("PendingResults")
-        .select("*")
-        .eq("meeting_id", meeting_id);
-
+        .select("*, Members(id, name)")
+        .eq("meeting_id", meeting_id)
+        .order("cube_name")
+        .order("round")
+        .order("id")
+        .order("attempt");
+        
     if (error) {
         return NextResponse.json({ error: error.message }, { status: 500 });
     }

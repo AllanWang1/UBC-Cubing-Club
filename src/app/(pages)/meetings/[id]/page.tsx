@@ -1,5 +1,7 @@
 "use client";
 
+declare module "*.css";
+
 import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { formatTime, getUserRole, ADMIN_ROLES } from "../../../lib/utils";
