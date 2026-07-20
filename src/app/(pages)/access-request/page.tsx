@@ -10,7 +10,6 @@ import "./AccessRequest.css";
 type AccessRequestProps = {
   fullName: string;
   email: string;
-  studentId: string;
   faculty: string;
   WCAId: string;
   birthDate: Date;
@@ -21,7 +20,6 @@ const AccessRequest = () => {
   const [accessRequest, setAccessRequest] = useState<AccessRequestProps>({
     fullName: "",
     email: "",
-    studentId: "",
     faculty: "",
     WCAId: "",
     birthDate: new Date(),
@@ -35,13 +33,6 @@ const AccessRequest = () => {
       name: "fullName",
       placeHolder: "Enter your full name",
       required: true,
-    },
-    {
-      label: "Student ID",
-      type: "text",
-      name: "studentId",
-      placeHolder: "Enter your student ID (If applicable)",
-      required: false,
     },
     {
       label: "Faculty/School of Study",

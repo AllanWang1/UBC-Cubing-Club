@@ -11,7 +11,7 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
-  const { fullName, email, studentId, faculty, WCAId, birthDate, UUID } =
+  const { fullName, email, faculty, WCAId, birthDate, UUID } =
     await request.json();
   if (!fullName || !email || !faculty || !birthDate || !UUID) {
     return NextResponse.json(
@@ -27,7 +27,6 @@ export async function POST(request: NextRequest) {
         name: fullName,
         email: email,
         faculty: faculty,
-        student_id: studentId,
         birthdate: birthDate,
         wca_id: WCAId,
       },

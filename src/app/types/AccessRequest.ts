@@ -3,7 +3,6 @@ export interface AccessRequest {
     name: string;
     email: string | null;
     faculty: string;
-    student_id: string | null;
     birthdate: string | null;
     wca_id: string | null;
 }

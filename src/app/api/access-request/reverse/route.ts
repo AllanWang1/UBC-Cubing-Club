@@ -21,4 +21,5 @@ export async function POST(request: NextRequest) {
   } else {
     console.log("Metadata updated successfully:", data);
   }
+  return NextResponse.json(data, { status: 200 });
 }
