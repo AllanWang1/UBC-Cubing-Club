@@ -11,7 +11,8 @@ const MembershipManagement = () => {
   const [accessRequests, setAccessRequests] = useState<AccessRequest[]>([]);
   const [userRole, setUserRole] = useState<string>("member");
   const handleApproval = (request: AccessRequest) => async () => {
-    const response = await fetch(`/api/members/${request.user_id}`, {
+    // Requires 2 consecutive calls to APIs
+    const response = await fetch(`/api/members/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -23,7 +24,7 @@ const MembershipManagement = () => {
       // we also get the data from the response, so we have the member id to trigger the next function
       const member_id = res_json.id;
       alert(
-        `Successfully approved ${request.name}'s request: Member ID: ${member_id}`
+        `Successfully approved ${request.name}'s request: Member ID: ${member_id}`,
       );
       const reverseResponse = await fetch(`/api/access-request/reverse/`, {
         method: "POST",
@@ -47,15 +48,7 @@ const MembershipManagement = () => {
       if (role) {
         setUserRole(role);
       }
-      // Handle no user and error cases silently, as we have the default "all" permission
     };
-
-    getUserPermission();
-  }, []);
-
-  useEffect(() => {
-    if (!ADMIN_ROLES.includes(userRole)) return;
-
     const fetchRequests = async () => {
       const response = await fetch("/api/access-request");
       const res_json = await response.json();
@@ -67,7 +60,13 @@ const MembershipManagement = () => {
       }
     };
 
+    getUserPermission();
+    if (!ADMIN_ROLES.includes(userRole)) {
+      alert("You do not have access rights to view this page");
+      return;
+    }
     fetchRequests();
+    console.log("User role: ", userRole);
   }, [userRole]);
 
   return ADMIN_ROLES.includes(userRole) ? (
@@ -80,7 +79,6 @@ const MembershipManagement = () => {
             <th>Name</th>
             <th>Email</th>
             <th>Faculty</th>
-            <th>StudentId</th>
             <th>Birthdate</th>
             <th>WCA ID</th>
             <th>Approve</th>
@@ -100,9 +98,6 @@ const MembershipManagement = () => {
               </td>
               <td>
                 <h3>{request.faculty}</h3>
-              </td>
-              <td>
-                <h3>{request.student_id}</h3>
               </td>
               <td>
                 <h3>{request.birthdate}</h3>

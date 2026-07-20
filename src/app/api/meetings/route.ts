@@ -1,9 +1,7 @@
 import { NextResponse } from "next/server";
 import { supabase } from "../../lib/SupabaseClient";
 import { createSupabaseServerClient } from "@/app/lib/SupabaseServer";
-import { cookies } from "next/headers";
 import { Meeting } from "@/app/types/Meeting";
-import { create } from "domain";
 
 export async function GET() {
   const { data: Tournaments, error } = await supabase
