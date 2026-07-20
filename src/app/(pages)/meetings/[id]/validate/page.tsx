@@ -4,6 +4,7 @@ import React, { useEffect, useMemo, useState }from "react";
 import Link from "next/link";
 import { ADMIN_ROLES, formatTime, getUserRole } from "@/app/lib/utils";
 import { Result } from "@/app/types/Result";
+import ResultEditor from "@/app/components/ResultEditor";
 
 interface PendingResultWithMember extends Result {
     Members: {
@@ -44,6 +45,8 @@ export default function ValidateResultsPage ({
             return matchesMemberId && matchesCubeName;
         });
     }, [pendingResults, memberIdFilter, cubeNameFilter]);
+
+    const [editingResult, setEditingResult] = useState<PendingResultWithMember | null>(null);
 
     // Check the user's role
     useEffect(() => {
@@ -151,34 +154,72 @@ export default function ValidateResultsPage ({
             </div>
 
             {!loadingResults && !error && filteredResults.length > 0 && (
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Member ID</th>
-                            <th>Event</th>
-                            <th>Round</th>
-                            <th>Attempt</th>
-                            <th>Raw Time</th>
-                            <th>Penalty</th>
-                            <th>Final Time</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        {filteredResults.map((result) => (
-                            <tr key={`${result.id}-${result.cube_name}-${result.round}-${result.attempt}`}>
-                                <td>{result.Members.name}</td>
-                                <td>{result.id}</td>
-                                <td>{result.cube_name}</td>
-                                <td>{result.round}</td>
-                                <td>{result.attempt}</td>
-                                <td>{formatTime(result.raw_time_ms)}</td>
-                                <td>{result.penalty ?? "OK"}</td>
-                                <td>{formatTime(result.time_ms)}</td>
+                <>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Member Name</th>
+                                <th>Member ID</th>
+                                <th>Event</th>
+                                <th>Round</th>
+                                <th>Attempt</th>
+                                <th>Raw Time</th>
+                                <th>Penalty</th>
+                                <th>Final Time</th>
+                                <th>Actions</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
+                        </thead>
+
+                        <tbody>
+                            {filteredResults.map((result) => (
+                                <tr key={`${result.id}-${result.cube_name}-${result.round}-${result.attempt}`}>
+                                    <td>{result.Members.name}</td>
+                                    <td>{result.id}</td>
+                                    <td>{result.cube_name}</td>
+                                    <td>{result.round}</td>
+                                    <td>{result.attempt}</td>
+                                    <td>{formatTime(result.raw_time_ms)}</td>
+                                    <td>{result.penalty ?? "OK"}</td>
+                                    <td>{formatTime(result.time_ms)}</td>
+                                    <td>
+                                        <button type="button" onClick={() => setEditingResult(result)}>
+                                            Edit
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+
+                    {editingResult && (
+                        <ResultEditor
+                            result={editingResult}
+                            onClose={() => setEditingResult(null)}
+                            onSave={(updatedResult) => {
+                                // Handle save logic here
+                                setPendingResults((currentResults) =>
+                                    currentResults.map((currentResults) => {
+                                        const sameAttempt = currentResults.id === updatedResult.id &&
+                                            currentResults.cube_name === updatedResult.cube_name &&
+                                            currentResults.round === updatedResult.round &&
+                                            currentResults.attempt === updatedResult.attempt;
+
+                                        if (!sameAttempt) {
+                                            return currentResults;
+                                        }
+
+                                        return {
+                                            ...currentResults,
+                                            ...updatedResult,
+                                        };
+                                    })
+                                );
+
+                                setEditingResult(null);
+                            }}
+                        />
+                    )}
+                </>
             )}
 
             {!loadingResults && !error && pendingResults.length === 0 && (
