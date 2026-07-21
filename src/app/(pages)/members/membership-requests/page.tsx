@@ -26,7 +26,7 @@ const MembershipManagement = () => {
       alert(
         `Successfully approved ${request.name}'s request: Member ID: ${member_id}`,
       );
-      const reverseResponse = await fetch(`/api/access-request/reverse/`, {
+      const authTableModifyResponse = await fetch(`/api/access-request/reverse/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -37,6 +37,21 @@ const MembershipManagement = () => {
           name: request.name,
         }),
       });
+
+      if (authTableModifyResponse.ok) {
+        const deleteRequestResponse = await fetch(`/api/access-request/`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            user_id: request.user_id,
+          }),
+        });
+        if (!deleteRequestResponse.ok) {
+            alert(`Failed to delete ${request.name}'s request: ${res_json.error}`);
+        }
+      }
     } else {
       alert(`Failed to approve ${request.name}'s request: ${res_json.error}`);
     }
