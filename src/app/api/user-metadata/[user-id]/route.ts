@@ -18,9 +18,7 @@ export async function POST(request: NextRequest) {
   });
 
   if (error) {
-    console.error("Error updating metadata:", error);
-  } else {
-    console.log("Metadata updated successfully:", data);
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
   return NextResponse.json(data, { status: 200 });
 }

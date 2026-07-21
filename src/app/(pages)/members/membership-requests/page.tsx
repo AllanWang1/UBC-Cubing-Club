@@ -23,6 +23,21 @@ const MembershipManagement = () => {
       alert("Error fetching access requests: " + res_json.error);
     }
   };
+  const handleDenial = (user_id: string) => async () => {
+    const response = await fetch(`/api/membership-requests/${user_id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const res_json = await response.json();
+    if (response.ok) {
+      alert(`Successfully denied ${user_id}'s request`);
+      fetchRequests();
+    } else {
+      alert(`Failed to deny ${user_id}'s request: ${res_json.error}`);
+    }
+  };
 
   const handleApproval = (request: AccessRequest) => async () => {
     // Requires 3 consecutive calls to APIs
@@ -53,22 +68,30 @@ const MembershipManagement = () => {
           }),
         },
       );
-
+      const auth_table_modify_res_json = await authTableModifyResponse.json();
       if (authTableModifyResponse.ok) {
-        const deleteRequestResponse = await fetch(`/api/membership-requests/${request.user_id}`, {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
+        const deleteRequestResponse = await fetch(
+          `/api/membership-requests/${request.user_id}`,
+          {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+            },
           },
-        });
+        );
+        const delete_res_json = await deleteRequestResponse.json();
         if (!deleteRequestResponse.ok) {
           alert(
-            `Failed to delete ${request.name}'s request: ${res_json.error}`,
+            `Failed to delete ${request.name}'s request: ${delete_res_json.error}`,
           );
         } else {
           // Refresh the list of access requests after successful approval and deletion
           fetchRequests();
         }
+      } else {
+        alert(
+          `Failed to update ${request.name}'s metadata: ${auth_table_modify_res_json.error}`,
+        );
       }
     } else {
       alert(`Failed to approve ${request.name}'s request: ${res_json.error}`);
@@ -96,7 +119,7 @@ const MembershipManagement = () => {
   }, []);
 
   return ADMIN_ROLES.includes(userRole) ? (
-    <div className="TempRequestHandler">
+    <div className="membership-requests">
       <h2>Access Requests</h2>
       <table>
         <thead>
@@ -107,13 +130,13 @@ const MembershipManagement = () => {
             <th>Faculty</th>
             <th>Birthdate</th>
             <th>WCA ID</th>
-            <th>Approve</th>
+            <th>Action</th>
           </tr>
         </thead>
         <tbody>
           {accessRequests.map((request) => (
             <tr key={request.user_id}>
-              <td>
+              <td className="membership-requests-user-id-panel">
                 <h3>{request.user_id}</h3>
               </td>
               <td>
@@ -131,8 +154,9 @@ const MembershipManagement = () => {
               <td>
                 <h3>{request.wca_id}</h3>
               </td>
-              <td>
+              <td className="membership-requests-action-panel">
                 <button onClick={handleApproval(request)}>Approve</button>
+                <button onClick={handleDenial(request.user_id)}>Deny</button>
               </td>
             </tr>
           ))}
