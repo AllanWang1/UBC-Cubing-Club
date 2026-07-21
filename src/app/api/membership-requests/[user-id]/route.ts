@@ -11,7 +11,7 @@ export async function DELETE(request: NextRequest) {
   }
   const supabaseServer = await createSupabaseServerClient();
   const { data, error } = await supabaseServer
-    .from("MemberRequest")
+    .from("MembershipRequests")
     .delete()
     .eq("user_id", user_id)
     .select()
