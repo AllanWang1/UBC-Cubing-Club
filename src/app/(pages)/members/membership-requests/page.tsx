@@ -14,7 +14,7 @@ const MembershipManagement = () => {
   const router = useRouter();
 
   const fetchRequests = async () => {
-    const response = await fetch("/api/access-request");
+    const response = await fetch("/api/membership-requests");
     const res_json = await response.json();
 
     if (response.ok) {
@@ -41,14 +41,13 @@ const MembershipManagement = () => {
         `Successfully approved ${request.name}'s request: Member ID: ${member_id}`,
       );
       const authTableModifyResponse = await fetch(
-        `/api/access-request/reverse/`,
+        `/api/user-metadata/${request.user_id}`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            user_id: request.user_id,
             member_id: member_id,
             name: request.name,
           }),
@@ -56,14 +55,11 @@ const MembershipManagement = () => {
       );
 
       if (authTableModifyResponse.ok) {
-        const deleteRequestResponse = await fetch(`/api/access-request/`, {
+        const deleteRequestResponse = await fetch(`/api/membership-requests/${request.user_id}`, {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            user_id: request.user_id,
-          }),
         });
         if (!deleteRequestResponse.ok) {
           alert(
