@@ -1,5 +1,9 @@
 "use client";
-
+/**
+ * This page is for users to submit membership requests. This will be
+ * a separate page from the membership-requests page, which is for admins to 
+ * view and approve membership requests.
+ */
 import { useEffect, useState } from "react";
 import { User } from "@supabase/auth-js";
 import { getCurrentUser } from "@/app/lib/utils";
@@ -99,7 +103,7 @@ const AccessRequest = () => {
 
   const handleRequest = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const response = await fetch("/api/access-request", {
+    const response = await fetch("/api/membership-requests", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

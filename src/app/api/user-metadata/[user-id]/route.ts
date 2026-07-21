@@ -3,7 +3,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "@/app/lib/SupabaseClient";
 
 export async function POST(request: NextRequest) {
-  const { user_id, member_id, name } = await request.json();
+  const user_id = request.nextUrl.pathname.split("/").pop();
+  const { member_id, name } = await request.json();
   if (!user_id || !member_id || !name) {
     return NextResponse.json(
       { error: "Missing required fields" },
