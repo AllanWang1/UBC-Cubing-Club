@@ -3,7 +3,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { supabase } from "@/app/lib/SupabaseClient";
 
 export async function POST(request: NextRequest) {
-  const { user_id, member_id, name } = await request.json();
+  const user_id = request.nextUrl.pathname.split("/").pop();
+  const { member_id, name } = await request.json();
   if (!user_id || !member_id || !name) {
     return NextResponse.json(
       { error: "Missing required fields" },
@@ -17,8 +18,7 @@ export async function POST(request: NextRequest) {
   });
 
   if (error) {
-    console.error("Error updating metadata:", error);
-  } else {
-    console.log("Metadata updated successfully:", data);
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
+  return NextResponse.json(data, { status: 200 });
 }

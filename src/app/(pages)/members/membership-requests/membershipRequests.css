@@ -1,4 +1,4 @@
-.TempRequestHandler {
+.membership-requests {
     display: flex;
     flex-direction: column;
     gap: 80px;
@@ -6,4 +6,15 @@
     width: 100%;
     justify-content: center;
     padding-top: 100px;
+}
+
+.membership-requests-action-panel {
+    display: flex;
+    gap: 20px;
+    width: 100%;
+}
+
+.membership-requests-user-id-panel {
+    width: 200px;
+    word-wrap: break-word;
 }
