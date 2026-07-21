@@ -4,14 +4,28 @@ import React from "react";
 import { useEffect, useState } from "react";
 import { AccessRequest } from "@/app/types/AccessRequest";
 import { getUserRole, ADMIN_ROLES } from "@/app/lib/utils";
+import { useRouter } from "next/navigation";
 
 import "./membershipRequests.css";
 
 const MembershipManagement = () => {
   const [accessRequests, setAccessRequests] = useState<AccessRequest[]>([]);
   const [userRole, setUserRole] = useState<string>("member");
+  const router = useRouter();
+
+  const fetchRequests = async () => {
+    const response = await fetch("/api/access-request");
+    const res_json = await response.json();
+
+    if (response.ok) {
+      setAccessRequests(res_json);
+    } else {
+      alert("Error fetching access requests: " + res_json.error);
+    }
+  };
+
   const handleApproval = (request: AccessRequest) => async () => {
-    // Requires 2 consecutive calls to APIs
+    // Requires 3 consecutive calls to APIs
     const response = await fetch(`/api/members/`, {
       method: "POST",
       headers: {
@@ -26,17 +40,20 @@ const MembershipManagement = () => {
       alert(
         `Successfully approved ${request.name}'s request: Member ID: ${member_id}`,
       );
-      const authTableModifyResponse = await fetch(`/api/access-request/reverse/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const authTableModifyResponse = await fetch(
+        `/api/access-request/reverse/`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            user_id: request.user_id,
+            member_id: member_id,
+            name: request.name,
+          }),
         },
-        body: JSON.stringify({
-          user_id: request.user_id,
-          member_id: member_id,
-          name: request.name,
-        }),
-      });
+      );
 
       if (authTableModifyResponse.ok) {
         const deleteRequestResponse = await fetch(`/api/access-request/`, {
@@ -49,7 +66,12 @@ const MembershipManagement = () => {
           }),
         });
         if (!deleteRequestResponse.ok) {
-            alert(`Failed to delete ${request.name}'s request: ${res_json.error}`);
+          alert(
+            `Failed to delete ${request.name}'s request: ${res_json.error}`,
+          );
+        } else {
+          // Refresh the list of access requests after successful approval and deletion
+          fetchRequests();
         }
       }
     } else {
@@ -60,29 +82,22 @@ const MembershipManagement = () => {
   useEffect(() => {
     const getUserPermission = async () => {
       const role = await getUserRole();
-      if (role) {
+      if (!role) {
+        alert("You must be logged in to view this page");
+        router.push("/login");
+      } else {
         setUserRole(role);
       }
-    };
-    const fetchRequests = async () => {
-      const response = await fetch("/api/access-request");
-      const res_json = await response.json();
-
-      if (response.ok) {
-        setAccessRequests(res_json);
-      } else {
-        alert("Error fetching access requests: " + res_json.error);
+      if (role && !ADMIN_ROLES.includes(role)) {
+        alert("You do not have access rights to view this page");
+        router.push("/login");
+        return;
       }
     };
 
     getUserPermission();
-    if (!ADMIN_ROLES.includes(userRole)) {
-      alert("You do not have access rights to view this page");
-      return;
-    }
     fetchRequests();
-    console.log("User role: ", userRole);
-  }, [userRole]);
+  }, []);
 
   return ADMIN_ROLES.includes(userRole) ? (
     <div className="TempRequestHandler">
