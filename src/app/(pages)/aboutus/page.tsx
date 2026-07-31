@@ -104,6 +104,101 @@ const About = () => {
             ))}
           </div>
         </div>
+
+        <div className="about-resources">
+          <h2>Additional Resources</h2>
+          <p className="resources-subtitle">
+            Helpful websites for learning, practicing, and staying involved in
+            the cubing community.
+          </p>
+
+          <div className="resource-list">
+            <a
+              className="resource-card"
+              href="https://www.worldcubeassociation.org/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <div className="resource-image-container">
+                <Image
+                  src="/resource-previews/wca.webp"
+                  alt="World Cube Association"
+                  width={320}
+                  height={200}
+                  className="resource-image"
+                />
+              </div>
+
+              <div className="resource-body">
+                <h3>World Cube Association</h3>
+
+                <p>
+                  The official organization for competitive speedcubing. Browse
+                  competitions, rankings, regulations, and competitor profiles
+                  from around the world.
+                </p>
+
+                <span className="resource-link">Visit Website →</span>
+              </div>
+            </a>
+            <a
+              className="resource-card"
+              href="https://3stylealgs.vercel.app/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <div className="resource-image-container">
+                <Image
+                  src="/resource-previews/three_style_visualizer.webp"
+                  alt="3 style algorithm visualizer"
+                  width={320}
+                  height={200}
+                  className="resource-image"
+                />
+              </div>
+
+              <div className="resource-body">
+                <h3>3 Style Algorithm Visualizer</h3>
+
+                <p>
+                  Made by our very own UBC Cubing Club member, Etan Huang. This
+                  tool allows you to visualize and learn 3-style algorithms for
+                  3x3 BLD.
+                </p>
+
+                <span className="resource-link">Visit Website →</span>
+              </div>
+            </a>
+            <a
+              className="resource-card"
+              href="https://jperm.net/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <div className="resource-image-container">
+                <Image
+                  src="/resource-previews/jperm.webp"
+                  alt="JPerm.net"
+                  width={320}
+                  height={200}
+                  className="resource-image"
+                />
+              </div>
+
+              <div className="resource-body">
+                <h3>JPerm.net</h3>
+
+                <p>
+                  Proudly by our UBC Alumni and the GOATed YouCuber, JPerm. One
+                  of the best places to learn CFOP, improve your solving, and
+                  explore advanced algorithms through detailed tutorials.
+                </p>
+
+                <span className="resource-link">Visit Website →</span>
+              </div>
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   );
