@@ -1,10 +1,11 @@
-"use client"
+"use client";
 
-import React, { useEffect, useMemo, useState }from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { ADMIN_ROLES, formatTime, getUserRole } from "@/app/lib/utils";
 import { Result } from "@/app/types/Result";
 import ResultEditor from "@/app/components/ResultEditor";
+import "./validateResults.css";
 
 interface PendingResultWithMember extends Result {
     Members: {
@@ -47,6 +48,48 @@ export default function ValidateResultsPage ({
     }, [pendingResults, memberIdFilter, cubeNameFilter]);
 
     const [editingResult, setEditingResult] = useState<PendingResultWithMember | null>(null);
+
+    const handleSaveResult = async (updatedResult: Result) => {
+            setError(null);
+
+            const response = await fetch("/api/admin/pending-results", {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    meeting_id: updatedResult.meeting_id,
+                    id: updatedResult.id,
+                    cube_name: updatedResult.cube_name,
+                    round: updatedResult.round,
+                    attempt: updatedResult.attempt,
+                    raw_time_ms: updatedResult.raw_time_ms,
+                    penalty: updatedResult.penalty ?? "OK",
+                }),
+            });
+
+            const body = await response.json();
+
+            if (!response.ok) {
+                throw new Error(body.error ?? "Failed to update pending result");
+            }
+
+            setPendingResults((currentResults) =>
+                currentResults.map((result) => {
+                    const matches =
+                        result.meeting_id === body.meeting_id &&
+                        result.id === body.id &&
+                        result.cube_name === body.cube_name &&
+                        result.round === body.round &&
+                        result.attempt === body.attempt;
+
+                    return matches
+                        ? { ...result, ...body }
+                        : result;
+                })
+            );
+            setEditingResult(null);
+    };
 
     // Check the user's role
     useEffect(() => {
@@ -154,8 +197,7 @@ export default function ValidateResultsPage ({
             </div>
 
             {!loadingResults && !error && filteredResults.length > 0 && (
-                <>
-                    <table>
+                <table>
                         <thead>
                             <tr>
                                 <th>Member Name</th>
@@ -174,7 +216,7 @@ export default function ValidateResultsPage ({
                             {filteredResults.map((result) => (
                                 <tr key={`${result.id}-${result.cube_name}-${result.round}-${result.attempt}`}>
                                     <td>{result.Members.name}</td>
-                                    <td>{result.id}</td>
+                                    <td>{result.Members.id}</td>
                                     <td>{result.cube_name}</td>
                                     <td>{result.round}</td>
                                     <td>{result.attempt}</td>
@@ -189,47 +231,20 @@ export default function ValidateResultsPage ({
                                 </tr>
                             ))}
                         </tbody>
-                    </table>
-
-                    {editingResult && (
-                        <ResultEditor
-                            result={editingResult}
-                            onClose={() => setEditingResult(null)}
-                            onSave={(updatedResult) => {
-                                // Handle save logic here
-                                setPendingResults((currentResults) =>
-                                    currentResults.map((currentResults) => {
-                                        const sameAttempt = currentResults.id === updatedResult.id &&
-                                            currentResults.cube_name === updatedResult.cube_name &&
-                                            currentResults.round === updatedResult.round &&
-                                            currentResults.attempt === updatedResult.attempt;
-
-                                        if (!sameAttempt) {
-                                            return currentResults;
-                                        }
-
-                                        return {
-                                            ...currentResults,
-                                            ...updatedResult,
-                                        };
-                                    })
-                                );
-
-                                setEditingResult(null);
-                            }}
-                        />
-                    )}
-                </>
-            )}
-
-            {!loadingResults && !error && pendingResults.length === 0 && (
-                <p>There are no pending results to validate for this meeting.</p>
+                </table>
             )}
 
             {!loadingResults && !error && filteredResults.length === 0 && pendingResults.length > 0 && (
                 <p>No results match the current filters.</p>
             )}
+
+            {editingResult && (
+                <ResultEditor
+                    result={editingResult}
+                    onClose={() => setEditingResult(null)}
+                    onSave={handleSaveResult}
+                />
+            )}
         </main>
     );
-    
 }

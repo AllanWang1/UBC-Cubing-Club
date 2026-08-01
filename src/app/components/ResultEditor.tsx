@@ -7,12 +7,14 @@ import { formatTime } from "@/app/lib/utils";
 interface ResultEditorProps {
     result: Result;
     onClose: () => void;
-    onSave: (updatedResult: Result) => void;
+    onSave: (updatedResult: Result) => Promise<void>;
 }
 
 export default function ResultEditor({ result, onClose, onSave }: ResultEditorProps) {
     const [rawTime, setRawTime] = useState(result.raw_time_ms);
     const [penalty, setPenalty] = useState(result.penalty);
+    const [saving, setSaving] = useState(false);
+    const [saveError, setSaveError] = useState<string | null>(null);
 
     useEffect(() => {
         setRawTime(result.raw_time_ms);
@@ -39,14 +41,23 @@ export default function ResultEditor({ result, onClose, onSave }: ResultEditorPr
         return rawTime;
     };
 
-    const handleSave = () => {
+    const handleSave = async () => {
         const updatedResult: Result = {
             ...result,
             raw_time_ms: rawTime,
             penalty: penalty === "OK" ? null : penalty,
             time_ms: calculateFinalTime(),
         };
-        onSave(updatedResult);
+
+        try{
+            setSaving(true);
+            setSaveError(null);
+            await onSave(updatedResult);
+        } catch (error) {
+            setSaveError(error instanceof Error ? error.message : "Failed to save pending result.");
+        } finally {
+            setSaving(false);
+        }
     };
 
     return (
@@ -84,11 +95,12 @@ export default function ResultEditor({ result, onClose, onSave }: ResultEditorPr
                 <p>Final Time: {formatTime(calculateFinalTime())}</p>
 
                 <div className="result-editor-actions">
-                    <button type="button" onClick={onClose}>
+                    {saveError && <p className="result-editor-error" role="alert"> {saveError}</p>}
+                    <button type="button" onClick={onClose} disabled={saving}>
                         Cancel
                     </button>
-                    <button type="button" onClick={handleSave}>
-                        Save
+                    <button type="button" onClick={handleSave} disabled={saving}>
+                        {saving ? "Saving..." : "Save"}
                     </button>
                 </div>
             </div>
