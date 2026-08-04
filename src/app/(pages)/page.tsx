@@ -4,9 +4,10 @@ import React from "react";
 import Image from "next/image";
 import "../styles/Home.css";
 import { useEffect, useState } from "react";
+import { ClubBasicInformation } from "../types/ClubBasicInformation";
 
 const Home = () => {
-  const [clubInfo, setClubInfo] = useState(null);
+  const [clubInfo, setClubInfo] = useState<ClubBasicInformation | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -42,47 +43,61 @@ const Home = () => {
           <div className="info-container">
             <div className="info">
               <Image
-                src="/location-icon.svg"
+                src="/homepage-information-icons/location-icon.svg"
                 width={35}
                 height={35}
                 alt="Location: "
               />
-              <p>TBD for Fall 2026</p>
+              <p>{clubInfo.location}</p>
             </div>
             <div className="info">
-              <Image src="/time-icon.svg" width={35} height={35} alt="Time: " />
-              <p>Thursdays @ 17:00 - 19:00</p>
+              <Image src="/homepage-information-icons/time-icon.svg" width={35} height={35} alt="Time: " />
+              <p>{clubInfo.time}</p>
             </div>
             <div className="info">
               <Image
-                src="/instagram-icon.svg"
+                src="/homepage-information-icons/instagram-icon.svg"
                 width={35}
                 height={35}
                 alt="Instagram: "
               />
-              <a href="https://www.instagram.com/ubccubing/" target="_blank">
-                @ubccubing
+              <a
+                href={`https://www.instagram.com/${clubInfo.instagram_name}/`}
+                target="_blank"
+              >
+                @{clubInfo.instagram_name}
               </a>
             </div>
             <div className="info">
               <Image
-                src="/discord-icon.svg"
+                src="/homepage-information-icons/discord-icon.svg"
                 width={35}
                 height={35}
                 alt="Discord: "
               />
-              <a href="https://discord.gg/BErAkAF5qE" target="_blank">
+              <a href={clubInfo.discord_link} target="_blank">
                 Join our Discord!
               </a>
             </div>
             <div className="info">
               <Image
-                src="/email-icon.svg"
+                src="/homepage-information-icons/email-icon.svg"
                 width={35}
                 height={35}
                 alt="Email: "
               />
-              <p>ubc.speedcubing@gmail.com</p>
+              <p>{clubInfo.email}</p>
+            </div>
+            <div className="info">
+              <Image
+                src="/homepage-information-icons/linktree-icon.svg"
+                width={35}
+                height={35}
+                alt="Linktree: "
+              />
+              <a href={clubInfo.linktree_link} target="_blank">
+                Linktree
+              </a>
             </div>
           </div>
         </div>
