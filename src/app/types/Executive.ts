@@ -5,7 +5,7 @@ interface ExecutivePosition {
 }
 
 export interface Executive {
-  id: string;
+  id: number;
   name: string;
   quote: string;
   avatar_path: string;
