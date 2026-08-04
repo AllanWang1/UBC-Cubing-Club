@@ -99,6 +99,7 @@ const About = () => {
 
         <div className="team-section">
           <h2>Meet the Team</h2>
+
           <div className="team">
             {executives.map((executive) => (
               <div className="team-member" key={executive.id}>
@@ -112,19 +113,28 @@ const About = () => {
                   height={200}
                   className="member-image"
                 />
-                <h4>{executive.name}</h4>
-                {executive.positions && executive.positions.length > 0 && (
-                  <div className="roles">
-                    {executive.positions.map((position, i) => (
-                      <p className="role" key={i}>
-                        {`${position.title} 
-                        ${new Date(position.start_date).getFullYear()} - 
-                        ${position.end_date ? new Date(position.end_date).getFullYear() : "Present"}`}
+
+                <h3>{executive.name}</h3>
+
+                <div className="about-team-section-positions">
+                  {executive.positions.map((position, i) => (
+                    <div className="about-team-section-position" key={i}>
+                      <h5>{position.title}</h5>
+
+                      <p>
+                        {new Date(position.start_date).getFullYear()}
+                        {" - "}
+                        {position.end_date
+                          ? new Date(position.end_date).getFullYear()
+                          : "Present"}
                       </p>
-                    ))}
-                  </div>
+                    </div>
+                  ))}
+                </div>
+
+                {executive.quote && (
+                  <p className="about-team-section-quote">{executive.quote}</p>
                 )}
-                <p>{executive.quote}</p>
               </div>
             ))}
           </div>
