@@ -83,3 +83,62 @@ export async function PATCH(request: NextRequest) {
 
     return NextResponse.json(data, { status: 200 });
 }
+
+export async function DELETE(request: NextRequest) {
+    const authorization = await requireAdmin();
+
+    if(!authorization.authorized) {
+        return NextResponse.json({ error: authorization.message }, { status: authorization.status });
+    }
+
+    let body: {
+        meeting_id: number;
+        id: number;
+        cube_name: string;
+        round: number;
+        attempt: number;
+    };
+
+    try {
+        body = await request.json();
+    } catch {
+        return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+    }
+
+    const { meeting_id, id, cube_name, round, attempt } = body;
+
+    if (
+        !Number.isInteger(meeting_id) ||
+        !Number.isInteger(id) ||
+        !Number.isInteger(round) ||
+        !Number.isInteger(attempt) ||
+        !cube_name
+    ) {
+        return NextResponse.json({ error: "Invalid pending results" }, { status: 400 });
+    }
+
+    const { data, error } = await authorization.supabase
+        .from("PendingResults")
+        .delete()
+        .eq("meeting_id", meeting_id)
+        .eq("id", id)
+        .eq("cube_name", cube_name)
+        .eq("round", round)
+        .eq("attempt", attempt)
+        .select()
+        .single();
+
+        if (error) {
+            return NextResponse.json(
+                { error: error.message,
+                    code: error.code,
+                    details: error.details,
+                },
+                { status: 500 }
+            );
+        }
+
+        return NextResponse.json(
+            data, { status: 200 }
+        );
+}

@@ -91,6 +91,42 @@ export default function ValidateResultsPage ({
             setEditingResult(null);
     };
 
+    const handleDeleteResult = async (resultToDelete: Result) => {
+        const response = await fetch("/api/admin/pending-results", {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                meeting_id: resultToDelete.meeting_id,
+                id: resultToDelete.id,
+                cube_name: resultToDelete.cube_name,
+                round: resultToDelete.round,
+                attempt: resultToDelete.attempt,
+            }),
+        });
+
+        const body = await response.json();
+
+        if (!response.ok) {
+            throw new Error(body.error ?? "Failed to delete pending result");
+        }
+
+        setPendingResults((currentResults) =>
+            currentResults.filter((result) => {
+                const isDeletedResult =
+                    result.meeting_id === body.meeting_id &&
+                    result.id === body.id &&
+                    result.cube_name === body.cube_name &&
+                    result.round === body.round &&
+                    result.attempt === body.attempt;
+
+                return !isDeletedResult;
+            })
+        );
+        setEditingResult(null);
+    };
+
     // Check the user's role
     useEffect(() => {
         async function checkPermission() {
@@ -243,6 +279,7 @@ export default function ValidateResultsPage ({
                     result={editingResult}
                     onClose={() => setEditingResult(null)}
                     onSave={handleSaveResult}
+                    onDelete={handleDeleteResult}
                 />
             )}
         </main>

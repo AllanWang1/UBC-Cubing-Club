@@ -8,13 +8,15 @@ interface ResultEditorProps {
     result: Result;
     onClose: () => void;
     onSave: (updatedResult: Result) => Promise<void>;
+    onDelete: (result: Result) => Promise<void>;
 }
 
-export default function ResultEditor({ result, onClose, onSave }: ResultEditorProps) {
+export default function ResultEditor({ result, onClose, onSave, onDelete }: ResultEditorProps) {
     const [rawTime, setRawTime] = useState(result.raw_time_ms);
     const [penalty, setPenalty] = useState(result.penalty);
     const [saving, setSaving] = useState(false);
     const [saveError, setSaveError] = useState<string | null>(null);
+    const [deleting, setDeleting] = useState(false);
 
     useEffect(() => {
         setRawTime(result.raw_time_ms);
@@ -60,6 +62,23 @@ export default function ResultEditor({ result, onClose, onSave }: ResultEditorPr
         }
     };
 
+    const handleDelete = async () => {
+        const confirmed = window.confirm(`Delete attempt ${result.attempt} for ${result.cube_name} in round ${result.round}?` + "The member will be allowed to attempt this solve again.");
+        if (!confirmed) {
+           return;
+        }
+
+        try {
+            setDeleting(true);
+            setSaveError(null);
+            await onDelete(result);
+        } catch (error) {
+            setSaveError(error instanceof Error ? error.message : "Failed to delete pending result.");
+        } finally {
+            setDeleting(false);
+        }
+    };
+
     return (
         <div className="result-editor-overlay">
             <div className="result-editor">
@@ -101,6 +120,9 @@ export default function ResultEditor({ result, onClose, onSave }: ResultEditorPr
                     </button>
                     <button type="button" onClick={handleSave} disabled={saving}>
                         {saving ? "Saving..." : "Save"}
+                    </button>
+                    <button type="button" onClick={handleDelete} disabled={saving || deleting}>
+                        {deleting ? "Deleting..." : "Delete entry"}
                     </button>
                 </div>
             </div>
