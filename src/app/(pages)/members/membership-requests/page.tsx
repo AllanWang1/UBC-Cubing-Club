@@ -116,7 +116,7 @@ const MembershipManagement = () => {
 
     getUserPermission();
     fetchRequests();
-  }, []);
+  }, [router]);
 
   return ADMIN_ROLES.includes(userRole) ? (
     <div className="membership-requests">

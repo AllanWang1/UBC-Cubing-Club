@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
     }
 }
 
-export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
     const authorization = await requireAdmin();
 
     if (!authorization.authorized) {

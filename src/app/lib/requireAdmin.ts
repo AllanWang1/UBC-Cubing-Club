@@ -16,21 +16,11 @@ export async function requireAdmin() {
         };
     }
 
-    const memberId = user.user_metadata?.member_id;
-
-    if (!memberId) {
-        return {
-            authorized: false as const,
-            status: 403,
-            message: "Forbidden: Your account is not associated with a member",
-            supabase,
-        };
-    }
 
     const { data: member, error: memberError } = await supabase
         .from("Members")
-        .select("role")
-        .eq("id", memberId)
+        .select("id, role")
+        .eq("user_id", user.id)
         .single();
 
     if (memberError || !member || !ADMIN_ROLES.includes(member.role)) {
