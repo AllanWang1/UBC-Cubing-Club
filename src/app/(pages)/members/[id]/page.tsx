@@ -146,7 +146,7 @@ const Member = ({ params }: { params: Promise<{ id: string }> }) => {
                       <td>
                         <div className="result-event">
                           <Image
-                            src={getPublicURLWithPath(result.icon_link)}
+                            src={getPublicURLWithPath("cubeicons", result.icon_link)}
                             width={30}
                             height={30}
                             alt="cube image"

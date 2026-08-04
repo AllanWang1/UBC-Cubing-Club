@@ -1,9 +1,30 @@
+"use client";
+
 import React from "react";
 import "./About.css";
 import Image from "next/image";
-import teamMembers from "./Members.json";
+import { Executive } from "@/app/types/Executive";
+import { useState, useEffect } from "react";
+import { getPublicURLWithPath } from "@/app/lib/utils";
 
 const About = () => {
+  const [executives, setExecutives] = useState<Executive[]>([]);
+  useEffect(() => {
+    const fetchExecutives = async () => {
+      try {
+        const response = await fetch("/api/club-info/executives");
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const data = await response.json();
+        setExecutives(data);
+      } catch (error) {
+        console.error("Error fetching executives:", error);
+      }
+    };
+
+    fetchExecutives();
+  }, []);
   return (
     <div className="aboutus">
       <div className="about-intro">
@@ -79,27 +100,27 @@ const About = () => {
         <div className="section">
           <h2>Meet the Team</h2>
           <div className="team">
-            {teamMembers.map((member, index) => (
-              <div className="team-member" key={index}>
+            {executives.map((executive) => (
+              <div className="team-member" key={executive.id}>
                 <Image
-                  src={member.image}
-                  alt={member.name}
+                  src={getPublicURLWithPath("executive-avatars", executive.avatar_path)}
+                  alt={executive.name}
                   width={200}
                   height={200}
                   className="member-image"
                 />
-                <h4>{member.name}</h4>
-                {member.roles && member.roles.length > 0 && (
+                <h4>{executive.name}</h4>
+                {executive.positions && executive.positions.length > 0 && (
                   <div className="roles">
-                    {member.roles.map((role, i) => (
+                    {executive.positions.map((position, i) => (
                       <p className="role" key={i}>
-                        {role.title}
-                        {role.years && ` (${role.years})`}
+                        {position.title}
+                        {new Date(position.start_date).getFullYear()}
                       </p>
                     ))}
                   </div>
                 )}
-                <p>{member.description}</p>
+                <p>{executive.quote}</p>
               </div>
             ))}
           </div>

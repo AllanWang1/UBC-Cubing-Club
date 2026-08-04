@@ -330,7 +330,7 @@ export default function MeetingView({
               </h3>
               <Image
                 className="cube-icon"
-                src={getPublicURLWithPath(event.Cubes.icon_link)}
+                src={getPublicURLWithPath("cubeicons", event.Cubes.icon_link)}
                 alt="cube icon"
                 width={50}
                 height={50}

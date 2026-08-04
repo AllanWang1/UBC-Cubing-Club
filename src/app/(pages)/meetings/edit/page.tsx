@@ -212,7 +212,7 @@ const MeetingIDEdit = () => {
       {heldEvents.map((event) => (
         <div key={event.cube_name} className="meeting-id-edit-event">
           <Image
-            src={getPublicURLWithPath(event.Cubes.icon_link)}
+            src={getPublicURLWithPath("cubeicons", event.Cubes.icon_link)}
             alt={event.Cubes.cube_name}
             width={50}
             height={50}
