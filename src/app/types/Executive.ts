@@ -1,4 +1,4 @@
-interface ExecutivePosition {
+export interface ExecutivePosition {
   title: string;
   start_date: Date;
   end_date: Date | null;

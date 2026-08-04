@@ -97,13 +97,16 @@ const About = () => {
           </div>
         </div>
 
-        <div className="section">
+        <div className="team-section">
           <h2>Meet the Team</h2>
           <div className="team">
             {executives.map((executive) => (
               <div className="team-member" key={executive.id}>
                 <Image
-                  src={getPublicURLWithPath("executive-avatars", executive.avatar_path)}
+                  src={getPublicURLWithPath(
+                    "executive-avatars",
+                    executive.avatar_path,
+                  )}
                   alt={executive.name}
                   width={200}
                   height={200}
@@ -114,8 +117,9 @@ const About = () => {
                   <div className="roles">
                     {executive.positions.map((position, i) => (
                       <p className="role" key={i}>
-                        {position.title}
-                        {new Date(position.start_date).getFullYear()}
+                        {`${position.title} 
+                        ${new Date(position.start_date).getFullYear()} - 
+                        ${position.end_date ? new Date(position.end_date).getFullYear() : "Present"}`}
                       </p>
                     ))}
                   </div>
