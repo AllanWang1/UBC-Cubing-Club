@@ -74,8 +74,8 @@ const About = () => {
               <p>
                 Create a welcoming environment where beginners and experienced
                 cubers can connect and improve together. Feel free to join our
-                weekly meetings whether you're aiming to smash the club records,
-                or just want to learn how to solve a Rubik's Cube for the first
+                weekly meetings whether you&apos;re aiming to smash the club records,
+                or just want to learn how to solve a Rubik&apos;s Cube for the first
                 time!
               </p>
             </div>
@@ -96,7 +96,7 @@ const About = () => {
                 Encourage skill development through meetups, practice sessions,
                 and interclub events. We keep track of all the club records,
                 rankings, and the full history of member solves, so you can see
-                how much you've improved over time!
+                how much you&apos;ve improved over time!
               </p>
             </div>
           </div>
