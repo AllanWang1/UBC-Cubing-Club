@@ -1,20 +1,19 @@
 .membership-requests {
-    display: flex;
-    flex-direction: column;
-    gap: 80px;
-    align-items: center;
-    width: 100%;
-    justify-content: center;
-    padding-top: 100px;
+  display: flex;
+  flex-direction: column;
+  gap: 80px;
+  align-items: center;
+  width: 100%;
+  justify-content: center;
 }
 
 .membership-requests-action-panel {
-    display: flex;
-    gap: 20px;
-    width: 100%;
+  display: flex;
+  gap: 20px;
+  width: 100%;
 }
 
 .membership-requests-user-id-panel {
-    width: 200px;
-    word-wrap: break-word;
+  width: 200px;
+  word-wrap: break-word;
 }
