@@ -35,9 +35,7 @@ const About = () => {
           height={1000}
           className="club-banner-image"
         />
-        <div className="about-club-introduction">
-          
-        </div>
+        <div className="about-club-introduction"></div>
         <div className="banner-overlay">
           <Image
             src="/ubc_logo_white.webp"
@@ -57,7 +55,16 @@ const About = () => {
       <div className="container">
         <div className="mission-section">
           <div className="mission-header">
-            <h2>Our Mission</h2>
+            <div className="mission-title-container">
+              <h2>Our Mission</h2>
+              <Image
+                src="/about-mission-assets/mission_icon.svg"
+                alt="Mission"
+                height={22}
+                width={22}
+                className="mission-icon"
+              />
+            </div>
 
             <p>
               At the UBC Cubing Club, we aim to{" "}
@@ -69,8 +76,25 @@ const About = () => {
 
           <div className="mission-cards">
             <div className="mission-card">
-              <div className="mission-icon">🧩</div>
-              <h3>Community</h3>
+              <div className="mission-media">
+                <Image
+                  src="/about-mission-assets/community.webp"
+                  alt="Community"
+                  fill
+                  className="mission-media-content"
+                />
+              </div>
+
+              <div className="mission-card-title">
+                <h3>Community</h3>
+                <Image
+                  src="/about-mission-assets/community_icon.svg"
+                  alt="Community"
+                  height={22}
+                  width={22}
+                  className="mission-media-content"
+                />
+              </div>
               <p>
                 Create a welcoming environment where beginners and experienced
                 cubers can connect and improve together. Feel free to join our
@@ -81,22 +105,66 @@ const About = () => {
             </div>
 
             <div className="mission-card">
-              <div className="mission-icon">🏆</div>
-              <h3>Competition</h3>
+              <div className="mission-media">
+                <video
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  className="mission-media-content"
+                >
+                  <source
+                    src="/about-mission-assets/competition.mp4"
+                    type="video/mp4"
+                  />
+                </video>
+              </div>
+
+              <div className="mission-card-title">
+                <h3>Competition</h3>
+                <Image
+                  src="/about-mission-assets/competition_icon.svg"
+                  alt="Competition"
+                  height={22}
+                  width={22}
+                  className="mission-media-content"
+                />
+              </div>
               <p>
-                Host official WCA competitions and provide opportunities for
+                Host and sponsor official WCA competitions and provide opportunities for
                 cubers to compete and achieve personal milestones.
               </p>
             </div>
 
             <div className="mission-card">
-              <div className="mission-icon">🚀</div>
-              <h3>Growth</h3>
+              <div className="mission-media">
+                <video
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  className="mission-media-content"
+                >
+                  <source
+                    src="/about-mission-assets/growth.mp4"
+                    type="video/mp4"
+                  />
+                </video>
+              </div>
+              <div className="mission-card-title">
+                <h3>Growth</h3>
+                <Image
+                  src="/about-mission-assets/growth_icon.svg"
+                  alt="Growth"
+                  height={22}
+                  width={22}
+                  className="mission-media-content"
+                />
+              </div>
               <p>
                 Encourage skill development through meetups, practice sessions,
-                and interclub events. We keep track of all the club records,
-                rankings, and the full history of member solves, so you can see
-                how much you&apos;ve improved over time!
+                and interclub events. We provide a platform for members to learn from each other
+                and grow as cubers, whether it&apos;s improving your PB or learning new solving methods!
               </p>
             </div>
           </div>
