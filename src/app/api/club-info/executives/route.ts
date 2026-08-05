@@ -52,13 +52,25 @@ export async function GET(request: NextRequest) {
   }));
 
   const sorted_executives = executives.sort((a, b) => {
+    const aCurrentPresident = a.positions.some(
+      (pos) => pos.title === "President" && pos.end_date === null,
+    );
+    const bCurrentPresident = b.positions.some(
+      (pos) => pos.title === "President" && pos.end_date === null,
+    );
+    // Current President always first
+    if (aCurrentPresident !== bCurrentPresident) {
+      return Number(bCurrentPresident) - Number(aCurrentPresident);
+    }
     const aCurrent = a.positions.some((pos) => pos.end_date === null);
     const bCurrent = b.positions.some((pos) => pos.end_date === null);
-    // Current executives first
+
+    // Other current executives before past executives
     if (aCurrent !== bCurrent) {
       return Number(bCurrent) - Number(aCurrent);
     }
-
+    
+    // Longer-serving executives first
     return getTotalYears(b.positions) - getTotalYears(a.positions);
   });
 
