@@ -1,6 +1,30 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
+function requireEnvironmentVariable(name: string): string {
+  const value = process.env[name];
+
+  if (!value) {
+    throw new Error(`Missing environment variable: ${name}`);
+  }
+
+  return value;
+}
+
+const supabaseUrl = requireEnvironmentVariable(
+  "NEXT_PUBLIC_SUPABASE_URL"
+);
+
+const supabaseAnonKey = requireEnvironmentVariable(
+  "NEXT_PUBLIC_SUPABASE_ANON_KEY"
+);
+
+if (!supabaseUrl || !supabaseAnonKey) {
+  throw new Error(
+    "Missing NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_ANON_KEY"
+  );
+}
+
 export async function middleware(request: NextRequest) {
   let response = NextResponse.next({
     request: {
@@ -10,7 +34,7 @@ export async function middleware(request: NextRequest) {
 
   const supabase = createServerClient(
     "https://aprxkjdevkzpsbjumkmm.supabase.co",
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFwcnhramRldmt6cHNianVta21tIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzkzNTU0MjcsImV4cCI6MjA1NDkzMTQyN30.RDvcvsMhJCxKdynvD9SS3oFvSxp9E1Y0Ok2E6Rnpe1g",
+    supabaseAnonKey,
     {
       cookies: {
         getAll() {

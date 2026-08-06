@@ -29,3 +29,144 @@
   gap: 0.75rem;
   margin-top: 1.5rem;
 }
+
+.validate-results-page {
+  width: 100%;
+  max-width: 1600px;
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 120px 32px 64px;
+}
+
+.validate-results-page h1 {
+  margin: 24px 0;
+  text-align: center;
+  font-size: 36px;
+  font-weight: bold;
+}
+
+.pending-results-table-wrapper {
+  width: 100%;
+  margin-top: 24px;
+  overflow-x: auto;
+  border: 1px solid #d5dce4;
+  border-radius: 10px;
+}
+
+.pending-results-table {
+  width: 100%;
+  min-width: 950px;
+  border-collapse: collapse;
+  background-color: white;
+}
+
+.pending-results-table th,
+.pending-results-table td {
+  padding: 14px 16px;
+  text-align: left;
+  vertical-align: middle;
+  white-space: nowrap;
+  border-bottom: 1px solid #d5dce4;
+}
+
+.pending-results-table th {
+  background-color: #002145;
+  color: white;
+  font-weight: 600;
+}
+
+.pending-results-table tbody tr:nth-child(even) {
+  background-color: #f5f7fa;
+}
+
+.pending-results-table tbody tr:hover {
+  background-color: #eaf2fb;
+}
+
+.pending-results-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.pending-results-table td:last-child,
+.pending-results-table th:last-child {
+  text-align: center;
+}
+
+.pending-results-filters {
+  display: grid;
+  grid-template-columns:
+    minmax(220px, 1fr)
+    minmax(220px, 1fr)
+    auto;
+  align-items: end;
+  gap: 16px;
+  width: 100%;
+  margin: 24px 0;
+}
+
+.pending-results-filters label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pending-results-filters input,
+.pending-results-filters select {
+  width: 100%;
+  min-height: 48px;
+  padding: 10px 14px;
+  border: 2px solid #147d92;
+  border-radius: 8px;
+  font: inherit;
+}
+
+.pending-results-filters button {
+  min-height: 48px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  background-color: #0b5eb5;
+  color: white;
+  font: inherit;
+  cursor: pointer;
+}
+
+.validate-results-back {
+  display: flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: 8px;
+}
+
+.validate-results-back a {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  text-align: left;
+  font-size: 16px;
+  gap: 8px;
+}
+
+.validate-results-back a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 800px) {
+  .validate-results-page {
+    padding: 100px 16px 48px;
+  }
+
+  .pending-results-filters {
+    grid-template-columns: 1fr;
+  }
+
+  .pending-results-filters button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 800px) {
+  .validate-results-page h1 {
+    font-size: 30px;
+  }
+}

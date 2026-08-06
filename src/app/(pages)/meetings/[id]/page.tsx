@@ -283,25 +283,27 @@ export default function MeetingView({
         <h2>{meeting.meeting_name}</h2>
         <h3>{meeting.date}</h3>
       </div>
-      {isAdmin && meeting.status === "open" && (
-        <button className="edit-meeting-button">
-          <Link href={`/meetings/edit?meetingId=${meeting.meeting_id}`}>
+     {isAdmin && (
+      <div className="meeting-admin-actions">
+        {meeting.status === "open" && (
+          <Link
+            className="meeting-admin-action"
+            href={`/meetings/edit?meetingId=${meeting.meeting_id}`}
+          >
             Edit Meeting
           </Link>
-        </button>
-      )}
-      {isAdmin && (
+        )}
+
         <Link
-          className="validate-results-button"
+          className="meeting-admin-action"
           href={`/meetings/${meeting.meeting_id}/validate`}
         >
           Validate Results
         </Link>
-      )}
-      {isAdmin && (
+
         <button
           type="button"
-          className={`meeting-status-button meeting-status-${meeting.status}`}
+          className="meeting-admin-action"
           onClick={handleStatusChange}
           disabled={changingStatus}
         >
@@ -311,7 +313,8 @@ export default function MeetingView({
               ? "Close Meeting"
               : "Reopen Meeting"}
         </button>
-      )}
+      </div>
+    )}
 
       {statusError && (
         <p className="meeting-status-error" role="alert">

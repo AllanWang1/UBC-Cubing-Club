@@ -6,6 +6,7 @@ import { ADMIN_ROLES, formatTime, getUserRole } from "@/app/lib/utils";
 import { Result } from "@/app/types/Result";
 import ResultEditor from "@/app/components/ResultEditor";
 import "./validateResults.css";
+import Image from "next/image";
 
 interface PendingResultWithMember extends Result {
     Members: {
@@ -33,6 +34,9 @@ export default function ValidateResultsPage ({
     // Filters state
     const [memberIdFilter, setMemberIdFilter] = useState<string>("");
     const [cubeNameFilter, setCubeNameFilter] = useState<string>("");
+
+    const [approving, setApproving] = useState(false);
+    const [approvalError, setApprovalError] = useState<string | null>(null);
 
     const cubeNameOptions = useMemo(() => {
         const uniqueCubeNames = Array.from(new Set(pendingResults.map(result => result.cube_name)));
@@ -127,6 +131,40 @@ export default function ValidateResultsPage ({
         setEditingResult(null);
     };
 
+    const handleApproveResults = async () => {
+        const confirmed = window.confirm(`Approve all ${pendingResults.length} pending results for this meeting?`);
+
+        if (!confirmed) {
+            return;
+        }
+
+        try {
+            setApproving(true);
+            setApprovalError(null);
+
+            const response = await fetch("/api/admin/pending-results/approve", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ meeting_id: parseInt(id) }),
+            });
+
+            const body = await response.json();
+
+            if (!response.ok) {
+                throw new Error(body.error ?? "Failed to approve pending results");
+            }
+
+            setPendingResults([]);
+            window.alert(`${body.approvedCount} pending results approved successfully.`);
+        } catch (error) {
+            setApprovalError(error instanceof Error ? error.message : "Failed to approve pending results");
+        } finally {
+            setApproving(false);
+        }
+    };
+
     // Check the user's role
     useEffect(() => {
         async function checkPermission() {
@@ -189,8 +227,13 @@ export default function ValidateResultsPage ({
     }
 
     return (
-        <main>
-            <Link href={`/meetings/${id}`}> Back to meeting</Link>
+        <main className="validate-results-page">
+            <div className="validate-results-back">
+                <Image src="/back.svg" width={16} height={16} alt="back button" />
+                <Link href={`/meetings/${id}`}>
+                    <p>Back to meeting</p>
+                </Link>
+            </div>
             <h1>Validate Results</h1>
 
             {loadingResults && <p>Loading pending results...</p>}
@@ -229,45 +272,57 @@ export default function ValidateResultsPage ({
                     </select>
                 </label>
 
+                <button
+                    type="button"
+                    onClick={handleApproveResults}
+                    disabled={approving || pendingResults.length === 0}
+                >
+                    {approving ? "Approving..." : `Approve All ${pendingResults.length} Results`}
+                </button>
+
+                {approvalError && <p role="alert" className="approval-error">{approvalError}</p>}
+
 
             </div>
 
             {!loadingResults && !error && filteredResults.length > 0 && (
-                <table>
-                        <thead>
-                            <tr>
-                                <th>Member Name</th>
-                                <th>Member ID</th>
-                                <th>Event</th>
-                                <th>Round</th>
-                                <th>Attempt</th>
-                                <th>Raw Time</th>
-                                <th>Penalty</th>
-                                <th>Final Time</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-                            {filteredResults.map((result) => (
-                                <tr key={`${result.id}-${result.cube_name}-${result.round}-${result.attempt}`}>
-                                    <td>{result.Members.name}</td>
-                                    <td>{result.Members.id}</td>
-                                    <td>{result.cube_name}</td>
-                                    <td>{result.round}</td>
-                                    <td>{result.attempt}</td>
-                                    <td>{formatTime(result.raw_time_ms)}</td>
-                                    <td>{result.penalty ?? "OK"}</td>
-                                    <td>{formatTime(result.time_ms)}</td>
-                                    <td>
-                                        <button type="button" onClick={() => setEditingResult(result)}>
-                                            Edit
-                                        </button>
-                                    </td>
+                 <div className="pending-results-table-wrapper">
+                    <table className="pending-results-table">
+                            <thead>
+                                <tr>
+                                    <th>Member Name</th>
+                                    <th>Member ID</th>
+                                    <th>Event</th>
+                                    <th>Round</th>
+                                    <th>Attempt</th>
+                                    <th>Raw Time</th>
+                                    <th>Penalty</th>
+                                    <th>Final Time</th>
+                                    <th>Actions</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                </table>
+                            </thead>
+
+                            <tbody>
+                                {filteredResults.map((result) => (
+                                    <tr key={`${result.id}-${result.cube_name}-${result.round}-${result.attempt}`}>
+                                        <td>{result.Members.name}</td>
+                                        <td>{result.Members.id}</td>
+                                        <td>{result.cube_name}</td>
+                                        <td>{result.round}</td>
+                                        <td>{result.attempt}</td>
+                                        <td>{formatTime(result.raw_time_ms)}</td>
+                                        <td>{result.penalty ?? "OK"}</td>
+                                        <td>{formatTime(result.time_ms)}</td>
+                                        <td>
+                                            <button type="button" onClick={() => setEditingResult(result)}>
+                                                Edit
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                    </table>
+                </div>
             )}
 
             {!loadingResults && !error && filteredResults.length === 0 && pendingResults.length > 0 && (

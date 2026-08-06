@@ -31,6 +31,10 @@
   gap: 8px;
 }
 
+.meeting-back a:hover {
+  text-decoration: underline;
+}
+
 .event-results {
   display: flex;
   flex-direction: column;
@@ -60,6 +64,8 @@
   width: 100%;
   max-width: 1200px;
 }
+
+
 .rounds {
   display: flex;
   flex-direction: column;
@@ -154,5 +160,59 @@
 .round-submissions button:disabled {
   background-color: #cccccc;
   cursor: not-allowed;
+}
+
+.meeting-admin-actions {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  width: 100%;
+}
+
+.meeting-admin-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 170px;
+  min-height: 52px;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 10px;
+  background-color: #0b5eb5;
+  color: white;
+  font: inherit;
+  font-size: 18px;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color 0.2s,
+    transform 0.2s;
+}
+
+.meeting-admin-action:hover {
+  background-color: #002145;
+  color: white;
+  transform: translateY(-1px);
+}
+
+.meeting-admin-action:disabled {
+  background-color: #8a9bad;
+  color: white;
+  cursor: not-allowed;
+  transform: none;
+}
+
+@media (max-width: 650px) {
+  .meeting-admin-actions {
+    flex-wrap: wrap;
+  }
+
+  .meeting-admin-action {
+    width: 100%;
+    max-width: 280px;
+  }
 }
 
