@@ -104,6 +104,7 @@ const MembershipManagement = () => {
       if (!role) {
         alert("You must be logged in to view this page");
         router.push("/login");
+        return;
       } else {
         setUserRole(role);
       }
