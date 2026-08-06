@@ -48,7 +48,7 @@ const DNF_RESULT_TEMPLATE = (
 
 async function submitResult(result: Result) {
   try {
-    const response = await fetch(`/api/pending/post`, {
+    const response = await fetch(`/api/pending`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -115,7 +115,7 @@ async function checkAndHandleStartedAttempts(
         meeting_id,
         round,
       };
-      submitStartedAttempt(entry);
+      await submitStartedAttempt(entry);
     }
   } else {
     alert("Error checking started attempts: " + res_json.error);
@@ -135,7 +135,7 @@ async function submitStartedAttempt(entry: StartedAttempt) {
     if (response.ok) {
       // Attempt started
     } else {
-      alert("Error starting attempt: " + res_json.error);
+      alert("Error starting attempt: " + (res_json.error ?? res_json.message ?? "Unknown error"));
     }
   } catch (error) {
     alert("Error starting attempt: " + error);
@@ -185,6 +185,8 @@ const Timer = () => {
   const cube_name_read = searchParams.get("cube_name") as string;
   const meeting_id_read = Number(searchParams.get("meeting_id"));
   const round_read = Number(searchParams.get("round"));
+
+  const validationStartedRef = useRef(false);
 
   const [temporaryResult, setTemporaryResult] = useState<Result>({
     attempt: attempt_read,
@@ -238,6 +240,11 @@ const Timer = () => {
 
   // Validating all
   useEffect(() => {
+    if (validationStartedRef.current) {
+      return;
+    }
+    validationStartedRef.current = true;
+    
     if (!attempt_read || !round_read || !cube_name_read || !meeting_id_read) {
       router.push("/404");
       return;
@@ -587,6 +594,7 @@ const Timer = () => {
       )}
     </div>
   );
+
 };
 
 // Export the wrapped version

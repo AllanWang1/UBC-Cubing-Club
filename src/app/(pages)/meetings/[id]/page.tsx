@@ -13,6 +13,7 @@ import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import "./MeetingID.css";
+import "./validate/validateResults.css";
 
 interface ResultWithMembers {
   attempt: number;
@@ -86,7 +87,56 @@ export default function MeetingView({
 
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
 
+  const [changingStatus, setChangingStatus] = useState(false);
+  const [statusError, setStatusError] = useState<string | null>(null);
+
   const router = useRouter();
+
+
+  const handleStatusChange = async () => {
+    const nextStatus = meeting.status === "open" ? "closed" : "open";
+
+    const confirmed = window.confirm(
+      nextStatus === "closed"
+        ? "Close this meeting? Members will no longer be able to submit attempts."
+        : "Reopen this meeting? Members will be able to access available attempts again."
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      setChangingStatus(true);
+      setStatusError(null);
+
+      const response = await fetch(`/api/meetings/${meeting.meeting_id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          status: nextStatus,
+        }),
+      });
+
+      const body = await response.json();
+
+      if (!response.ok) {
+        throw new Error(body.error ?? "Failed to update meeting status.");
+      }
+
+      setMeeting(body);
+    } catch (error) {
+      setStatusError(
+        error instanceof Error
+          ? error.message
+          : "Failed to update meeting status."
+      );
+    } finally {
+      setChangingStatus(false);
+    }
+  };
 
   // For fetching meeting data on component mount
   useEffect(() => {
@@ -200,7 +250,7 @@ export default function MeetingView({
     };
 
     const fetchAllPending = async () => {
-      const response = await fetch(`/api/pending/all-pending?meeting_id=${id}`);
+      const response = await fetch(`/api/pending?meeting_id=${id}`);
       const res_json = await response.json();
       if (response.ok) {
         setPendingResults(res_json);
@@ -233,12 +283,43 @@ export default function MeetingView({
         <h2>{meeting.meeting_name}</h2>
         <h3>{meeting.date}</h3>
       </div>
-      {isAdmin && meeting.status === "open" && (
-        <button className="edit-meeting-button">
-          <Link href={`/meetings/edit?meetingId=${meeting.meeting_id}`}>
+     {isAdmin && (
+      <div className="meeting-admin-actions">
+        {meeting.status === "open" && (
+          <Link
+            className="meeting-admin-action"
+            href={`/meetings/edit?meetingId=${meeting.meeting_id}`}
+          >
             Edit Meeting
           </Link>
+        )}
+
+        <Link
+          className="meeting-admin-action"
+          href={`/meetings/${meeting.meeting_id}/validate`}
+        >
+          Validate Results
+        </Link>
+
+        <button
+          type="button"
+          className="meeting-admin-action"
+          onClick={handleStatusChange}
+          disabled={changingStatus}
+        >
+          {changingStatus
+            ? "Updating..."
+            : meeting.status === "open"
+              ? "Close Meeting"
+              : "Reopen Meeting"}
         </button>
+      </div>
+    )}
+
+      {statusError && (
+        <p className="meeting-status-error" role="alert">
+          {statusError}
+        </p>
       )}
       <ul className="meeting-events-list">
         {heldEvents.map((event) => (

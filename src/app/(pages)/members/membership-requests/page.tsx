@@ -104,6 +104,7 @@ const MembershipManagement = () => {
       if (!role) {
         alert("You must be logged in to view this page");
         router.push("/login");
+        return;
       } else {
         setUserRole(role);
       }
@@ -116,7 +117,7 @@ const MembershipManagement = () => {
 
     getUserPermission();
     fetchRequests();
-  }, []);
+  }, [router]);
 
   return ADMIN_ROLES.includes(userRole) ? (
     <div className="membership-requests">

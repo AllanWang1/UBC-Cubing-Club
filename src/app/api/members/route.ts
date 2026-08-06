@@ -17,9 +17,9 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
-  const { id, name, email, faculty, birthdate, wca_id } = await request.json();
-  if (!name || !faculty) {
-    console.log("missing: ", { id, name, faculty });
+  const { user_id, name, email, faculty, birthdate, wca_id } = await request.json();
+  if (!user_id || !name || !faculty) {
+    console.log("missing: ", { user_id, name, faculty });
     return NextResponse.json(
       { error: "Missing required fields" },
       { status: 400 },
@@ -31,6 +31,7 @@ export async function POST(request: NextRequest) {
     .from("Members")
     .insert([
       {
+        user_id: user_id,
         name: name,
         email: email,
         membership: true,
