@@ -27,7 +27,7 @@ export async function requireAdmin() {
         return {
             authorized: false as const,
             status: 403,
-            message: "Forbidden: You do not have the required permissions to edit pending results",
+            message: "Forbidden: Admin access required",
             supabase,
         };
     }
