@@ -3,4 +3,5 @@
 **next
 **/.env.local
 **/.env.*.local
+supabase/
 
