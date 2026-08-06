@@ -193,7 +193,7 @@ export default function ValidateResultsPage ({
                 setLoadingResults(true);
                 setError(null);
 
-                const response = await fetch(`/api/pending/all-pending?meeting_id=${id}`);
+                const response = await fetch(`/api/pending?meeting_id=${id}`);
                 
                 const body = await response.json();
 

@@ -250,7 +250,7 @@ export default function MeetingView({
     };
 
     const fetchAllPending = async () => {
-      const response = await fetch(`/api/pending/all-pending?meeting_id=${id}`);
+      const response = await fetch(`/api/pending?meeting_id=${id}`);
       const res_json = await response.json();
       if (response.ok) {
         setPendingResults(res_json);

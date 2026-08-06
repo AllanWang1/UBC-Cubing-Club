@@ -48,7 +48,7 @@ const DNF_RESULT_TEMPLATE = (
 
 async function submitResult(result: Result) {
   try {
-    const response = await fetch(`/api/pending/post`, {
+    const response = await fetch(`/api/pending`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
