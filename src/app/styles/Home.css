@@ -1,10 +1,13 @@
 .home {
+  gap: 60px;
+}
+
+.club-info {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 60px;
-  padding-top: 10px;
   margin-top: 0px;
 }
 
@@ -63,7 +66,7 @@ a:hover {
   background-size: cover;
   background-position: center;
   background-repeat: repeat-y;
-  padding-top: 100px;
+  padding-top: 60px;
   padding-bottom: 30px;
   height: 100vh;
   color: #333333;

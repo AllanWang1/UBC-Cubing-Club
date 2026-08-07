@@ -5,177 +5,360 @@
   gap: 80px;
 }
 
-.about-intro {
+.about-banner {
   position: relative;
-  text-align: center;
+  width: 100%;
+  height: 80vh;
+  overflow: hidden;
 }
 
-.club-image {
+/* Background image */
+
+.club-banner-image {
   width: 100%;
-  height: 450px;
+  height: 100%;
   object-fit: cover;
-  object-position: center;
 }
-.about-intro-overlay {
+
+/* Dark gradient so the text is readable without covering the cube */
+
+.about-banner::after {
+  content: "";
   position: absolute;
+  inset: 0;
+
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.65) 0%,
+    rgba(0, 0, 0, 0.45) 35%,
+    rgba(0, 0, 0, 0.15) 60%,
+    rgba(0, 0, 0, 0) 100%
+  );
+
   z-index: 1;
-  top: 150px;
-  left: 0;
-  right: 0;
-  text-align: center;
-  background: rgba(0, 0, 0, 0.4); /* dark overlay */
-  padding: 20px;
-  border-radius: 12px;
 }
-.about-intro-overlay h2 {
-  font-size: 70px;
-  color: white;
-  font-style: italic;
-  font-weight: 800;
+
+/* Left-side content */
+.banner-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 67%;
+  padding-left: 8%;
+  padding-right: 2%;
+  z-index: 2;
+}
+
+.club-logo {
+  width: 170px;
+  height: auto;
+  margin-right: 2.5rem;
+  flex-shrink: 0;
+  opacity: 0;
+  animation: fadeScale 0.8s ease forwards;
+}
+
+.banner-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.banner-text h3 {
   margin: 0;
+  color: white;
+  font-size: clamp(3rem, 5vw, 4.8rem);
+  font-weight: 700;
+  line-height: 1.05;
+  opacity: 0;
+  animation: slideDown 0.8s ease forwards;
+  animation-delay: 0.2s;
+}
+
+.banner-text h4 {
+  margin-top: 1rem;
+  color: rgba(255, 255, 255, 0.92);
+  font-size: clamp(1.2rem, 2vw, 1.7rem);
+  font-weight: 400;
+  line-height: 1.5;
+  max-width: 500px;
+  opacity: 0;
+  animation: slideDown 0.8s ease forwards;
+  animation-delay: 0.45s;
+}
+
+/* Animations */
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-35px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeScale {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Mobile */
+
+@media (max-width: 768px) {
+  .banner-overlay {
+    width: 100%;
+    padding: 0 2rem;
+
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .club-logo {
+    width: 130px;
+    margin: 0 0 1.5rem 0;
+  }
+
+  .banner-text h4 {
+    max-width: none;
+  }
+
+  .about-banner::after {
+    background: rgba(0, 0, 0, 0.45);
+  }
 }
 
 .container {
   margin: 60px auto;
 }
 
-.section {
-  margin-bottom: 60px;
+/* Mission section */
+
+.mission-section {
+  padding: 4rem 2rem;
+  max-width: 1100px;
+  margin: 0 auto;
+  
+}
+
+.mission-header {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto 3rem;
+}
+
+.mission-header h2 {
+  font-size: 50px;
+}
+
+.mission-header p {
+  font-size: 1.15rem;
+  line-height: 1.7;
+  color: #4a5568;
+}
+
+.mission-title-container {
+  display: flex;
   align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.mission-title-container img {
+  width: 50px;
+  height: auto;
+}
+
+.mission-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+}
+
+.mission-card {
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   display: flex;
   flex-direction: column;
-  gap: 40px;
+  padding-bottom: 1.5rem;
 }
 
-.section h2 {
-  text-align: center;
-  color: black;
-  font-size: 36px;
-  font-weight: 700;
-}
-
-/* .mission {
-  margin-bottom: 20px;
-}
-
-.mission-section {
+.mission-media {
+  position: relative;
   width: 100%;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-} */
-
-.mission-section {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  gap: 30px;
-  flex-wrap: wrap;
-  margin: 20px auto;
-  max-width: 1200px;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
 }
 
-.mission-image {
-  max-width: 100%;
+.mission-media-content {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.mission-card-title {
+  display: flex;
+  align-items: center;
+}
+
+.mission-card-title img {
+  width: 22px;
   height: auto;
-  flex-shrink: 0;
 }
 
-.mission-text {
-  flex: 1;
-  min-width: 300px;
+.mission-card h3 {
+  margin: 1rem 1.5rem;
+  font-size: 22px;
 }
 
-@media (max-width: 850px) {
+.mission-card p {
+  margin: 0 1.5rem;
+  color: #4a5568;
+  line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+  .mission-cards {
+    grid-template-columns: 1fr;
+  }
+
   .mission-section {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-  }
-
-  .mission-text {
-    text-align: left; /* or center if preferred */
-    width: 90%;
-  }
-
-  .about-intro-overlay h2 {
-    font-size: 50px;
+    padding: 3rem 1rem;
   }
 }
 
-.mission-img div {
-  margin-left: 10px;
-  text-align: justify;
+/*  Team members section */
+.team-section {
+  padding: 4rem 2rem;
 }
 
-.mission-text ul {
-  list-style-type: disc;
-  padding-left: 1.5rem;
-}
-
-.mission-text li {
-  font-size: 17px;
-  font-weight: 100px;
-  color: #555;
-  margin-bottom: 10px;
-  margin-top: 10px;
-}
-
-.mission-text p {
-  line-height: 1.8;
-  margin-bottom: 10px;
-  font-size: 17px;
+.team-section h2 {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 2.5rem;
 }
 
 .team {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 50px;
-  margin-top: 30px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  max-width: 1100px;
+  margin: 0 auto;
 }
 
 .team-member {
+  background: white;
+  border-radius: 16px;
+  padding: 2rem;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
   text-align: center;
-  max-width: clamp(200px, 25%, 250px);
-  margin: 20px;
-  padding: 10px;
+
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.team-member:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
 }
 
 .member-image {
-  width: 200px;
-  height: 200px;
   border-radius: 50%;
   object-fit: cover;
-  margin-bottom: 12px;
+
+  width: 200px;
+  height: 200px;
+
+  margin-bottom: 1.25rem;
 }
 
-.member-image:hover {
-  transform: scale(1.05);
+.team-member h3 {
+  font-size: 1.35rem;
+  margin: 0 0 1.25rem;
 }
 
-.team-member h4 {
-  font-size: 1.2rem;
+/* Position history section */
+
+.about-team-section-positions {
+  width: 100%;
+  text-align: left;
+  margin-bottom: 1.5rem;
+}
+
+.about-team-section-position {
+  border-left: 3px solid #1a73e8;
+  padding-left: 1rem;
+  margin-bottom: 1rem;
+}
+
+.about-team-section-position:last-child {
+  margin-bottom: 0;
+}
+
+.about-team-section-position h5 {
+  font-size: 1rem;
   font-weight: 600;
-  margin-bottom: 4px;
-  color: #333;
+  margin: 0 0 0.25rem;
+  color: #2d3748;
 }
 
-.team-member .role {
+.about-team-section-position p {
   margin: 0;
-  font-style: italic;
   font-size: 0.9rem;
-  color: #555;
+  color: #718096;
 }
 
-.team-member p {
-  text-align: justify;
-  font-size: 0.85rem;
-  color: #666;
-  line-height: 1.4;
-  margin: 0 auto;
+.about-team-section-quote {
+  margin-top: 1rem;
+  height: 120px;
+  overflow-y: auto;
+  padding: 0.75rem;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  font-style: italic;
+  color: #4a5568;
+  text-align: left;
+  border-radius: 8px;
+  background: #f7fafc;
+}
+
+/* Responsive */
+
+@media (max-width: 768px) {
+  .team-section {
+    padding: 3rem 1rem;
+  }
+
+  .team {
+    grid-template-columns: 1fr;
+  }
+
+  .member-image {
+    width: 160px;
+    height: 160px;
+  }
 }
 .about-resources {
   margin-top: 4rem;
@@ -222,10 +405,10 @@
 }
 
 .resource-image-container {
-    width: 320px;
-    height: 220px;
-    overflow: hidden;
-    flex-shrink: 0;
+  width: 320px;
+  height: 220px;
+  overflow: hidden;
+  flex-shrink: 0;
 }
 
 .resource-image {

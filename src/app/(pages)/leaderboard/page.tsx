@@ -66,7 +66,7 @@ const Leaderboard = () => {
                 >
                   <Image
                     className="cube-icon"
-                    src={getPublicURLWithPath(cube.icon_link)}
+                    src={getPublicURLWithPath("cubeicons", cube.icon_link)}
                     width={50}
                     height={50}
                     alt="cube icon"

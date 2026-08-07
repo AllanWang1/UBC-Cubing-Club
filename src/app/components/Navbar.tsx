@@ -69,7 +69,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="navbar">
+    <nav className={pathname.includes("/aboutus") ? "navbar-about" : "navbar"}>
       {/* Hamburger button that opens/closes the side navbar */}
       <div className="hamburger" onClick={() => setIsOpen(!isOpen)}>
         <Image

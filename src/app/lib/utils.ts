@@ -42,9 +42,10 @@ export function formatTime(ms: number): string {
     .padStart(2, "0")}`;
 }
 
-export function getPublicURLWithPath(path: string): string {
+export function getPublicURLWithPath(bucket: string,path: string): string {
   if (!path) return "";
-  const { data } = supabase.storage.from("cubeicons").getPublicUrl(path);
+  if (!bucket) return "";
+  const { data } = supabase.storage.from(bucket).getPublicUrl(path);
   // Get publicUrl from data if not null; if null, return null
   return data?.publicUrl ?? "";
 }
