@@ -85,6 +85,10 @@ td {
   flex-direction: row;
   gap: 8px;
 }
+.manage-requests-button a {
+  text-decoration: none;
+  color: white;
+}
 .manage-requests-button img {
   filter: invert(100%);
 }

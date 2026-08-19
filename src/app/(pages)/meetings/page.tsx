@@ -32,17 +32,6 @@ const Meetings = () => {
   }, []);
 
   useEffect(() => {
-    const fetchUserPermission = async () => {
-      const role = await getUserRole();
-      if (role) {
-        setUserRole("admin");
-      }
-    };
-
-    fetchUserPermission();
-  }, []);
-
-  useEffect(() => {
     const fetchMeetings = async () => {
       const response = await fetch("/api/meetings");
       const res_json = await response.json();

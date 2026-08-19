@@ -85,7 +85,7 @@ button:hover {
   width: 100%;
 }
 .table-wrapper table {
-  min-width: 800px; /* or whatever your minimum size should be */
+  min-width: 800px;
   border-collapse: collapse;
 }
 .table-wrapper {
@@ -100,6 +100,30 @@ button:hover {
 .table-wrapper::-webkit-scrollbar-thumb {
   background: #bbb;
   border-radius: 4px;
+}
+
+table {
+  border-collapse: separate; 
+  border-spacing: 0;
+  width: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Optional soft shadow */
+}
+
+th,
+td {
+  border-top: 0.5px solid #ccc;
+  border-bottom: 0.5px solid #ccc;
+  text-align: left;
+  padding: 12px 16px;
+}
+tbody tr:nth-child(even) {
+  background-color: #edeff1; /* Light gray or soft background */
+}
+
+tbody tr:nth-child(odd) {
+  background-color: #ffffff; /* White for contrast */
 }
 
 .error {
