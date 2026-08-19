@@ -85,7 +85,7 @@ button:hover {
   width: 100%;
 }
 .table-wrapper table {
-  min-width: 800px; /* or whatever your minimum size should be */
+  min-width: 800px;
   border-collapse: collapse;
 }
 .table-wrapper {
