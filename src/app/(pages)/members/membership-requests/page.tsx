@@ -119,7 +119,10 @@ const MembershipManagement = () => {
     fetchRequests();
   }, [router]);
 
-  return ADMIN_ROLES.includes(userRole) ? (
+  if (!ADMIN_ROLES.includes(userRole)) {
+    return null;
+  }
+  return (
     <div className="membership-requests">
       <h2>Access Requests</h2>
       <table>
@@ -164,8 +167,6 @@ const MembershipManagement = () => {
         </tbody>
       </table>
     </div>
-  ) : (
-    <h2>You do not have access rights to view this page</h2>
   );
 };
 

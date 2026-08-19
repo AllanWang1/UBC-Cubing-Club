@@ -204,7 +204,11 @@ const MeetingIDEdit = () => {
     }
   };
 
-  return ADMIN_ROLES.includes(userRole) ? (
+  if (!ADMIN_ROLES.includes(userRole)) {
+    return null;
+  }
+  
+  return (
     <div className="meeting-id-edit">
       <h2>{meeting?.meeting_name}</h2>
       <h2>{meeting?.date}</h2>
@@ -248,11 +252,7 @@ const MeetingIDEdit = () => {
         </div>
       ))}
     </div>
-  ) : (
-    <div>
-      <h2>You do not have permission to edit meetings.</h2>
-    </div>
-  );
+  )
 };
 
 // Wrapped in suspense boundary

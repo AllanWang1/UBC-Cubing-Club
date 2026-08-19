@@ -34,13 +34,15 @@ const CreateMeeting = () => {
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
     const { name, value } = e.target;
     setMeeting((prevMeeting) => ({
       ...prevMeeting,
       [name]: value,
     }));
-  }
+  };
 
   useEffect(() => {
     const fetchUserRole = async () => {
@@ -53,12 +55,20 @@ const CreateMeeting = () => {
     fetchUserRole();
   }, []);
 
-  return ADMIN_ROLES.includes(userRole) ? (
+  if (!ADMIN_ROLES.includes(userRole)) {
+    return null;
+  }
+  return (
     <div className="create-meeting">
       <h2>Create Meeting</h2>
       <form onSubmit={handleCreation}>
         <label>Meeting Name:</label>
-        <input type="text" name="meeting_name" onChange={handleChange} required />
+        <input
+          type="text"
+          name="meeting_name"
+          onChange={handleChange}
+          required
+        />
 
         <label>Date:</label>
         <input type="date" name="date" onChange={handleChange} required />
@@ -67,16 +77,14 @@ const CreateMeeting = () => {
         <input type="text" name="passcode" onChange={handleChange} required />
 
         <label>Description:</label>
-        <textarea name="description" rows={4} onChange={handleChange}></textarea>
+        <textarea
+          name="description"
+          rows={4}
+          onChange={handleChange}
+        ></textarea>
 
-        <button type="submit">
-          Create Meeting
-        </button>
+        <button type="submit">Create Meeting</button>
       </form>
-    </div>
-  ) : (
-    <div className="create-meeting-unauthorized">
-      <h2>You do not have the access rights to create meetings</h2>
     </div>
   );
 };
