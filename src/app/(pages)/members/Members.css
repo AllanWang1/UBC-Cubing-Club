@@ -10,9 +10,6 @@
   width: 100%;
   max-width: 1200px;
 }
-.members h2 {
-  font-size: 40px;
-}
 .members-title {
   display: flex;
   flex-direction: row;
