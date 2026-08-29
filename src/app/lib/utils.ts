@@ -94,3 +94,13 @@ export async function getUserRole(): Promise<string | null> {
   }
   return null;
 }
+
+export async function getUserId(): Promise<string | null> {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (user) {
+    return user.id;
+  }
+  return null;
+}
