@@ -4,24 +4,17 @@ import { useEffect, useState, useRef } from "react";
 import { supabase } from "../lib/SupabaseClient";
 import type { User } from "@supabase/auth-js";
 import { useRouter } from "next/navigation";
+import { getPublicURLWithPath } from "../lib/utils";
 import Link from "next/link";
 import Image from "next/image";
 
 import "../styles/Dashboard.css";
 
 const Dashboard = () => {
-  const getPublicURLWithPath = (path: string): string => {
-    if (!path) return "";
-    const { data } = supabase.storage
-      .from("ProfilePictures")
-      .getPublicUrl(path);
-    // Get publicUrl from data if not null; if null, return null
-    return data?.publicUrl ?? "";
-  };
 
   // Type the user, can either be User or null
   const [user, setUser] = useState<User | null>(null);
-  const [avatarURL, setAvatarURL] = useState<string>(getPublicURLWithPath("default1.png"));
+  const [avatarURL, setAvatarURL] = useState<string>(getPublicURLWithPath("ProfilePictures/", "default1.png"));
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
   const dropDownRef = useRef<HTMLDivElement>(null);
@@ -39,7 +32,7 @@ const Dashboard = () => {
       if (fetchedUser) {
         const profilePicPath = fetchedUser.user_metadata?.profilePicURL;
         if (profilePicPath) {
-          const publicURL = getPublicURLWithPath(profilePicPath);
+          const publicURL = getPublicURLWithPath("ProfilePictures/", profilePicPath);
           if (publicURL) {
             setAvatarURL(publicURL);
           }
@@ -91,6 +84,14 @@ const Dashboard = () => {
       }
     }
   }
+
+  const handleEditProfile = () => {
+    if (user) {
+      router.push(`/members/edit`);
+      setIsOpen(false);
+    }
+  }
+
   const toggleIsOpen = () => {
     setIsOpen(!isOpen);
   };
@@ -110,7 +111,7 @@ const Dashboard = () => {
               <div className="dashboard-drop-down-menu" ref={dropDownRef}>
                 <ul>
                   <li><button onClick={handleMyProfile}>My Profile</button></li>
-                  {/* <li><button>Edit Profile</button></li> */}
+                  <li><button onClick={handleEditProfile}>Edit Profile</button></li>
                   <li>
                     <button onClick={handleLogout}>Log Out</button>
                   </li>
