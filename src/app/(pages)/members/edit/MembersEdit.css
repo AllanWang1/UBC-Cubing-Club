@@ -1,0 +1,271 @@
+.members-edit {
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 40px 24px 60px;
+  box-sizing: border-box;
+}
+
+.members-edit > h2 {
+  margin: 0 0 30px;
+  font-size: 28px;
+  font-weight: 700;
+}
+
+/* Main profile container */
+.members-edit-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* Profile summary */
+.member-edit-info-display {
+  padding: 24px 28px;
+  border-bottom: 1px solid #e2e8f0;
+  background: #f8fafc;
+}
+
+.member-edit-info-display h3 {
+  margin: 0 0 6px;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.member-edit-info-display h4 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: #718096;
+  text-transform: capitalize;
+}
+
+/* Navigation + content */
+.member-edit-content {
+  display: flex;
+  min-height: 450px;
+}
+
+/* Section navigation */
+.member-edit-nav {
+  display: flex;
+  flex-direction: column;
+  width: 220px;
+  flex-shrink: 0;
+  padding: 16px 12px;
+  background: #f8fafc;
+  border-right: 1px solid #e2e8f0;
+}
+
+.member-edit-nav button {
+  width: 100%;
+  padding: 12px 14px;
+  margin-bottom: 4px;
+  border: none;
+  border-radius: 7px;
+  background: transparent;
+  color: #4a5568;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.member-edit-nav button:hover {
+  background: #edf2f7;
+}
+
+.member-edit-nav button.active {
+  background: #e2e8f0;
+  font-weight: 600;
+}
+
+/* Content area */
+.member-edit-control {
+  flex: 1;
+  padding: 32px;
+  background: #ffffff;
+}
+
+.edit-section {
+  width: 100%;
+  max-width: 600px;
+}
+
+.edit-section h3 {
+  margin: 0 0 28px;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+/* Form labels */
+.edit-section label {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-bottom: 20px;
+  color: #4a5568;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* Form inputs */
+.edit-section input[type="text"],
+.edit-section input[type="email"],
+.edit-section input[type="password"] {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 11px 13px;
+  border: 1px solid #cbd5e0;
+  border-radius: 6px;
+  background: #ffffff;
+  font-size: 15px;
+  outline: none;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.edit-section input[type="text"]:focus,
+.edit-section input[type="email"]:focus,
+.edit-section input[type="password"]:focus {
+  border-color: #4299e1;
+  box-shadow: 0 0 0 2px rgba(66, 153, 225, 0.15);
+}
+
+/* File input */
+.edit-section input[type="file"] {
+  width: 100%;
+  margin: 8px 0 20px;
+  font-size: 14px;
+  color: #4a5568;
+}
+
+/* Buttons inside sections */
+.edit-section > button {
+  padding: 10px 18px;
+  margin-right: 10px;
+  border: none;
+  border-radius: 6px;
+  background: #3182ce;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    transform 0.1s ease;
+}
+
+.edit-section > button:hover {
+  background: #2b6cb0;
+}
+
+.edit-section > button:active {
+  transform: translateY(1px);
+}
+
+/* Avatar section */
+.avatar-preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 140px;
+  height: 140px;
+  margin-bottom: 24px;
+  border: 1px solid #e2e8f0;
+  border-radius: 50%;
+  background: #f7fafc;
+  overflow: hidden;
+}
+
+/* Password section */
+.edit-section input[type="password"] {
+  max-width: 500px;
+}
+
+/* Forgot password button */
+.edit-section > button:last-child {
+  background: transparent;
+  color: #3182ce;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+.edit-section > button:last-child:hover {
+  background: transparent;
+  color: #2b6cb0;
+}
+
+/* Tablet / smaller screens */
+@media (max-width: 700px) {
+  .members-edit {
+    padding: 30px 16px 50px;
+  }
+
+  .members-edit > h2 {
+    font-size: 24px;
+  }
+
+  .member-edit-content {
+    flex-direction: column;
+  }
+
+  .member-edit-nav {
+    width: 100%;
+    box-sizing: border-box;
+    flex-direction: row;
+    padding: 10px;
+    border-right: none;
+    border-bottom: 1px solid #e2e8f0;
+    overflow-x: auto;
+  }
+
+  .member-edit-nav button {
+    width: auto;
+    flex-shrink: 0;
+    margin-bottom: 0;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  .member-edit-control {
+    padding: 24px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 450px) {
+  .members-edit {
+    padding: 24px 12px 40px;
+  }
+
+  .member-edit-info-display {
+    padding: 20px;
+  }
+
+  .member-edit-info-display h3 {
+    font-size: 20px;
+  }
+
+  .member-edit-control {
+    padding: 20px;
+  }
+
+  .edit-section h3 {
+    font-size: 20px;
+    margin-bottom: 22px;
+  }
+
+  .edit-section > button {
+    width: 100%;
+    margin: 0 0 10px;
+  }
+}
