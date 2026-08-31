@@ -41,38 +41,19 @@ const MembersEdit = () => {
             <h4>{member.membership ? "verified member" : "unpaid member"}</h4>
           </div>
           <div className="member-edit-content">
-            <div className="member-edit-nav">
-              <button
-                className={
-                  section === "basic"
-                    ? "members-edit-active-button"
-                    : "members-edit-inactive-button"
-                }
-                onClick={() => setSection("basic")}
-              >
-                Basic Information
-              </button>
-              <button
-                className={
-                  section === "avatar"
-                    ? "members-edit-active-button"
-                    : "members-edit-inactive-button"
-                }
-                onClick={() => setSection("avatar")}
-              >
-                Avatar
-              </button>
-              <button
-                className={
-                  section === "password"
-                    ? "members-edit-active-button"
-                    : "members-edit-inactive-button"
-                }
-                onClick={() => setSection("password")}
-              >
-                Password
-              </button>
-            </div>
+            <nav className="member-edit-nav">
+              {ProfileEditSections.map((item) => (
+                <button
+                  key={item}
+                  className={section === item ? "active" : ""}
+                  onClick={() => setSection(item)}
+                >
+                  {item === "basic" && "Basic Information"}
+                  {item === "avatar" && "Avatar"}
+                  {item === "password" && "Password"}
+                </button>
+              ))}
+            </nav>
             <div className="member-edit-control">
               {section === "basic" && (
                 <div className="edit-section">
@@ -121,7 +102,7 @@ const MembersEdit = () => {
                     <input type="password" />
                   </label>
                   <button>Change Password</button>
-                  <button>Reset Password</button>
+                  <button>Forgot Password?</button>
                 </div>
               )}
             </div>
