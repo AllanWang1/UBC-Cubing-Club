@@ -4,7 +4,7 @@ import { createSupabaseServerClient } from "@/app/lib/SupabaseServer";
 
 export async function GET(request: NextRequest) {
   // Allow a search param to be provided, filter by the search param at the end
-  const { user_id } = await request.json();
+  const user_id = request.nextUrl.searchParams.get("user_id");
 
   const { data, error } = await supabase
     .from("Members")
