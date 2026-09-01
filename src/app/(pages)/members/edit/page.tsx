@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { getUserId } from "@/app/lib/utils";
 import { Member } from "@/app/types/Member";
 import { useRouter } from "next/navigation";
+import { FACULTIES } from "@/app/lib/utils";
 import "./MembersEdit.css";
 
 const ProfileEditSections = ["basic", "avatar", "password"];
@@ -58,18 +59,30 @@ const MembersEdit = () => {
               {section === "basic" && (
                 <div className="edit-section">
                   <h3>Basic Information</h3>
-                  <label>
-                    Name
-                    <input type="text" defaultValue={member.name} />
-                  </label>
-                  <label>
-                    Email
-                    <input type="email" defaultValue={member.email} />
-                  </label>
-                  <label>
-                    Faculty
-                    <input type="text" defaultValue={member.faculty} />
-                  </label>
+                  <form action="">
+                    <label>
+                      Name
+                      <input type="text" defaultValue={member.name} />
+                    </label>
+                    <label>
+                      Email
+                      <input type="email" defaultValue={member.email} />
+                    </label>
+                    <label>
+                      WCA ID
+                      <input type="text" defaultValue={member.wca_id} />
+                    </label>
+                    <label>
+                      Faculty
+                      <select name="Faculty" defaultValue={member.faculty}>
+                        {FACULTIES.map((faculty) => (
+                          <option key={faculty} value={faculty}>
+                            {faculty}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                  </form>
                   <button>Save Changes</button>
                 </div>
               )}
