@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import { User } from "@supabase/auth-js";
 import { getCurrentUser } from "@/app/lib/utils";
 import { useRouter } from "next/navigation";
-
+import { FACULTIES } from "@/app/lib/utils";
 import "./AccessRequest.css";
 
 type AccessRequestProps = {
@@ -43,36 +43,7 @@ const AccessRequest = () => {
       type: "select",
       name: "faculty",
       placeholder: "",
-      options: [
-        "",
-        "Applied Science",
-        "Architecture and Landscape Architecture",
-        "Arts",
-        "Audiology and Speech Sciences",
-        "Business",
-        "Community and Regional Planning",
-        "Dentistry",
-        "Education",
-        "Extended Learning",
-        "Forestry",
-        "Graduate and Postdoctoral Studies",
-        "Journalism",
-        "Kinesiology",
-        "Land and Food Systems",
-        "Law",
-        "Library, Archival and Information Studies",
-        "Medicine",
-        "Music",
-        "Nursing",
-        "Pharmaceutical Sciences",
-        "Population and Public Health",
-        "Public Policy and Global Affairs",
-        "Science",
-        "Social Work",
-        "UBC Vantage College",
-        "Vancouver School of Economics",
-        "External",
-      ],
+      options: FACULTIES,
       required: true,
     },
     {

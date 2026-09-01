@@ -12,6 +12,13 @@
   font-weight: 700;
 }
 
+.edit-section > form {
+  background: none;
+  width: 100%;
+  box-shadow: none;
+  padding: none;
+  margin: none;
+}
 /* Main profile container */
 .members-edit-container {
   display: flex;
