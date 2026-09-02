@@ -8,10 +8,34 @@ import { FACULTIES } from "@/app/lib/utils";
 import "./MembersEdit.css";
 
 const ProfileEditSections = ["basic", "avatar", "password"];
+type BasicInformationProps = {
+  name: string;
+  faculty: string;
+  WCAId: string;
+  birthDate: Date;
+};
+
 const MembersEdit = () => {
   // Need a way to obtain the current user's ID and display the corresponding Member
   const [section, setSection] = useState<string>("basic");
   const [member, setMember] = useState<Member | null>(null);
+  const [basicEditor, setBasicEditor] = useState<BasicInformationProps>({
+    name: "",
+    faculty: "",
+    WCAId: "",
+    birthDate: new Date(),
+  });
+
+  const handleBasicChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => {
+    const { name, value } = e.target;
+    setBasicEditor((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
   const router = useRouter();
   useEffect(() => {
     const fetchUserInfo = async () => {
@@ -26,6 +50,14 @@ const MembersEdit = () => {
       const member_json = await member_response.json();
       if (member_response.ok && member_json.length === 1) {
         setMember(member_json[0]);
+        if (member) {
+          setBasicEditor({
+            name: member.name,
+            faculty: member.faculty,
+            WCAId: member.wca_id,
+            birthDate: member.birthdate,
+          });
+        }
       }
     };
 
@@ -62,19 +94,43 @@ const MembersEdit = () => {
                   <form action="">
                     <label>
                       Name
-                      <input type="text" defaultValue={member.name} />
+                      <input
+                        type="text"
+                        defaultValue={member.name}
+                        onChange={(e) => {
+                          handleBasicChange(e);
+                        }}
+                      />
                     </label>
                     <label>
                       Email
-                      <input type="email" defaultValue={member.email} />
+                      <input
+                        type="email"
+                        defaultValue={member.email}
+                        onChange={(e) => {
+                          handleBasicChange(e);
+                        }}
+                      />
                     </label>
                     <label>
                       WCA ID
-                      <input type="text" defaultValue={member.wca_id} />
+                      <input
+                        type="text"
+                        defaultValue={member.wca_id}
+                        onChange={(e) => {
+                          handleBasicChange(e);
+                        }}
+                      />
                     </label>
                     <label>
                       Faculty
-                      <select name="Faculty" defaultValue={member.faculty}>
+                      <select
+                        name="Faculty"
+                        defaultValue={member.faculty}
+                        onChange={(e) => {
+                          handleBasicChange(e);
+                        }}
+                      >
                         {FACULTIES.map((faculty) => (
                           <option key={faculty} value={faculty}>
                             {faculty}
