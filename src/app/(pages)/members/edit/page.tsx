@@ -5,6 +5,8 @@ import { getUserId } from "@/app/lib/utils";
 import { Member } from "@/app/types/Member";
 import { useRouter } from "next/navigation";
 import { FACULTIES } from "@/app/lib/utils";
+import Cropper from "react-easy-crop";
+import Image from "next/image";
 import "./MembersEdit.css";
 
 const ProfileEditSections = ["basic", "avatar", "password"];
@@ -17,7 +19,7 @@ type BasicInformationProps = {
 
 const MembersEdit = () => {
   // Need a way to obtain the current user's ID and display the corresponding Member
-  const [section, setSection] = useState<string>("basic");
+  const [section, setSection] = useState<string>("avatar");
   const [member, setMember] = useState<Member | null>(null);
   const [basicEditor, setBasicEditor] = useState<BasicInformationProps>({
     name: "",
@@ -25,16 +27,34 @@ const MembersEdit = () => {
     WCAId: "",
     birthDate: new Date(),
   });
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+  const [crop, setCrop] = useState({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(1);
 
-  const handleBasicChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
-  ) => {
-    const { name, value } = e.target;
-    setBasicEditor((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+  useEffect(() => {
+    if (!avatarFile) {
+      setAvatarPreview(null);
+      return;
+    }
+
+    const url = URL.createObjectURL(avatarFile);
+    setAvatarPreview(url);
+
+    return () => {
+      URL.revokeObjectURL(url);
+    };
+  }, [avatarFile]);
+
+  // const handleBasicChange = (
+  //   e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  // ) => {
+  //   const { name, value } = e.target;
+  //   setBasicEditor((prev) => ({
+  //     ...prev,
+  //     [name]: value,
+  //   }));
+  // };
 
   const router = useRouter();
   useEffect(() => {
@@ -50,19 +70,11 @@ const MembersEdit = () => {
       const member_json = await member_response.json();
       if (member_response.ok && member_json.length === 1) {
         setMember(member_json[0]);
-        if (member) {
-          setBasicEditor({
-            name: member.name,
-            faculty: member.faculty,
-            WCAId: member.wca_id,
-            birthDate: member.birthdate,
-          });
-        }
       }
     };
 
     fetchUserInfo();
-  }, []);
+  }, [router]);
 
   return (
     <div className="members-edit">
@@ -81,14 +93,14 @@ const MembersEdit = () => {
                   className={section === item ? "active" : ""}
                   onClick={() => setSection(item)}
                 >
-                  {item === "basic" && "Basic Information"}
+                  {/* {item === "basic" && "Basic Information"} */}
                   {item === "avatar" && "Avatar"}
                   {item === "password" && "Password"}
                 </button>
               ))}
             </nav>
             <div className="member-edit-control">
-              {section === "basic" && (
+              {/* {section === "basic" && (
                 <div className="edit-section">
                   <h3>Basic Information</h3>
                   <form action="">
@@ -141,16 +153,61 @@ const MembersEdit = () => {
                   </form>
                   <button>Save Changes</button>
                 </div>
-              )}
+              )} */}
 
               {section === "avatar" && (
                 <div className="edit-section">
                   <h3>Avatar</h3>
-                  <div className="avatar-preview">
-                    {/* Avatar component/image here */}
-                  </div>
-                  <input type="file" accept="image/*" />
-                  <button>Upload Avatar</button>
+
+                  {avatarPreview && (
+                    <>
+                      <div className="avatar-crop-container">
+                        <Cropper
+                          image={avatarPreview}
+                          crop={crop}
+                          zoom={zoom}
+                          aspect={1}
+                          cropShape="round"
+                          showGrid={false}
+                          onCropChange={setCrop}
+                          onZoomChange={setZoom}
+                        />
+                      </div>
+
+                      <div className="avatar-zoom-control">
+                        <span>-</span>
+
+                        <input
+                          type="range"
+                          min={1}
+                          max={3}
+                          step={0.01}
+                          value={zoom}
+                          onChange={(e) => setZoom(Number(e.target.value))}
+                        />
+
+                        <span>+</span>
+                      </div>
+                    </>
+                  )}
+
+                  <input
+                    type="file"
+                    accept="image/png,image/jpeg,image/webp"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0] ?? null;
+
+                      if (file) {
+                        setAvatarFile(file);
+                        setCrop({ x: 0, y: 0 });
+                        setZoom(1);
+                      }
+                    }}
+                  />
+
+                  <button disabled={!avatarFile}>
+                    Upload Avatar
+                  </button>
                 </div>
               )}
 

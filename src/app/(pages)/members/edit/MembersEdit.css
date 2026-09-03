@@ -180,17 +180,41 @@
 }
 
 /* Avatar section */
-.avatar-preview {
+.avatar-crop-container {
+  position: relative;
+  width: 320px;
+  height: 320px;
+  margin: 0 auto 24px;
+  background: #edf2f7;
+  overflow: hidden;
+}
+
+.avatar-zoom-control {
   display: flex;
   align-items: center;
-  justify-content: center;
-  width: 140px;
-  height: 140px;
-  margin-bottom: 24px;
-  border: 1px solid #e2e8f0;
-  border-radius: 50%;
-  background: #f7fafc;
-  overflow: hidden;
+  gap: 12px;
+  width: 320px;
+  margin: 0 auto 24px;
+}
+
+.avatar-zoom-control input[type="range"] {
+  flex: 1;
+}
+
+.avatar-zoom-control span {
+  font-size: 20px;
+  color: #4a5568;
+}
+
+@media (max-width: 450px) {
+  .avatar-crop-container {
+    width: 260px;
+    height: 260px;
+  }
+
+  .avatar-zoom-control {
+    width: 260px;
+  }
 }
 
 /* Password section */
