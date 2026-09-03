@@ -80,6 +80,23 @@ export function getPublicURLWithPath(bucket: string, path: string): string {
   return data?.publicUrl ?? "";
 }
 
+export async function uploadImageToSupabase(
+  bucket: string,
+  path: string,
+  croppedBlob: Blob,
+) {
+  const { error } = await supabase.storage
+    .from(bucket)
+    .upload(path, croppedBlob, {
+      contentType: "image/jpeg",
+      upsert: true,
+    });
+  if (error) {
+    throw error;
+  }
+  return 201;
+}
+
 export async function getCurrentUser(): Promise<User | null> {
   const {
     data: { user: fetchedUser },
@@ -134,3 +151,60 @@ export async function getUserId(): Promise<string | null> {
   }
   return null;
 }
+
+export const getCroppedImg = (
+  imageSrc: string,
+  crop: {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  },
+): Promise<Blob> => {
+  return new Promise((resolve, reject) => {
+    const image = new Image();
+
+    image.onload = () => {
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+
+      if (!ctx) {
+        reject(new Error("Could not get canvas context"));
+        return;
+      }
+
+      canvas.width = crop.width;
+      canvas.height = crop.height;
+
+      ctx.drawImage(
+        image,
+        crop.x,
+        crop.y,
+        crop.width,
+        crop.height,
+        0,
+        0,
+        crop.width,
+        crop.height,
+      );
+
+      canvas.toBlob(
+        (blob) => {
+          if (blob) {
+            resolve(blob);
+          } else {
+            reject(new Error("Could not create cropped image"));
+          }
+        },
+        "image/jpeg",
+        0.9,
+      );
+    };
+
+    image.onerror = () => {
+      reject(new Error("Could not load image"));
+    };
+
+    image.src = imageSrc;
+  });
+};

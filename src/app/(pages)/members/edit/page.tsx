@@ -1,12 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { getUserId } from "@/app/lib/utils";
+import { getUserId, getCroppedImg } from "@/app/lib/utils";
 import { Member } from "@/app/types/Member";
 import { useRouter } from "next/navigation";
 import { FACULTIES } from "@/app/lib/utils";
 import Cropper from "react-easy-crop";
 import Image from "next/image";
+
 import "./MembersEdit.css";
 
 const ProfileEditSections = ["basic", "avatar", "password"];
@@ -27,10 +28,35 @@ const MembersEdit = () => {
     WCAId: "",
     birthDate: new Date(),
   });
+
+  // Avatar upload useStates
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState<{
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  } | null>(null);
+
+  const handleAvatarUpload = async () => {
+    if (!avatarPreview || !croppedAreaPixels) {
+      return;
+    }
+
+    try {
+      const croppedBlob = await getCroppedImg(avatarPreview, croppedAreaPixels);
+
+      console.log(croppedBlob);
+
+      // This is the actual cropped image.
+      alert("upload avatar pressed");
+    } catch (error) {
+      console.error("Failed to crop avatar:", error);
+    }
+  };
 
   useEffect(() => {
     if (!avatarFile) {
@@ -163,20 +189,22 @@ const MembersEdit = () => {
                     <>
                       <div className="avatar-crop-container">
                         <Cropper
-                          image={avatarPreview}
+                          image={avatarPreview!}
                           crop={crop}
                           zoom={zoom}
                           aspect={1}
                           cropShape="round"
-                          showGrid={false}
+                          showGrid={true}
                           onCropChange={setCrop}
                           onZoomChange={setZoom}
+                          onCropComplete={(_, croppedAreaPixels) => {
+                            setCroppedAreaPixels(croppedAreaPixels);
+                          }}
                         />
                       </div>
 
                       <div className="avatar-zoom-control">
                         <span>-</span>
-
                         <input
                           type="range"
                           min={1}
@@ -185,7 +213,6 @@ const MembersEdit = () => {
                           value={zoom}
                           onChange={(e) => setZoom(Number(e.target.value))}
                         />
-
                         <span>+</span>
                       </div>
                     </>
@@ -205,9 +232,7 @@ const MembersEdit = () => {
                     }}
                   />
 
-                  <button disabled={!avatarFile}>
-                    Upload Avatar
-                  </button>
+                  <button disabled={!avatarFile} onClick={handleAvatarUpload}>Upload Avatar</button>
                 </div>
               )}
 
