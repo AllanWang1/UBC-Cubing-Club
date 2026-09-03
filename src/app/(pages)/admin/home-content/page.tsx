@@ -14,6 +14,8 @@ export default function HomeContentPage() {
     });
 
     const [message, setMessage] = useState("");
+    const [loading, setLoading] = useState(true);
+    const [saving, setSaving] = useState(false);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setForm({
@@ -25,44 +27,74 @@ export default function HomeContentPage() {
     const handleSaveChange = async (event: React.FormEvent) => {
         event.preventDefault();
 
-        const response = await fetch(
-            "/api/admin/club-info/basic-info",
-            {
-                method: "PATCH",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(form),
+        setSaving(true);
+        setMessage("");
+
+        try{
+            const response = await fetch(
+                "/api/admin/club-info/basic-info",
+                {
+                    method: "PATCH",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(form),
+                }
+            );
+
+            const data = await response.json();
+
+            if(!response.ok) {
+                setMessage(data.error ?? "Failed to update homepage");
+                return;
             }
-        );
 
-        const data = await response.json();
-
-        if(!response.ok) {
-            setMessage(data.error ?? "Failed to update homepage");
-            return;
+            setMessage("Homepage updated successfully.");
+        } catch (error) {
+            setMessage(error instanceof Error ? error.message : "Failed to save changes");
+        } finally {
+            setSaving(false);
         }
-
-        setMessage("Homepage updated successfully.");
+        
     }
 
     useEffect(() => {
         async function loadInfo() {
-            const response = await fetch("/api/club-info/basic-info");
-            const data = await response.json();
+            try {
+                const response = await fetch("/api/club-info/basic-info");
+                const data = await response.json();
 
-            setForm({
-                location: data.location ?? "",
-                time: data.time ?? "",
-                instagram_name: data.instagram_name ?? "",
-                discord_link: data.discord_link ?? "",
-                email: data.email ?? "",
-                linktree_link: data.linktree_link ?? "",
-            });
+
+                if (!response.ok) {
+                    throw new Error(data.error ?? "Failed to load homepage information");
+                }
+
+                 setForm({
+                    location: data.location ?? "",
+                    time: data.time ?? "",
+                    instagram_name: data.instagram_name ?? "",
+                    discord_link: data.discord_link ?? "",
+                    email: data.email ?? "",
+                    linktree_link: data.linktree_link ?? "",
+                });
+            } catch (error) {
+                setMessage(
+                    error instanceof Error ? error.message: "Failed to load homepage information"
+                );
+            } finally {
+                setLoading(false);
+            }
+            
+
+           
         }
 
         loadInfo();
     }, []);
+
+    if (loading) {
+        return <p>Loading homepage information...</p>;
+    }
 
     return (
         <section className="admin-content-editor">
@@ -136,7 +168,7 @@ export default function HomeContentPage() {
                 </label>
 
                 <div className="admin-form-actions">
-                    <button type="submit">Save changes</button>
+                    <button type="submit" disabled={saving}> {saving ? "Saving..." : "Save changes"} </button>
                     <Link href="/admin">Cancel</Link>
                 </div>
 
