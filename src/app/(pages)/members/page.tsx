@@ -5,16 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { getUserRole, ADMIN_ROLES } from "@/app/lib/utils";
 import "./Members.css";
-
-interface Member {
-  id: number;
-  name: string;
-  email: string | null;
-  membership: boolean;
-  faculty: string;
-  user_id: string | null;
-  role: "president" | "treasurer" | "admin" | "member";
-}
+import { Member } from "@/app/types/Member";
 
 const Members = () => {
   const [members, setMembers] = useState<Member[]>([]);
