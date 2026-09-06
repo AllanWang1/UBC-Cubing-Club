@@ -30,8 +30,9 @@ const MeetingIDEdit = () => {
   );
 
   const fetchHeldEvents = async () => {
-    // We do not need to check any preconditions for held events, since
-    // this function will only be called after fetchMeeting is successful.
+    if (!meetingId) {
+      throw new Error("Meeting ID is not found in URL");
+    }
     const response = await fetch(`/api/holds/${meetingId}`);
     const res_json = await response.json();
     if (response.ok) {
