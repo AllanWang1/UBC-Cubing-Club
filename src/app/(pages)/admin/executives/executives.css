@@ -1,0 +1,78 @@
+.admin-executives {
+    width: min(1100px, calc(100% - 2rem));
+    margin: 0 auto;
+    padding: 3rem 0 5rem;
+}
+
+.admin-executives-header {
+    margin: 2rem 0;
+}
+
+.executive-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem;
+}
+
+.executive-card {
+  display: grid;
+  grid-template-columns: 80px 1fr auto;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 1.25rem;
+  border: 1px solid #d9e0e8;
+  border-radius: 12px;
+  background: white;
+}
+
+.executive-card h2 {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.executive-avatar {
+  width: 120px;
+  height: 120px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.admin-edit {
+    align-self: flex-start;
+    margin-top: auto;
+    padding: 0.5rem 1rem;
+    color: white;
+    background: #0055b7;
+    border-radius: 6px;
+    text-decoration: none;
+}
+
+.admin-back {
+    position: fixed;
+    top: 100px;
+    left: 2rem;
+    
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: fit-content;
+    margin-bottom: 1.5rem;
+    color: #333;
+    font-weight: 500;
+    text-decoration: underline;
+}
+
+.admin-back:hover {
+    color: #0055a4;
+}
+
+.admin-back img {
+    flex-shrink: 0;
+}
+
+@media (max-width: 700px) {
+    .executive-grid {
+        grid-template-columns: 1fr;
+    }
+}
