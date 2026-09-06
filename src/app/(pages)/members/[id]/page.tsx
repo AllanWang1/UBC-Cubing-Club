@@ -20,7 +20,6 @@ const MemberPage = ({ params }: { params: Promise<{ id: string }> }) => {
   // These are the links to the cube icons that the member has participated in
   const [participatedEvents, setParticipatedEvents] = useState<string[]>([]);
   const [member, setMember] = useState<Member | null>(null);
-  const [WCAId, setWCAId] = useState<string>("");
 
   // Fetch member records
   useEffect(() => {
@@ -39,23 +38,13 @@ const MemberPage = ({ params }: { params: Promise<{ id: string }> }) => {
       const res_json = await response.json();
       if (response.ok) {
         setMemberRecords(res_json);
-      }
-    };
-
-    const fetchMemberWCAId = async () => {
-      const response = await fetch(`/api/members/${id}/wca-id`);
-      // since we performed .single() in the route, we know the response is not an array
-      const res_json = await response.json();
-      if (response.ok) {
-        setWCAId(res_json.wca_id);
       } else {
-        alert("Error fetching WCA ID: " + res_json.error);
+        alert("Error fetching member records: " + res_json.error);
       }
     };
 
     fetchMember();
     fetchMemberRecords();
-    fetchMemberWCAId();
   }, [id]);
 
   // Fetch member's history results
@@ -112,13 +101,13 @@ const MemberPage = ({ params }: { params: Promise<{ id: string }> }) => {
               />
               <h3>{memberRecords[0].faculty_full_name}</h3>
             </div>
-            {WCAId && (
+            {member.wca_id && (
               <div className="member-wca-id">
                 <Image src="/wca.svg" width={25} height={25} alt="" />
                 <a
-                  href={`https://www.worldcubeassociation.org/persons/${WCAId}`}
+                  href={`https://www.worldcubeassociation.org/persons/${member.wca_id}`}
                 >
-                  <h3>{WCAId} 🔗</h3>
+                  <h3>{member.wca_id} 🔗</h3>
                 </a>
               </div>
             )}

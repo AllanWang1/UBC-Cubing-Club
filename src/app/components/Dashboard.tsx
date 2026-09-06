@@ -37,6 +37,9 @@ const Dashboard = () => {
       const member_json = await member_response.json();
       if (member_response.ok && member_json.length === 1) {
         setMember(member_json[0]);
+      } else {
+        alert("Error fetching member info: " + member_json.error);
+        return;
       }
     };
     fetchUser();
