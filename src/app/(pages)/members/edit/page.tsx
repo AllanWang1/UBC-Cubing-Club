@@ -1,12 +1,16 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { getUserId, getCroppedImg } from "@/app/lib/utils";
+import {
+  getUserId,
+  getCroppedImg,
+  uploadImageToSupabase,
+} from "@/app/lib/utils";
 import { Member } from "@/app/types/Member";
 import { useRouter } from "next/navigation";
 import { FACULTIES } from "@/app/lib/utils";
 import Cropper from "react-easy-crop";
-import Image from "next/image";
+import { createSupabaseServerClient } from "@/app/lib/SupabaseServer";
 
 import "./MembersEdit.css";
 
@@ -22,12 +26,12 @@ const MembersEdit = () => {
   // Need a way to obtain the current user's ID and display the corresponding Member
   const [section, setSection] = useState<string>("avatar");
   const [member, setMember] = useState<Member | null>(null);
-  const [basicEditor, setBasicEditor] = useState<BasicInformationProps>({
-    name: "",
-    faculty: "",
-    WCAId: "",
-    birthDate: new Date(),
-  });
+  // const [basicEditor, setBasicEditor] = useState<BasicInformationProps>({
+  //   name: "",
+  //   faculty: "",
+  //   WCAId: "",
+  //   birthDate: new Date(),
+  // });
 
   // Avatar upload useStates
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
@@ -42,19 +46,32 @@ const MembersEdit = () => {
   } | null>(null);
 
   const handleAvatarUpload = async () => {
-    if (!avatarPreview || !croppedAreaPixels) {
+    if (!avatarPreview || !croppedAreaPixels || !member) {
       return;
     }
-
+    let croppedImage = null;
     try {
-      const croppedBlob = await getCroppedImg(avatarPreview, croppedAreaPixels);
-
-      console.log(croppedBlob);
-
-      // This is the actual cropped image.
-      alert("upload avatar pressed");
+      croppedImage = await getCroppedImg(avatarPreview, croppedAreaPixels);
     } catch (error) {
-      console.error("Failed to crop avatar:", error);
+      console.error("Upload failure: ", error);
+    }
+
+    if (croppedImage) {
+      const formData = new FormData();
+      formData.append("croppedImage", croppedImage);
+      
+      // Avoid passing in the user_id on client side, handle on backend
+      // uploadImageToSupabase("avatars", filePath, croppedImage);
+      const uploadResponse = await fetch("/api/members/avatar", {
+        method: "POST",
+        body: formData,
+      });
+      const res_json = await uploadResponse.json();
+      if (uploadResponse.ok) {
+        alert("Upload successful!");
+      } else {
+        alert(res_json.error);
+      }
     }
   };
 
@@ -232,7 +249,9 @@ const MembersEdit = () => {
                     }}
                   />
 
-                  <button disabled={!avatarFile} onClick={handleAvatarUpload}>Upload Avatar</button>
+                  <button disabled={!avatarFile} onClick={handleAvatarUpload}>
+                    Upload Avatar
+                  </button>
                 </div>
               )}
 

@@ -1,4 +1,5 @@
 import { supabase } from "../lib/SupabaseClient";
+import { createSupabaseServerClient } from "./SupabaseServer";
 import { Result } from "@/app/types/Result";
 import { User } from "@supabase/auth-js";
 
@@ -80,23 +81,6 @@ export function getPublicURLWithPath(bucket: string, path: string): string {
   return data?.publicUrl ?? "";
 }
 
-export async function uploadImageToSupabase(
-  bucket: string,
-  path: string,
-  croppedBlob: Blob,
-) {
-  const { error } = await supabase.storage
-    .from(bucket)
-    .upload(path, croppedBlob, {
-      contentType: "image/jpeg",
-      upsert: true,
-    });
-  if (error) {
-    throw error;
-  }
-  return 201;
-}
-
 export async function getCurrentUser(): Promise<User | null> {
   const {
     data: { user: fetchedUser },
@@ -160,7 +144,7 @@ export const getCroppedImg = (
     width: number;
     height: number;
   },
-): Promise<Blob> => {
+): Promise<File> => {
   return new Promise((resolve, reject) => {
     const image = new Image();
 
@@ -190,11 +174,14 @@ export const getCroppedImg = (
 
       canvas.toBlob(
         (blob) => {
-          if (blob) {
-            resolve(blob);
-          } else {
+          if (!blob) {
             reject(new Error("Could not create cropped image"));
+            return;
           }
+
+          const file = new File([blob], "avatar.jpg", { type: "image/jpeg" });
+
+          resolve(file);
         },
         "image/jpeg",
         0.9,
