@@ -4,13 +4,10 @@ import { useState, useEffect } from "react";
 import {
   getUserId,
   getCroppedImg,
-  uploadImageToSupabase,
 } from "@/app/lib/utils";
 import { Member } from "@/app/types/Member";
 import { useRouter } from "next/navigation";
-import { FACULTIES } from "@/app/lib/utils";
 import Cropper from "react-easy-crop";
-import { createSupabaseServerClient } from "@/app/lib/SupabaseServer";
 
 import "./MembersEdit.css";
 
