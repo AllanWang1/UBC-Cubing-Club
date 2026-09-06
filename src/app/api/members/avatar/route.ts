@@ -56,6 +56,14 @@ export async function POST(request: NextRequest) {
     }
   }
 
+  // Update the member's avatar_path in the Members table using function
+  const { error: updateError } = await supabaseServer.rpc("update_my_avatar_path", {
+    new_avatar_path: newPath,
+  });
+  if (updateError) {
+    return NextResponse.json({ error: updateError.message }, { status: 500 });
+  }
+
   return NextResponse.json(
     { message: "Avatar uploaded successfully" },
     { status: 201 },
