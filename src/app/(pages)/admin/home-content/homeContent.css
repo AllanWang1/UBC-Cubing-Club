@@ -1,0 +1,52 @@
+.admin-content-editor {
+    position: relative;
+    width: min(560px, calc(100% - 2rem));
+    margin: 0 auto;
+    padding: 5rem 0;
+}
+
+.admin-content-editor h1 {
+    margin-bottom: 2rem;
+    font-size: clamp(2rem, 5vw, 3rem);
+}
+
+.admin-content-editor form {
+    width: 100%;
+    margin: 0;
+}
+
+.admin-content-editor label {
+    display: block;
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.admin-form-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.admin-back {
+    position: fixed;
+    top: 100px;
+    left: 2rem;
+    
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: fit-content;
+    margin-bottom: 1.5rem;
+    color: #333;
+    font-weight: 500;
+    text-decoration: underline;
+}
+
+.admin-back:hover {
+    color: #0055a4;
+}
+
+.admin-back img {
+    flex-shrink: 0;
+}

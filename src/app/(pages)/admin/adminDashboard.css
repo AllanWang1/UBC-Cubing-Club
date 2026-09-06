@@ -1,0 +1,84 @@
+.admin-dashboard {
+    width: min(1100px, calc(100% - 2rem));
+    margin: 0 auto;
+    padding: 4rem 0;
+}
+
+.admin-header {
+    margin-bottom: 2.5rem;
+}
+
+.admin-eyebrow {
+    color: #0055b7;
+    font-size: 0.875rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.admin-header h1 {
+    margin: 0.4rem 0;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+}
+
+.admin-header > p:last-child {
+    color: #5f6670;
+}
+
+.admin-action-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem;
+}
+
+.admin-action-card {
+    display: flex;
+    min-height: 220px;
+    padding: 2rem;
+    color: inherit;
+    text-decoration: none;
+    background: white;
+    border: 1px solid #d9e0e8;
+    border-radius: 16px;
+    flex-direction: column;
+    transition:
+        transform 150ms ease,
+        border-color 150ms ease,
+        box-shadow 150ms ease;
+}
+
+.admin-action-card:hover {
+    border-color: #0055b7;
+    box-shadow: 0 12px 30px rgb(0 55 120 / 12%);
+    transform: translateY(-3px);
+}
+
+.admin-action-card:focus-visible {
+    outline: 3px solid #80bfff;
+    outline-offset: 3px;
+}
+
+.admin-action-card h2 {
+    margin: 0 0 0.75rem;
+}
+
+.admin-action-card p {
+    color: #5f6670;
+    line-height: 1.6;
+}
+
+.admin-action-card span {
+    margin-top: auto;
+    color: #0055b7;
+    font-weight: 700;
+}
+
+@media (max-width: 700px) {
+    .admin-dashboard {
+        padding: 2.5rem 0;
+    }
+
+    .admin-action {
+        grid-template-columns: 1fr;
+    }
+}

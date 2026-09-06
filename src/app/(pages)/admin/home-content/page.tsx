@@ -1,4 +1,6 @@
 "use client";
+import "./homeContent.css";
+import Image from "next/image";
 
 import {useEffect, useState} from "react";
 import Link from "next/link";
@@ -98,9 +100,15 @@ export default function HomeContentPage() {
 
     return (
         <section className="admin-content-editor">
-            <Link href="/admin"> Back to Admin Dashboard</Link>
-
-            <h1>Edit Homepage Information</h1>
+            <Link href="/admin" className="admin-back">
+                <Image
+                    src="/back.svg"
+                    width={16}
+                    height={16}
+                    alt="back button"
+                />
+                <p>Back to Admin Dashboard</p>
+            </Link>
 
             <form onSubmit={handleSaveChange}>
                 <label>
