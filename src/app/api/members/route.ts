@@ -47,6 +47,7 @@ export async function POST(request: NextRequest) {
         faculty: faculty,
         birthdate: birthdate,
         wca_id: wca_id,
+        avatar_path: "default1.png",
       },
     ])
     .select()

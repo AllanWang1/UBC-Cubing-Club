@@ -8,4 +8,5 @@ export interface Member {
     birthdate: Date;
     wca_id: string;
     user_id: string;
+    avatar_path: string;
 }
