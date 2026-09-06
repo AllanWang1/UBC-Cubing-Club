@@ -11,7 +11,8 @@ import Cropper from "react-easy-crop";
 
 import "./MembersEdit.css";
 
-const ProfileEditSections = ["basic", "avatar", "password"];
+// const ProfileEditSections = ["basic", "avatar", "password"];
+const ProfileEditSections = ["avatar"]; // Temporarily disable basic and password editing until we have a better system in place
 type BasicInformationProps = {
   name: string;
   faculty: string;
@@ -135,7 +136,7 @@ const MembersEdit = () => {
                 >
                   {/* {item === "basic" && "Basic Information"} */}
                   {item === "avatar" && "Avatar"}
-                  {item === "password" && "Password"}
+                  {/* {item === "password" && "Password"} */}
                 </button>
               ))}
             </nav>
