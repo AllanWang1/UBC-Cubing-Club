@@ -43,10 +43,16 @@ const Leaderboard = () => {
       if (response.ok) {
         // Update the results with the avatar paths
         setAvatars(
-          res_json.reduce((acc: { [key: number]: string }, curr: any) => {
-            acc[curr.id] = curr.avatar_path;
-            return acc;
-          }, {}),
+          res_json.reduce(
+            (
+              acc: { [key: number]: string },
+              curr: { id: number; avatar_path: string },
+            ) => {
+              acc[curr.id] = curr.avatar_path;
+              return acc;
+            },
+            {},
+          ),
         );
       } else {
         console.error("Error fetching avatars: ", res_json.error);
