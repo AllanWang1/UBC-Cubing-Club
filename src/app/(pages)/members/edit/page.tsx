@@ -200,7 +200,7 @@ const MembersEdit = () => {
               {section === "avatar" && (
                 <div className="edit-section">
                   <h3>Avatar</h3>
-
+                  <h4>Max Size: 1MB, Format: PNG, JPEG, WebP</h4>
                   {avatarPreview && (
                     <>
                       <div className="avatar-crop-container">
@@ -253,7 +253,7 @@ const MembersEdit = () => {
                   />
 
                   <button disabled={!avatarFile} onClick={handleAvatarUpload}>
-                    Upload Avatar
+                    Submit
                   </button>
                 </div>
               )}
