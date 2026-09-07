@@ -136,6 +136,8 @@ export async function getUserId(): Promise<string | null> {
   return null;
 }
 
+// For files and avatar uploads
+export const MAX_AVATAR_SIZE = 1 * 1024 * 1024; 
 export const getCroppedImg = (
   imageSrc: string,
   crop: {
@@ -184,7 +186,7 @@ export const getCroppedImg = (
           resolve(file);
         },
         "image/jpeg",
-        0.9,
+        0.85,
       );
     };
 

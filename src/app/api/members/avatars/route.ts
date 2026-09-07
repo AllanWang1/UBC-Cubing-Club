@@ -1,6 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/app/lib/SupabaseServer";
 
+// This route gets the avatar path of all members, matched with their Member ID. 
+export async function GET() {
+  const supabaseServer = await createSupabaseServerClient();
+  const { data, error } = await supabaseServer
+    .from("Members")
+    .select("id, avatar_path");
+
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+  return NextResponse.json(data, { status: 200 });
+}
+
+// This route handles the uploading of a new avatar for the current user. 
+// It will create/replace the avatar in the avatars bucket, update the Members table 
+// with the new avatar path, and delete any previous avatars for the user in the avatars bucket.
 export async function POST(request: NextRequest) {
   const supabaseServer = await createSupabaseServerClient();
   const {
