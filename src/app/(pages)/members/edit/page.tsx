@@ -1,10 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import {
-  getUserId,
-  getCroppedImg,
-} from "@/app/lib/utils";
+import { getUserId, getCroppedImg, MAX_AVATAR_SIZE } from "@/app/lib/utils";
 import { Member } from "@/app/types/Member";
 import { useRouter } from "next/navigation";
 import Cropper from "react-easy-crop";
@@ -57,10 +54,10 @@ const MembersEdit = () => {
     if (croppedImage) {
       const formData = new FormData();
       formData.append("croppedImage", croppedImage);
-      
+
       // Avoid passing in the user_id on client side, handle on backend
       // uploadImageToSupabase("avatars", filePath, croppedImage);
-      const uploadResponse = await fetch("/api/members/avatar", {
+      const uploadResponse = await fetch("/api/members/avatars", {
         method: "POST",
         body: formData,
       });
@@ -242,8 +239,12 @@ const MembersEdit = () => {
                     accept="image/png,image/jpeg,image/webp"
                     onChange={(e) => {
                       const file = e.target.files?.[0] ?? null;
-
                       if (file) {
+                        if (file.size > MAX_AVATAR_SIZE) {
+                          alert("File size exceeds 1MB limit. Please compress before uploading.");
+                          e.target.value = "";
+                          return;
+                        }
                         setAvatarFile(file);
                         setCrop({ x: 0, y: 0 });
                         setZoom(1);

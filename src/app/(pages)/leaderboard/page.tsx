@@ -14,6 +14,7 @@ const Leaderboard = () => {
   const [cubes, setCubes] = useState<Cube[]>([]);
   const [selectedCube, setSelectedCube] = useState<string>("3x3");
   const [resultType, setResultType] = useState<string>("single");
+  const [avatars, setAvatars] = useState<{ [key: number]: string }>({});
 
   useEffect(() => {
     const fetchSingleResults = async () => {
@@ -36,8 +37,25 @@ const Leaderboard = () => {
       }
     };
 
+    const fetchAvatars = async () => {
+      const response = await fetch("/api/members/avatars");
+      const res_json = await response.json();
+      if (response.ok) {
+        // Update the results with the avatar paths
+        setAvatars(
+          res_json.reduce((acc: { [key: number]: string }, curr: any) => {
+            acc[curr.id] = curr.avatar_path;
+            return acc;
+          }, {}),
+        );
+      } else {
+        console.error("Error fetching avatars: ", res_json.error);
+      }
+    };
+
     fetchSingleResults();
     fetchCubes();
+    fetchAvatars();
   }, []);
 
   return (
@@ -72,9 +90,7 @@ const Leaderboard = () => {
                     alt="cube icon"
                   ></Image>
                 </button>
-                <h3 className="leaderboard-cube-tooltip">
-                  {cube.cube_name}
-                </h3>
+                <h3 className="leaderboard-cube-tooltip">{cube.cube_name}</h3>
               </div>
             ))}
           </div>
@@ -103,7 +119,7 @@ const Leaderboard = () => {
           <thead>
             <tr>
               <th>Rank</th>
-              <th>Name</th>
+              <th>Member</th>
               <th>Respresents</th>
               <th>Time</th>
               <th>Meeting</th>
@@ -113,7 +129,7 @@ const Leaderboard = () => {
             <tbody>
               {results
                 .filter(
-                  (r) => r.cube_name === selectedCube && r.single_time_ms < DNF
+                  (r) => r.cube_name === selectedCube && r.single_time_ms < DNF,
                 )
                 .map((result) => (
                   <tr key={result.id}>
@@ -129,16 +145,34 @@ const Leaderboard = () => {
                       )}
                     </td>
                     <td>
-                      <Link href={`/members/${result.id}`}>{result.name}</Link>
+                      <div className="leaderboard-members-container">
+                        {avatars[result.id] && (
+                          <Image
+                            src={getPublicURLWithPath(
+                              "avatars",
+                              avatars[result.id],
+                            )}
+                            width={28}
+                            height={28}
+                            alt={`${result.name}'s avatar`}
+                            className="leaderboard-avatar"
+                          />
+                        )}
+                        <Link href={`/members/${result.id}`}>
+                          {result.name}
+                        </Link>
+                      </div>
                     </td>
-                    <td className="leaderboard-faculty">
-                      <Image
-                        src={`/faculty-icons/${result.faculty_icon_link}`}
-                        height={16}
-                        width={16}
-                        alt="faculty-icon"
-                      />
-                      {result.faculty_full_name}
+                    <td>
+                      <div className="leaderboard-faculty">
+                        <Image
+                          src={`/faculty-icons/${result.faculty_icon_link}`}
+                          height={16}
+                          width={16}
+                          alt="faculty-icon"
+                        />
+                        {result.faculty_full_name}
+                      </div>
                     </td>
                     <td>{formatTime(result.single_time_ms)}</td>
                     <td>
@@ -153,7 +187,8 @@ const Leaderboard = () => {
             <tbody>
               {results
                 .filter(
-                  (r) => r.cube_name === selectedCube && r.avg_time_ms < DNF / 3
+                  (r) =>
+                    r.cube_name === selectedCube && r.avg_time_ms < DNF / 3,
                 )
                 .sort((a, b) => a.avg_rank - b.avg_rank)
                 .map(
@@ -174,18 +209,34 @@ const Leaderboard = () => {
                           )}
                         </td>
                         <td>
-                          <Link href={`/members/${result.id}`}>
-                            {result.name}
-                          </Link>
+                          <div className="leaderboard-members-container">
+                            {avatars[result.id] && (
+                              <Image
+                                src={getPublicURLWithPath(
+                                  "avatars",
+                                  avatars[result.id],
+                                )}
+                                width={28}
+                                height={28}
+                                alt={`${result.name}'s avatar`}
+                                className="leaderboard-avatar"
+                              />
+                            )}
+                            <Link href={`/members/${result.id}`}>
+                              {result.name}
+                            </Link>
+                          </div>
                         </td>
-                        <td className="leaderboard-faculty">
-                          <Image
-                            src={`/faculty-icons/${result.faculty_icon_link}`}
-                            height={16}
-                            width={16}
-                            alt="faculty-icon"
-                          />
-                          {result.faculty_full_name}
+                        <td>
+                          <div className="leaderboard-faculty">
+                            <Image
+                              src={`/faculty-icons/${result.faculty_icon_link}`}
+                              height={16}
+                              width={16}
+                              alt="faculty-icon"
+                            />
+                            {result.faculty_full_name}
+                          </div>
                         </td>
                         <td>{formatTime(result.avg_time_ms)}</td>
                         <td>
@@ -194,7 +245,7 @@ const Leaderboard = () => {
                           </Link>
                         </td>
                       </tr>
-                    )
+                    ),
                 )}
             </tbody>
           )}
