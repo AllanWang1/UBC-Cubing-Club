@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { getUserRole, ADMIN_ROLES } from "@/app/lib/utils";
+import { getUserRole, ADMIN_ROLES, getPublicURLWithPath } from "@/app/lib/utils";
 import "./Members.css";
 import { Member } from "@/app/types/Member";
 
@@ -88,7 +88,18 @@ const Members = () => {
                     : "non-member"
                 }
               >
-                <Link href={`/members/${member.id}`}>{member.name}</Link>
+                <div className="members-member-container">
+                  {member.avatar_path && (
+                    <Image
+                      src={getPublicURLWithPath("avatars", member.avatar_path)}
+                      width={28}
+                      height={28}
+                      alt={`${member.name}'s avatar`}
+                      className="members-avatar"
+                    />
+                  )}
+                  <Link href={`/members/${member.id}`}>{member.name}</Link>
+                </div>
               </td>
               <td>{member.faculty}</td>
             </tr>
