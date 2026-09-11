@@ -20,6 +20,5 @@ export async function GET(request: NextRequest) {
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
-  console.log("Member Results Data for Member ID: ", memberId, data);
   return NextResponse.json(data, { status: 200 });
 }

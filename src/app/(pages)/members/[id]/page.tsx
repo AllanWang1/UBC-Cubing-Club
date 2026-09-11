@@ -5,69 +5,53 @@ import { useState, useEffect } from "react";
 import { getPublicURLWithPath, formatTime } from "@/app/lib/utils";
 import { MemberRecord } from "@/app/types/MemberRecord";
 import { MemberResult } from "@/app/types/MemberResult";
+import { Member } from "@/app/types/Member";
 
 import Image from "next/image";
 
 import "./MemberID.css";
 
-import {
-  Chart as ChartJS,
-  RadialLinearScale,
-  PointElement,
-  LineElement,
-  Filler,
-  Tooltip,
-} from "chart.js";
-
-// Register ChartJS components
-ChartJS.register(RadialLinearScale, PointElement, LineElement, Filler, Tooltip);
-
-const Member = ({ params }: { params: Promise<{ id: string }> }) => {
+const MemberPage = ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = React.use(params);
   const [memberRecords, setMemberRecords] = useState<MemberRecord[]>([]);
-  // Always loading on mount/entry
-  const [loading, setLoading] = useState<boolean>(true);
   const [selectedCube, setSelectedCube] = useState<string>("");
   const [memberResults, setMemberResults] = useState<MemberResult[]>([]);
 
   // These are the links to the cube icons that the member has participated in
   const [participatedEvents, setParticipatedEvents] = useState<string[]>([]);
-  const [WCAId, setWCAId] = useState<string>("");
+  const [member, setMember] = useState<Member | null>(null);
 
   // Fetch member records
   useEffect(() => {
-    const fetchMemberRecords = async () => {
-      try {
-        const response = await fetch(`/api/members/${id}`);
-        const res_json = await response.json();
-        if (response.ok) {
-          setMemberRecords(res_json);
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    const fetchMemberWCAId = async () => {
-      const response = await fetch(`/api/members/${id}/wca-id`);
-      // since we performed .single() in the route, we know the response is not an array
+    const fetchMember = async () => {
+      const response = await fetch(`/api/members/${id}`);
       const res_json = await response.json();
       if (response.ok) {
-        setWCAId(res_json.wca_id);
+        setMember(res_json);
       } else {
-        alert("Error fetching WCA ID: " + res_json.error);
+        alert("Error fetching member: " + res_json.error);
       }
     };
 
+    const fetchMemberRecords = async () => {
+      const response = await fetch(`/api/members/${id}/records`);
+      const res_json = await response.json();
+      if (response.ok) {
+        setMemberRecords(res_json);
+      } else {
+        alert("Error fetching member records: " + res_json.error);
+      }
+    };
+
+    fetchMember();
     fetchMemberRecords();
-    fetchMemberWCAId();
   }, [id]);
 
   // Fetch member's history results
   useEffect(() => {
     const fetchMemberResults = async () => {
       const response = await fetch(
-        `/api/results/member-results?memberId=${id}`
+        `/api/results/member-results?memberId=${id}`,
       );
       const res_json = await response.json();
       if (response.ok) {
@@ -97,14 +81,16 @@ const Member = ({ params }: { params: Promise<{ id: string }> }) => {
 
   return (
     <div className="member">
-      {loading ? (
-        <h2>Loading...</h2>
-      ) : memberRecords.length > 0 ? (
+      {member && (memberRecords.length > 0) && (
         <div className="member-loaded">
-          <h2>{memberRecords[0].name}</h2>
-          {/* <div className="member-radar-chart">
-            <Radar data={radarData} options={radarOptions}></Radar>
-          </div> */}
+          <h2>{member.name}</h2>
+          <Image
+            className="member-avatar"
+            src={getPublicURLWithPath("avatars", member.avatar_path)}
+            width={100}
+            height={100}
+            alt="member avatar"
+          />
           <div className="member-info-container">
             <div className="member-faculty">
               <Image
@@ -115,13 +101,13 @@ const Member = ({ params }: { params: Promise<{ id: string }> }) => {
               />
               <h3>{memberRecords[0].faculty_full_name}</h3>
             </div>
-            {WCAId && (
+            {member.wca_id && (
               <div className="member-wca-id">
                 <Image src="/wca.svg" width={25} height={25} alt="" />
                 <a
-                  href={`https://www.worldcubeassociation.org/persons/${WCAId}`}
+                  href={`https://www.worldcubeassociation.org/persons/${member.wca_id}`}
                 >
-                  <h3>{WCAId} 🔗</h3>
+                  <h3>{member.wca_id} 🔗</h3>
                 </a>
               </div>
             )}
@@ -146,7 +132,10 @@ const Member = ({ params }: { params: Promise<{ id: string }> }) => {
                       <td>
                         <div className="result-event">
                           <Image
-                            src={getPublicURLWithPath("cubeicons", result.icon_link)}
+                            src={getPublicURLWithPath(
+                              "cubeicons",
+                              result.icon_link,
+                            )}
                             width={30}
                             height={30}
                             alt="cube image"
@@ -278,11 +267,9 @@ const Member = ({ params }: { params: Promise<{ id: string }> }) => {
             </div>
           </div>
         </div>
-      ) : (
-        <h2>There are no results associated with this member</h2>
       )}
     </div>
   );
 };
 
-export default Member;
+export default MemberPage;

@@ -1,4 +1,5 @@
 import { supabase } from "../lib/SupabaseClient";
+import { createSupabaseServerClient } from "./SupabaseServer";
 import { Result } from "@/app/types/Result";
 import { User } from "@supabase/auth-js";
 
@@ -19,7 +20,37 @@ export const SUPPORTED_CUBES = [
   "Megaminx",
   "Clock",
   "Square-1",
-]
+];
+export const FACULTIES = [
+  "",
+  "Applied Science",
+  "Architecture and Landscape Architecture",
+  "Arts",
+  "Audiology and Speech Sciences",
+  "Business",
+  "Community and Regional Planning",
+  "Dentistry",
+  "Education",
+  "Extended Learning",
+  "Forestry",
+  "Graduate and Postdoctoral Studies",
+  "Journalism",
+  "Kinesiology",
+  "Land and Food Systems",
+  "Law",
+  "Library, Archival and Information Studies",
+  "Medicine",
+  "Music",
+  "Nursing",
+  "Pharmaceutical Sciences",
+  "Population and Public Health",
+  "Public Policy and Global Affairs",
+  "Science",
+  "Social Work",
+  "UBC Vantage College",
+  "Vancouver School of Economics",
+  "External",
+];
 
 export function formatTime(ms: number): string {
   // This is what DNF is defined to be; to calculate an average, it must be less than DNF/3
@@ -42,7 +73,7 @@ export function formatTime(ms: number): string {
     .padStart(2, "0")}`;
 }
 
-export function getPublicURLWithPath(bucket: string,path: string): string {
+export function getPublicURLWithPath(bucket: string, path: string): string {
   if (!path) return "";
   if (!bucket) return "";
   const { data } = supabase.storage.from(bucket).getPublicUrl(path);
@@ -85,7 +116,7 @@ export async function getUserRole(): Promise<string | null> {
   } = await supabase.auth.getUser();
   if (user?.user_metadata?.member_id) {
     const response = await fetch(
-      `/api/members/${user.user_metadata.member_id}/role`
+      `/api/members/${user.user_metadata.member_id}/role`,
     );
     const res_json = await response.json();
     if (response.ok) {
@@ -94,3 +125,75 @@ export async function getUserRole(): Promise<string | null> {
   }
   return null;
 }
+
+export async function getUserId(): Promise<string | null> {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (user) {
+    return user.id;
+  }
+  return null;
+}
+
+// For files and avatar uploads
+export const MAX_AVATAR_SIZE = 1 * 1024 * 1024; 
+export const getCroppedImg = (
+  imageSrc: string,
+  crop: {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  },
+): Promise<File> => {
+  return new Promise((resolve, reject) => {
+    const image = new Image();
+
+    image.onload = () => {
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+
+      if (!ctx) {
+        reject(new Error("Could not get canvas context"));
+        return;
+      }
+
+      canvas.width = crop.width;
+      canvas.height = crop.height;
+
+      ctx.drawImage(
+        image,
+        crop.x,
+        crop.y,
+        crop.width,
+        crop.height,
+        0,
+        0,
+        crop.width,
+        crop.height,
+      );
+
+      canvas.toBlob(
+        (blob) => {
+          if (!blob) {
+            reject(new Error("Could not create cropped image"));
+            return;
+          }
+
+          const file = new File([blob], "avatar.jpg", { type: "image/jpeg" });
+
+          resolve(file);
+        },
+        "image/jpeg",
+        0.85,
+      );
+    };
+
+    image.onerror = () => {
+      reject(new Error("Could not load image"));
+    };
+
+    image.src = imageSrc;
+  });
+};

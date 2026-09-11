@@ -3,18 +3,9 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { getUserRole, ADMIN_ROLES } from "@/app/lib/utils";
+import { getUserRole, ADMIN_ROLES, getPublicURLWithPath } from "@/app/lib/utils";
 import "./Members.css";
-
-interface Member {
-  id: number;
-  name: string;
-  email: string | null;
-  membership: boolean;
-  faculty: string;
-  user_id: string | null;
-  role: "president" | "treasurer" | "admin" | "member";
-}
+import { Member } from "@/app/types/Member";
 
 const Members = () => {
   const [members, setMembers] = useState<Member[]>([]);
@@ -83,7 +74,6 @@ const Members = () => {
       <table>
         <thead>
           <tr>
-            <th>Member ID</th>
             <th>Name</th>
             <th>Faculty</th>
           </tr>
@@ -91,7 +81,6 @@ const Members = () => {
         <tbody>
           {members.map((member) => (
             <tr key={member.id}>
-              <td>{member.id}</td>
               <td
                 className={
                   member.membership
@@ -99,7 +88,18 @@ const Members = () => {
                     : "non-member"
                 }
               >
-                <Link href={`/members/${member.id}`}>{member.name}</Link>
+                <div className="members-member-container">
+                  {member.avatar_path && (
+                    <Image
+                      src={getPublicURLWithPath("avatars", member.avatar_path)}
+                      width={28}
+                      height={28}
+                      alt={`${member.name}'s avatar`}
+                      className="members-avatar"
+                    />
+                  )}
+                  <Link href={`/members/${member.id}`}>{member.name}</Link>
+                </div>
               </td>
               <td>{member.faculty}</td>
             </tr>

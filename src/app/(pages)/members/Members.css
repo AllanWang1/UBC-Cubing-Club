@@ -10,9 +10,6 @@
   width: 100%;
   max-width: 1200px;
 }
-.members h2 {
-  font-size: 40px;
-}
 .members-title {
   display: flex;
   flex-direction: row;
@@ -40,6 +37,18 @@ td {
 
 .members tbody tr:nth-child(odd) {
   background-color: #ffffff; /* White for contrast */
+}
+.members-member-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+.members-member-container img {
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  object-fit: cover;
 }
 .non-member a {
   color: #66a5fd;
