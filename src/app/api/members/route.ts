@@ -14,10 +14,18 @@ export async function GET(request: NextRequest) {
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   } else if (user_id) {
-    return NextResponse.json(
-      data.filter((member) => member.user_id === user_id),
-      { status: 200 },
-    );
+    const filteredData = data.filter((member) => member.user_id === user_id);
+    if (filteredData.length === 0) {
+      return NextResponse.json(
+        { error: "No member found with the provided user_id" },
+        { status: 404 },
+      );
+    } else {
+      return NextResponse.json(
+        filteredData,
+        { status: 200 },
+      );
+    }
   } else {
     return NextResponse.json(data, { status: 200 });
   }

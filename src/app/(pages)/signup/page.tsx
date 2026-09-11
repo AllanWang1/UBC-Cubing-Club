@@ -55,10 +55,10 @@ const SignUp = () => {
       } 
       else {
         alert(
-          "Sign up successful, you will receive a verification email shortly."
+          "Sign up successful!"
         );
       }
-      router.push("/signin");
+      router.push("/");
     }
   };
 

@@ -40,9 +40,10 @@ const Dashboard = () => {
           if (res_json[0].avatar_path) {
             setAvatarURL(getPublicURLWithPath("avatars", res_json[0].avatar_path));
           }
-        } else {
-          alert("Error fetching member data: " + res_json.error);
         }
+        // Must handle the case where no Member is found for the user_id silently
+        // This is because the user may be a new user who has not yet been added to the Members table, 
+        // and we don't want to throw an error in that case, otherwise it would produce alerts, making the website unusable.
       }
     };
     fetchUser();
