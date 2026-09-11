@@ -28,8 +28,6 @@ const Dashboard = () => {
     const fetchUser = async () => {
       const uuid = await getUserId();
       if (!uuid) {
-        alert("You are not logged in as a valid user");
-        router.push("/signin");
         return;
       }
       // We do not return a single member, but rather an array of members where array size is 1
