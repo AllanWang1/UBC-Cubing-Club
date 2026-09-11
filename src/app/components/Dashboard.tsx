@@ -26,6 +26,9 @@ const Dashboard = () => {
 
   useEffect(() => {
     const fetchUser = async () => {
+      if (!supabase.auth.getUser) {
+        return;
+      }
       const uuid = await getUserId();
       if (!uuid) {
         return;
