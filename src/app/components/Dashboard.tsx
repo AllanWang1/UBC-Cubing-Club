@@ -16,6 +16,7 @@ const Dashboard = () => {
   const [avatarURL, setAvatarURL] = useState<string>(
     getPublicURLWithPath("avatars", "default1.png"),
   );
+  const [user, setUser] = useState<User | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
   const dropDownRef = useRef<HTMLDivElement>(null);
@@ -26,20 +27,22 @@ const Dashboard = () => {
 
   useEffect(() => {
     const fetchUser = async () => {
-      const uuid = await getUserId();
-      if (!uuid) {
-        alert("You are not logged in as a valid user");
-        router.push("/signin");
-        return;
-      }
-      // We do not return a single member, but rather an array of members where array size is 1
-      const member_response = await fetch(`/api/members?user_id=${uuid}`);
-      const member_json = await member_response.json();
-      if (member_response.ok && member_json.length === 1) {
-        setMember(member_json[0]);
-      } else {
-        alert("Error fetching member info: " + member_json.error);
-        return;
+      const {
+        data: { user: fetchedUser },
+      } = await supabase.auth.getUser();
+      setUser(fetchedUser);
+      if (fetchedUser) {
+        const uuid: string = fetchedUser.id;
+        const response = await fetch(`/api/members?user_id=${uuid}`);
+        const res_json = await response.json();
+        if (response.ok) {
+          setMember(res_json[0]);
+          if (res_json[0].avatar_path) {
+            setAvatarURL(getPublicURLWithPath("avatars", res_json[0].avatar_path));
+          }
+        } else {
+          alert("Error fetching member data: " + res_json.error);
+        }
       }
     };
     fetchUser();
@@ -79,17 +82,19 @@ const Dashboard = () => {
   };
 
   const handleMyProfile = () => {
-    if (member) {
-      const memberId = member.id;
-      if (memberId) {
-        router.push(`/members/${memberId}`);
-        setIsOpen(false);
-      } else {
+    if (user) {
+      if (!member) {
         alert(
           "There is no member ID associated with your account. Please contact an admin.",
         );
         setIsOpen(false);
         router.push("/access-request");
+      } else {
+        const memberId = member.id;
+        if (memberId) {
+          router.push(`/members/${memberId}`);
+          setIsOpen(false);
+        }
       }
     }
   };
@@ -98,6 +103,12 @@ const Dashboard = () => {
     if (member) {
       router.push(`/members/edit`);
       setIsOpen(false);
+    } else {
+      alert(
+        "There is no member ID associated with your account. Please contact an admin.",
+      );
+      setIsOpen(false);
+      router.push("/access-request");
     }
   };
 
@@ -107,17 +118,17 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard">
-      {member ? (
+      {user ? (
         <div className="dashboard-profile">
-          {member.name ? (
+          {member ? (
             <h2>{member.name}</h2>
           ) : (
-            <h2>{member.email}</h2>
+            <h2>{user.user_metadata.full_name}</h2>
           )}
           <div className="dashboard-profile-menu">
             <Image
               className="avatar"
-              src={getPublicURLWithPath("avatars", member.avatar_path)}
+              src={avatarURL}
               alt="Profile Picture"
               width={50}
               height={50}
