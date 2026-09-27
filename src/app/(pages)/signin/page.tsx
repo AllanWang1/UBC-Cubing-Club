@@ -9,7 +9,7 @@ import "./SignIn.css";
 type SignInData = {
   email: string;
   password: string;
-}
+};
 
 const SignIn = () => {
   const [formData, setFormData] = useState<SignInData>({
@@ -55,7 +55,7 @@ const SignIn = () => {
             type="email"
             placeholder="Email"
             name="email"
-            value={formData.email} 
+            value={formData.email}
             onChange={handleChange}
           />
           <input
@@ -68,9 +68,12 @@ const SignIn = () => {
           <button type="submit">Sign In</button>
         </div>
       </form>
-      <Link href="/signup">
-        <p>Don&apos;t have an account yet? Sign up!</p>
-      </Link>
+      <div className="sign-in-options">
+        <Link href="/signup">
+          <p>Don&apos;t have an account yet? Sign up!</p>
+        </Link>
+        <Link href="/signin/password-reset">Forgot your password?</Link>
+      </div>
     </div>
   );
 };

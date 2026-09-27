@@ -12,7 +12,9 @@ export default function ClientLayout({
 
   return (
     <div>
-      {(pathname !== "/signin" && pathname !== "/signup") && <Navbar />}
+      {pathname !== "/signin" &&
+        pathname !== "/signup" &&
+        pathname !== "/signin/password-reset" && <Navbar />}
       {children}
     </div>
   );
