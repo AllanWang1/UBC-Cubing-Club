@@ -96,6 +96,29 @@ const MembersEdit = () => {
       alert("New password must be at least 6 characters long");
       return;
     }
+
+    const response = await fetch("/api/members/passwords", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        currentPassword: passwordEditor.currentPassword,
+        newPassword: passwordEditor.newPassword,
+      }),
+    });
+
+    const res_json = await response.json();
+    if (response.ok) {
+      alert("Password updated successfully!");
+      setPasswordEditor({
+        currentPassword: "",
+        newPassword: "",
+        confirmNewPassword: "",
+      });
+    } else {
+      alert(res_json.error);
+    }
   };
 
   useEffect(() => {
