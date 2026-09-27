@@ -8,13 +8,18 @@ import Cropper from "react-easy-crop";
 
 import "./MembersEdit.css";
 
-// const ProfileEditSections = ["basic", "avatar", "password"];
-const ProfileEditSections = ["avatar"]; // Temporarily disable basic and password editing until we have a better system in place
+const ProfileEditSections = ["avatar", "password"]; // Temporarily disable basic editing.
 type BasicInformationProps = {
   name: string;
   faculty: string;
   WCAId: string;
   birthDate: Date;
+};
+
+type PasswordChangeProps = {
+  currentPassword: string;
+  newPassword: string;
+  confirmNewPassword: string;
 };
 
 const MembersEdit = () => {
@@ -27,6 +32,13 @@ const MembersEdit = () => {
   //   WCAId: "",
   //   birthDate: new Date(),
   // });
+
+  // Password change states
+  const [passwordEditor, setPasswordEditor] = useState<PasswordChangeProps>({
+    currentPassword: "",
+    newPassword: "",
+    confirmNewPassword: "",
+  });
 
   // Avatar upload useStates
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
@@ -67,6 +79,19 @@ const MembersEdit = () => {
       } else {
         alert(res_json.error);
       }
+    }
+  };
+
+  const handlePasswordSubmission = async (
+    e: React.FormEvent<HTMLFormElement>,
+  ) => {
+    e.preventDefault();
+    if (passwordEditor.newPassword !== passwordEditor.confirmNewPassword) {
+      alert("New passwords do not match");
+      return;
+    } else if (passwordEditor.newPassword === passwordEditor.currentPassword) {
+      alert("New password cannot be the same as the current password");
+      return;
     }
   };
 
@@ -137,7 +162,7 @@ const MembersEdit = () => {
                 >
                   {/* {item === "basic" && "Basic Information"} */}
                   {item === "avatar" && "Avatar"}
-                  {/* {item === "password" && "Password"} */}
+                  {item === "password" && "Password"}
                 </button>
               ))}
             </nav>
@@ -241,7 +266,9 @@ const MembersEdit = () => {
                       const file = e.target.files?.[0] ?? null;
                       if (file) {
                         if (file.size > MAX_AVATAR_SIZE) {
-                          alert("File size exceeds 1MB limit. Please compress before uploading.");
+                          alert(
+                            "File size exceeds 1MB limit. Please compress before uploading.",
+                          );
                           e.target.value = "";
                           return;
                         }
@@ -261,21 +288,49 @@ const MembersEdit = () => {
               {section === "password" && (
                 <div className="edit-section">
                   <h3>Change Password</h3>
-                  <label>
-                    Current Password
-                    <input type="password" />
-                  </label>
-                  <label>
-                    New Password
-                    <input type="password" />
-                  </label>
+                  <form action="" onSubmit={handlePasswordSubmission}>
+                    <label>
+                      Current Password
+                      <input
+                        type="password"
+                        onChange={(e) =>
+                          setPasswordEditor({
+                            ...passwordEditor,
+                            currentPassword: e.target.value,
+                          })
+                        }
+                      />
+                    </label>
+                    <label>
+                      New Password
+                      <input
+                        type="password"
+                        onChange={(e) =>
+                          setPasswordEditor({
+                            ...passwordEditor,
+                            newPassword: e.target.value,
+                          })
+                        }
+                      />
+                    </label>
 
-                  <label>
-                    Confirm New Password
-                    <input type="password" />
-                  </label>
-                  <button>Change Password</button>
-                  <button>Forgot Password?</button>
+                    <label>
+                      Confirm New Password
+                      <input
+                        type="password"
+                        onChange={(e) =>
+                          setPasswordEditor({
+                            ...passwordEditor,
+                            confirmNewPassword: e.target.value,
+                          })
+                        }
+                      />
+                    </label>
+                    <div className="password-edit-actions">
+                      <button>Change Password</button>
+                      <button>Forgot Password?</button>
+                    </div>
+                  </form>
                 </div>
               )}
             </div>
