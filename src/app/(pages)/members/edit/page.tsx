@@ -92,6 +92,9 @@ const MembersEdit = () => {
     } else if (passwordEditor.newPassword === passwordEditor.currentPassword) {
       alert("New password cannot be the same as the current password");
       return;
+    } else if (passwordEditor.newPassword.length < 6) {
+      alert("New password must be at least 6 characters long");
+      return;
     }
   };
 
