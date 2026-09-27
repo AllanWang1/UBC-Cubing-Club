@@ -353,8 +353,7 @@ const MembersEdit = () => {
                       />
                     </label>
                     <div className="password-edit-actions">
-                      <button>Change Password</button>
-                      <button>Forgot Password?</button>
+                      <button type="submit">Change Password</button>
                     </div>
                   </form>
                 </div>

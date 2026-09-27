@@ -7,17 +7,17 @@
   margin: 20px 70px;
 }
 
-.back-home{
-    display: flex;
-    position: fixed;
-    top: 20px;
-    left: 20px;
+.back-home {
+  display: flex;
+  position: fixed;
+  top: 20px;
+  left: 20px;
 }
 
 .back-home a {
-    text-decoration: none;
-    color: #0055a4;
-    font-size: 16px;
+  text-decoration: none;
+  color: #0055a4;
+  font-size: 16px;
 }
 
 .sign-in-input-fields {
@@ -27,4 +27,22 @@
 
 .sign-in h2 {
   font-size: 40px;
+}
+
+.sign-in-options {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+}
+
+.sign-in-options a {
+  color: #0055a4;
+}
+
+.sign-in-options a:hover {
+  text-decoration: underline;
+  transition: 0.3s ease;
+  color: #03396b;
+  cursor: pointer;
 }
