@@ -1,29 +1,17 @@
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 import { createSupabaseServerClient } from "@/app/lib/SupabaseServer";
 
-export async function PUT(request: Request) {
+export async function PUT(request: NextRequest) {
   const supabaseServer = await createSupabaseServerClient();
-  const { currentPassword, newPassword } = await request.json();
+  const { newPassword } = await request.json();
 
   const {
     data: { user },
     error: userError,
   } = await supabaseServer.auth.getUser();
 
-  if (userError || !user || !user.email) {
+  if (userError || !user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  // Validate correctness of the new password:
-  const { error: verifyError } = await supabaseServer.auth.signInWithPassword({
-    email: user.email,
-    password: currentPassword,
-  });
-  if (verifyError) {
-    return NextResponse.json(
-      { error: "Current password is incorrect" },
-      { status: 400 },
-    );
   }
 
   const { error: updateError } = await supabaseServer.auth.updateUser({
@@ -36,17 +24,22 @@ export async function PUT(request: Request) {
     );
   }
 
-  return NextResponse.json({ message: "Password updated successfully" });
+  return NextResponse.json(
+    { message: "Password updated successfully" },
+    { status: 200 },
+  );
 }
 
 export async function POST(request: Request) {
   const supabaseServer = await createSupabaseServerClient();
   const { email } = await request.json();
 
+//   const redirectTo = `http://localhost:3000/signin/password-reset-submission`;
+  const redirectTo = `https://speedcubingubc.vercel.app/signin/password-reset-submission`;
   const { error: resetError } = await supabaseServer.auth.resetPasswordForEmail(
     email,
     {
-      redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/signin/password-reset-submission`,
+      redirectTo: redirectTo,
     },
   );
 

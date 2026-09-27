@@ -2,13 +2,14 @@
 
 import { useState } from "react";
 import Link from "next/link";
+
 import "./PasswordReset.css";
-const page = () => {
+const PasswordReset = () => {
   const [email, setEmail] = useState<string>("");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const response = await fetch("/api/members/passwords", {
+    const response = await fetch("/api/members/passwords/reset", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -22,6 +23,7 @@ const page = () => {
       return;
     }
     alert("Password reset email sent successfully!");
+
   };
   return (
     <div className="password-reset">
@@ -30,8 +32,8 @@ const page = () => {
           <p>🏠 Back to Home</p>
         </Link>
       </div>
+      <h2>Password Reset</h2>
       <form onSubmit={handleSubmit}>
-        <h2>Password Reset</h2>
         <input
           type="email"
           placeholder="Enter your email"
@@ -45,4 +47,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default PasswordReset;
